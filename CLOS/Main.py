@@ -1,4 +1,4 @@
-# Main Command Line Operating System (CLOS) File
+# Main Command Line Operating System (CLOS) File # V 0.5
 # Import Stuff
 print('Info: Importing Important Libs...', end='\r')
 import os
@@ -294,7 +294,7 @@ while True:
         print('nput needed')
     elif inp[:6] == 'python':
         if 'python ' in inp:
-            os.system('python -c "'+inp[7:]+'"')halo
+            os.system('python -c "'+inp[7:]+'"')
         else:
             os.system('python')
     elif 'internet' in inp:
