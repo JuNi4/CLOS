@@ -1,4 +1,4 @@
-# Main Command Line Operating System (CLOS) File # V 0.5.1.2
+# Main Command Line Operating System (CLOS) File # Änderung Nr. 4 14.8.2021 21:00
 # Import Stuff
 print('Info: Importing Important Libs...', end='\r')
 import os
