@@ -38,6 +38,7 @@ import http.client as httplib
 from pythonping import ping
 from pathlib import Path
 import requests
+import getpass
 print(info_style+'Info: Importing More Libs... Done!'+res)
 
 # Set Title
@@ -62,6 +63,7 @@ def internet():
         return False
 
 # Vars
+os.environ["clos"] = os.path.dirname(os.path.realpath(__file__))
 skip_setup = 0
 print(info_style+'Info: Checking For Internet... If Crashes, Disable Internet In Boot Settings.'+res,end='\r')
 if internet() == True:
@@ -100,6 +102,10 @@ lan_template = {
     "wm_p1": " to Command Line Operating System (CLOS).",
     "wm_p2": "You can turn of this Message using the 'settings' command."
 }
+template_pata = {
+    "admin_pw": ""
+}
+temp_pata = json.loads(json.dumps(template_pata))
 temp = json.loads(json.dumps(template))
 loc = json.loads(json.dumps(locr))
 if loc['country_code'] == 'DE':
@@ -136,6 +142,10 @@ def setup(fp):
     # Name rq
     print(lan["su_name_rq"])
     temp["name"] = input()
+    # PW rw
+    print(lan["su_pw_rq"])
+    temp_pata["admin_pw"] = getpass.getpass(prompt='')
+    print('*'*len(str(temp_pata["admin_pw"])))
     # Fav Food rq
     print(lan["su_fav_food_rq"])
     temp["fav_food"] = input()
@@ -154,6 +164,10 @@ def setup(fp):
     # Write Settings
     set = json.dumps(temp, indent=4)
     sf = open(fp, 'w')
+    sf.write(set)
+    sf.close()
+    set = json.dumps(temp_pata, indent=4)
+    sf = open(str(privat_f)+temp["name"]+'.json', 'w')
     sf.write(set)
     sf.close()
 
@@ -194,8 +208,13 @@ def progressBar(current, total, barLength = 20):
     print('Progress: [%s%s] %d %%' % (arrow, spaces, percent), end='\r')
 
 # Load settings
+print(info_style+'Info: Creating Files...'+res,end='\r')
 fp = os.path.dirname(os.path.realpath(__file__))  + '\data\settings.json'
 settings_filep = Path(fp)
+privat_f = Path(os.path.dirname(os.path.realpath(__file__)) + '\private_data\\')
+if not privat_f.is_dir():
+    os.system('md "'+str(privat_f)+'"')
+os.system('attrib +h +s "'+str(privat_f)+'"')
 if settings_filep.is_file():
     settings_file = open(fp, 'r')
     settings = json.loads(settings_file.read())
@@ -214,9 +233,11 @@ if settings_filep.is_file():
     lan_f = open(lan_file, 'r')
     lan = json.loads(lan_f.read())
     lan_f.close()
+    print(info_style+'Info: Creating Files... Done!'+res)
     print(info_style+lan["setting_found"]+res)
 else:
     lan = lan_template
+    print(info_style+'Info: Creating Files... Done!'+res)
     print(error_style+lan["setting_missing"]+res)
     print(info_style+lan["setting_creat"]+res)
     if skip_setup == 0:
