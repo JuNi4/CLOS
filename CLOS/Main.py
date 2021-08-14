@@ -17,6 +17,7 @@ f.close()
 print('Info: Importing Libs From Libs Folder...', end='\r')
 sys.path.append(os.path.dirname(os.path.realpath(__file__))+'\libs\\')
 import color as style
+import vars
 info_style = style.color.Blue
 warning_style = style.color.Yellow
 error_style = style.color.Red
@@ -73,38 +74,9 @@ if internet() == True:
 else:
     locr = {'country_code': 'US', 'country_name': 'Germany', 'city': 'Tuerkenfeld', 'postal': '82299', 'latitude': 48.1053, 'longitude': 11.083, 'IPv4': '94.31.96.202', 'state': 'Bavaria'}
 print(info_style+'Info: Checking For Internet... Done! If Crashes, Disable Internet In Boot Settings.'+res)
-template = {
-    "setup": "done",
-    "name": "none",
-    "fav_food": "none",
-    "fav_color": "none",
-    "lan": "en_us",
-    "scheme": "dark"
-}
-lan_template = {
-    "setting_found": "Info: Found Settings file",
-    "setting_missing": "Error: Settings file not existant!",
-    "setting_creat": "Info: Creating Settings file",
-
-    "y": "y",
-    "n": "n",
-
-    "su_laun": "Launching setup...",
-    "su_lan_rq": "Please select a language:",
-    "su_name_rq": "Please input your name:",
-    "su_lan_change_rq": "Do you want to change your current language? Y/N",
-    "su_cur_lan": "Currently ",
-    "su_fav_food_rq": "Please input your favorite food:",
-    "su_fav_color": "Please input your favorite color:",
-    "su_fav_color_av": "Available are 'Red', 'Green', 'Blue', 'Yellow', 'Magenta', 'Cyan'",
-
-    "wm_welcome": "Welcome ",
-    "wm_p1": " to Command Line Operating System (CLOS).",
-    "wm_p2": "You can turn of this Message using the 'settings' command."
-}
-template_pata = {
-    "admin_pw": ""
-}
+template_pata = vars.template_pata
+template = vars.template
+lan_template = vars.lan_template
 temp_pata = json.loads(json.dumps(template_pata))
 temp = json.loads(json.dumps(template))
 loc = json.loads(json.dumps(locr))
