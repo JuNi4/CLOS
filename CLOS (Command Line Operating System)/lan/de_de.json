@@ -1,0 +1,21 @@
+{
+    "setting_found": "Info: Einstellungsdatai gefunden",
+    "setting_missing": "Error: Einstellungsdatai existier nicht!",
+    "setting_creat": "Info: Erstelle Einstellungsdatai",
+
+    "y": "j",
+    "n": "n",
+
+    "su_laun": "Starte Setup...",
+    "su_lan_rq": "Bitte waehlen sie eine Sprache aus:",
+    "su_name_rq": "Bitte gib deinen Namen ein:",
+    "su_lan_change_rq": "Moechtest du die Sprache aendern? J/N",
+    "su_cur_lan": "Momentan: ",
+    "su_fav_food_rq": "Wie lauted dein lieblings Essen:",
+    "su_fav_color": "Wie lauted deine lieblings Farbe:",
+    "su_fav_color_av": "Verfuegbar sind 'Rot', 'Gruen', 'Blau', 'Gelb', 'Magenta', 'Cyan'",
+
+    "wm_welcome": "Wilkommen ",
+    "wm_p1": ", zum Command Line Operating System (CLOS).",
+    "wm_p2": "Du kannst diese Nachricht mit dem 'settings'-Befehl aus stellen."
+}
