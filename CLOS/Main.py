@@ -294,7 +294,7 @@ while True:
         print('nput needed')
     elif inp[:6] == 'python':
         if 'python ' in inp:
-            os.system('python -c "'+inp[7:]+'"')
+            os.system('python -c "'+inp[7:]+'"')halo
         else:
             os.system('python')
     elif 'internet' in inp:
