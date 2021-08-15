@@ -64,7 +64,6 @@ def internet():
         return False
 
 # Vars
-os.environ["clos"] = os.path.dirname(os.path.realpath(__file__))
 skip_setup = 0
 print(info_style+'Info: Checking For Internet... If Crashes, Disable Internet In Boot Settings.'+res,end='\r')
 if internet() == True:
