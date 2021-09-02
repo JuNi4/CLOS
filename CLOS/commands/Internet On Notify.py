@@ -22,15 +22,18 @@ alert = '"'+alert+'"'
 
 while True:
     if internet() == True:
+        x = 1
+        if x2 == 1:
+            print('Currently There Is No Connection With The Internet Since '+str(start_time)+' for '+str(hui)+'m '+str(mrf)[:2]+'s.         ')
+            os.system(alert)
+        x2 = 0
         response_list = ping('google.com', size=40, count=4)
         ms = str(response_list.rtt_avg_ms)
         print('Currently Your Connected To The Internet With A Ping Of '+ms+'ms.                   ', end='\r')
-        x = 1
-        if x2 == 1:
-            os.system(alert)
-        x2 = 0
+        
     else:
         if x == 1:
+            print('Currently Your Connected To The Internet With A Ping Of '+ms+'ms.                   ')
             time_time = datetime.now()
             start_time = time_time.strftime("%Hh %Mm %Ss")
             starttime = time.time()
