@@ -4,6 +4,7 @@ from pythonping import ping
 import time
 import os
 
+# Path of alert
 alert = 'D:\Justus\Videos\\4K Video Downloader\karlson vibe [epilepsy warning] (perfect loop).mp4'
 
 def internet():
