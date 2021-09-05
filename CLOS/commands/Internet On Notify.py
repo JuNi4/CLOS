@@ -37,7 +37,7 @@ while True:
             time_time = datetime.now()
             start_time = time_time.strftime("%Hh %Mm %Ss")
             starttime = time.time()
-        x = 0
+        x = 0 
         x2 = 1
         endtime = time.time()
         inp = endtime - starttime
