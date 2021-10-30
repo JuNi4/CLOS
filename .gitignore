@@ -2,5 +2,6 @@
 /CLOS/private_data
 /CLOS/icons/*
 /CLOS/libs/__pycache__
+/CLOS/libs/color.py
 /CLOS/commands/d.bat
 nil
