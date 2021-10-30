@@ -64,6 +64,8 @@ def main():
                 print()
             else:
                 print(char, end='')
+        print()
+        print('DonutOS.py V 1.0')
 
         # increments
         a+=0.04
