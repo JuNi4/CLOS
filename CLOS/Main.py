@@ -222,6 +222,8 @@ while True:
     inp = str(input(os.getcwd()+'>')).lower()
     if inp == 'redo_setup':
         setup(fp)
+    if inp == 'setup':
+        setup(fp)
     elif inp == 'exit':
         exit()
     elif inp == 'shutdown':
