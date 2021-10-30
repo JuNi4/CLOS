@@ -66,6 +66,7 @@ def internet():
 
 # Vars
 skip_setup = 0
+os.environ["CLOS_DIR"] = os.path.dirname(os.path.realpath(__file__))
 print(info_style+'Info: Checking For Internet... If Crashes, Disable Internet In Boot Settings.'+res,end='\r')
 if internet() == True:
     ips = requests.get('https://api.ipify.org').text
@@ -250,4 +251,4 @@ while True:
         else:
             print('Currently There Is No Connection With The Internet.')
     else:
-        cutil.commands.command(inp)
+        cutil.commands.command(command = inp)

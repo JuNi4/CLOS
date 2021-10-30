@@ -4,25 +4,17 @@ import pathlib as Path
 
 class commands():
     def __init__(self):
-        pass
+        self.fpath = os.environ["CLOS_DIR"]
 
-    def command(command):
-        command2 = requests.findall('"([^"]*)"', command)
+    def command(command = 'none'):
         if ' ' in command:
             command1 = str(command).split()
             commandf = command1[0]
             x = command[len(commandf):]
-            if '"' in command:
-                command2 = requests.findall('"([^"]*)"', command)
-            else:
-                command2 = [command, command]
-            if commandf in command2[0]:
-                commandf = command
-                x = ''
         else:
             commandf = command
             x = ''
-        fc = os.path.dirname(os.path.realpath(__file__)) + '\commands\\' + commandf + '.py'
+        fc = os.environ["CLOS_DIR"] + '\commands\\' + commandf + '.py'
         fp = os.getcwd() + '\\' + commandf
         my_file = Path(fc)
         if my_file.is_file():
