@@ -72,5 +72,6 @@ def main():
         a+=0.04
         b+=0.02
 
-if __name__ == "__main__":
-    main()
+#if __name__ == "__main__":
+#    main()
+main()
