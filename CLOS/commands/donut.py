@@ -1,4 +1,5 @@
 import os
+import keyboard
 from math import sin, cos
 
 def main():
@@ -16,7 +17,7 @@ def main():
         clear = "clear"
 
     os.system(clear)
-    while True:
+    while not keyboard.is_pressed('q'):
         z = [0 for _ in range(4*height*width)]
         screen = [' ' for _ in range(height*width)]
 
@@ -64,8 +65,8 @@ def main():
                 print()
             else:
                 print(char, end='')
-        print()
-        print('DonutOS.py V 1.0')
+        #print()
+        #print('DonutOS.py V 1.0')
 
         # increments
         a+=0.04
