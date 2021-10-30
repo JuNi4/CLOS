@@ -66,7 +66,11 @@ def internet():
 
 # Vars
 skip_setup = 0
-os.environ["CLOS_DIR"] = os.path.dirname(os.path.realpath(__file__))
+dir_temp = json.loads(json.dumps(vars.dir_template))
+dir_temp["CLOS_DIR"] = str(os.path.dirname(os.path.realpath(__file__)))
+dirf = open(str(os.path.dirname(os.path.realpath(__file__)))+'\commands\dirs.json', 'w')
+dirf.write(json.dumps(dir_temp, indent=4))
+dirf.close()
 print(info_style+'Info: Checking For Internet... If Crashes, Disable Internet In Boot Settings.'+res,end='\r')
 if internet() == True:
     ips = requests.get('https://api.ipify.org').text
