@@ -31,5 +31,9 @@ template_pata = {
     "admin_pw": ""
 }
 dir_template = {
-    "CLOS_DIR": "none"
+    "CLOS_DIR": "none",
+    "LIB_DIR": "none",
+    "COMMAND_DIR": "none",
+    "COMMAND_DATA_DIR": "none",
+    "DATA_DIR": "none"
 }
