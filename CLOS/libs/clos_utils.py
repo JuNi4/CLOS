@@ -6,7 +6,7 @@ class commands():
     def __init__(self):
         pass
 
-    def command(self,command):
+    def command(command):
         command2 = requests.findall('"([^"]*)"', command)
         if ' ' in command:
             command1 = str(command).split()
