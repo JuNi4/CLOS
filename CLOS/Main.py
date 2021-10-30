@@ -68,7 +68,15 @@ def internet():
 skip_setup = 0
 dir_temp = json.loads(json.dumps(vars.dir_template))
 dir_temp["CLOS_DIR"] = str(os.path.dirname(os.path.realpath(__file__)))
+dir_temp["LIB_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\libs'
+dir_temp["COMMAND_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\commands'
+dir_temp["COMMAND_DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\command_data'
+dir_temp["DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\data'
+dir_temp["LAN_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\lan'
 dirf = open(str(os.path.dirname(os.path.realpath(__file__)))+'\libs\dirs.json', 'w')
+dirf.write(json.dumps(dir_temp, indent=4))
+dirf.close()
+dirf = open(str(os.path.dirname(os.path.realpath(__file__)))+'\commands\dirs.json', 'w')
 dirf.write(json.dumps(dir_temp, indent=4))
 dirf.close()
 print(info_style+'Info: Checking For Internet... If Crashes, Disable Internet In Boot Settings.'+res,end='\r')
@@ -144,7 +152,7 @@ def setup(fp):
     sf.write(set)
     sf.close()
     set = json.dumps(temp_pata, indent=4)
-    sf = open(str(privat_f)+temp["name"]+'.json', 'w')
+    sf = open(str(privat_f)+'\data_clos'+'.json', 'w')
     sf.write(set)
     sf.close()
 
@@ -156,7 +164,7 @@ def setup(fp):
 print(info_style+'Info: Creating Files...'+res,end='\r')
 fp = os.path.dirname(os.path.realpath(__file__))  + '\data\settings.json'
 settings_filep = Path(fp)
-privat_f = Path(os.path.dirname(os.path.realpath(__file__)) + '\private_data\\')
+privat_f = Path(os.path.dirname(os.path.realpath(__file__)) + '\private_data')
 if not privat_f.is_dir():
     os.system('md "'+str(privat_f)+'"')
 os.system('attrib +h +s "'+str(privat_f)+'"')
