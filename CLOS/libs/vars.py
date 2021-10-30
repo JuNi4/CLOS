@@ -30,3 +30,6 @@ lan_template = {
 template_pata = {
     "admin_pw": ""
 }
+dir_template = {
+    "CLOS_DIR": "none"
+}

@@ -1,35 +1,35 @@
 import os
-import requests
-import pathlib as Path
+import json
+from pathlib import Path
 
 class commands():
     def __init__(self):
-        pass
+        self.fpath = os.environ["CLOS_DIR"]
 
-    def command(command):
-        command2 = requests.findall('"([^"]*)"', command)
+    def command(command = 'none'):
+        pjf = open(os.path.dirname(os.path.realpath(__file__))+'\dirs.json', 'r')
+        pj = json.loads(pjf.read())
+        pjf.close()
+        dirs = pj["CLOS_DIR"]
         if ' ' in command:
             command1 = str(command).split()
             commandf = command1[0]
             x = command[len(commandf):]
-            if '"' in command:
-                command2 = requests.findall('"([^"]*)"', command)
-            else:
-                command2 = [command, command]
-            if commandf in command2[0]:
-                commandf = command
-                x = ''
         else:
             commandf = command
             x = ''
-        fc = os.path.dirname(os.path.realpath(__file__)) + '\commands\\' + commandf + '.py'
+        # Check in command dir
+        fc = dirs + '\commands\\' + commandf + '.py'
+        # Check in current dir
         fp = os.getcwd() + '\\' + commandf
-        my_file = Path(fc)
-        if my_file.is_file():
+        print(fc)
+        print(fp)
+        command_file = Path(fc)
+        if command_file.is_file():
             os.system(str(fc) + x)
         else:
-            my_file = Path(fp)
-            if my_file.is_file():
+            current_file = Path(fp)
+            if current_file.is_file():
                 os.system(commandf + x)
             else:
                 print('No File or Command found caled ' + commandf+ '. Use the \'help\' command for a list of all available commands.')

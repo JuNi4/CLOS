@@ -66,6 +66,11 @@ def internet():
 
 # Vars
 skip_setup = 0
+dir_temp = json.loads(json.dumps(vars.dir_template))
+dir_temp["CLOS_DIR"] = str(os.path.dirname(os.path.realpath(__file__)))
+dirf = open(str(os.path.dirname(os.path.realpath(__file__)))+'\libs\dirs.json', 'w')
+dirf.write(json.dumps(dir_temp, indent=4))
+dirf.close()
 print(info_style+'Info: Checking For Internet... If Crashes, Disable Internet In Boot Settings.'+res,end='\r')
 if internet() == True:
     ips = requests.get('https://api.ipify.org').text
@@ -250,4 +255,4 @@ while True:
         else:
             print('Currently There Is No Connection With The Internet.')
     else:
-        cutil.commands.command(inp)
+        cutil.commands.command(command = inp)
