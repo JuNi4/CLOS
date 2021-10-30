@@ -15,6 +15,8 @@
     "su_fav_color": "Please input your favorite color:",
     "su_fav_color_av": "Available are 'Red', 'Green', 'Blue', 'Yellow', 'Magenta', 'Cyan'",
 
+    "su_pw_rq": "Please choose a Password:",
+
     "wm_welcome": "Welcome ",
     "wm_p1": " to Command Line Operating System (CLOS).",
     "wm_p2": "You can turn of this Message using the 'settings' command."
