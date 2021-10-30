@@ -21,7 +21,7 @@ class commands():
         # Check in command dir
         fc = dirs + '\commands\\' + commandf + '.py'
         # Check in current dir
-        fp = os.getcwd() + '\\' + commandf
+        fp = os.getcwd() + '\\' + commandf #d
         print(fc)
         print(fp)
         command_file = Path(fc)
