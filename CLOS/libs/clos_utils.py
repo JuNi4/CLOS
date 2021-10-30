@@ -14,7 +14,7 @@ class commands():
         else:
             commandf = command
             x = ''
-        fc = os.environ["CLOS_DIR"] + '\commands\\' + commandf + '.py'
+        fc = str(os.environ["CLOS_DIR"]) + '\commands\\' + commandf + '.py'
         fp = os.getcwd() + '\\' + commandf
         my_file = Path(fc)
         if my_file.is_file():
