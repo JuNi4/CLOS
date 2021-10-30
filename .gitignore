@@ -1,5 +1,6 @@
 /CLOS/private_data/*
 /CLOS/private_data
+/CLOS/data/*
 /CLOS/icons/*
 /CLOS/libs/__pycache__
 /CLOS/libs/color.py
