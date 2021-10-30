@@ -8,7 +8,7 @@ To Do:
 - Make Help Command
 
 How To Use:
-- Start it (Windows terminal recommended)
+- Start it (Windows terminal -On Windows- recommended, On linux... not tested yet)
 - (On first start) follow setup
 - Done!
 - Use 'help' for a list of commands
