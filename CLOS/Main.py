@@ -16,12 +16,13 @@ f.close()
 # Import Color
 print('Info: Importing Libs From Libs Folder...', end='\r')
 sys.path.append(os.path.dirname(os.path.realpath(__file__))+'\libs\\')
-import color as style
+import clos_utils as cutil
 import vars
+style = cutil.text_style
 info_style = style.color.Blue
 warning_style = style.color.Yellow
 error_style = style.color.Red
-res = style.color.Default + style.backcolor.BackgroundDefault
+res = style.color.Default + style.backcolor.Default
 print(info_style+'Info: Importing Libs From Libs Folder... Done!'+res)
 
 # Install Stuff
@@ -129,9 +130,9 @@ def setup(fp):
     print('light / dark')
     temp["scheme"] = input().lower()
     if temp["scheme"]=="light": 
-        print(style.backcolor.BackgroundWhite + style.color.Black)
+        print(style.backcolor.White + style.color.Black)
     else:
-        print(style.backcolor.BackgroundDefault + style.color.Default)
+        print(style.backcolor.Default + style.color.Default)
     # Write Settings
     set = json.dumps(temp, indent=4)
     sf = open(fp, 'w')
@@ -143,40 +144,8 @@ def setup(fp):
     sf.close()
 
 # Functions
-def command(command):
-    command2 = requests.findall('"([^"]*)"', command)
-    if ' ' in command:
-        command1 = str(command).split()
-        commandf = command1[0]
-        x = command[len(commandf):]
-        if '"' in command:
-            command2 = requests.findall('"([^"]*)"', command)
-        else:
-            command2 = [command, command]
-        if commandf in command2[0]:
-            commandf = command
-            x = ''
-    else:
-        commandf = command
-        x = ''
-    fc = os.path.dirname(os.path.realpath(__file__)) + '\commands\\' + commandf + '.py'
-    fp = os.getcwd() + '\\' + commandf
-    my_file = Path(fc)
-    if my_file.is_file():
-        os.system(str(fc) + x)
-    else:
-        my_file = Path(fp)
-        if my_file.is_file():
-            os.system(commandf + x)
-        else:
-            print('No File or Command found caled ' + commandf+ '. Use the \'help\' command for a list of all available commands.')
 
-def progressBar(current, total, barLength = 20):
-    percent = float(current) * 100 / total
-    arrow   = '-' * int(percent/100 * barLength - 1) + '>'
-    spaces  = ' ' * (barLength - len(arrow))
 
-    print('Progress: [%s%s] %d %%' % (arrow, spaces, percent), end='\r')
 
 # Load settings
 print(info_style+'Info: Creating Files...'+res,end='\r')
@@ -239,9 +208,9 @@ boot_time1= boot_end - boot_start
 boot_time = str(boot_time1)[:4]
 print(info_style+'Info: Booting Done! Took '+str(boot_time)+' s.'+res)
 if settings["scheme"]=="light": 
-    print(style.backcolor.BackgroundWhite + style.color.Black)
+    print(style.backcolor.White + style.color.Black)
 else:
-    print(style.backcolor.BackgroundDefault + style.color.Default)
+    print(style.backcolor.Default + style.color.Default)
 print(lan["wm_welcome"] + str(settings["name"]) + lan["wm_p1"])
 print(lan["wm_p2"])
 
@@ -279,4 +248,4 @@ while True:
         else:
             print('Currently There Is No Connection With The Internet.')
     else:
-        command(inp)
+        cutil.commands.command(inp)
