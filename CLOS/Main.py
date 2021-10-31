@@ -182,10 +182,41 @@ def setup(fp):
     print(lan["su_lan_change_rq"])
     x = input()
     if x.lower() == lan["y"]:
-        print(lan["su_lan_rq"])
-        print('- en_us')
-        print('- de_de')
-        temp["lan"] = input().lower()
+        def lan_request(lan):
+            known_lans = ['de_de','en_us']
+            print(lan["su_lan_rq"])
+            lan_files = cutil.utils.getObjectinFolder(os.path.dirname(os.path.realpath(__file__)) + '/lan', blacklist = ["dirs.json"])
+            no_end = []
+            for object in lan_files:
+                index = lan_files.index(object)
+                object = object.split('.')[0]
+                no_end.append(object)
+                if object in known_lans:
+                    if object == settings["lan"]:
+                        print(str(index+1)+'. -> '+lan["lan_"+object])
+                    else:
+                        print(str(index+1)+'. - '+lan["lan_"+object])
+                else:
+                    if object == settings["lan"]:
+                        print(str(index+1)+'. -> '+object)
+                    else:
+                        print(str(index+1)+'. - '+object)
+            inp_lan = input().lower()
+            if inp_lan == lan["lan_de_de"]:
+                temp = 'de_de'
+            elif inp_lan == lan["lan_en_us"]:
+                temp = 'en_us'
+            elif inp_lan == lan["lan_en_uk"]:
+                temp = 'en_uk'
+            elif inp_lan in no_end:
+                temp = inp_lan
+            elif 0 <= int(inp_lan) - 1 <= len(lan_files)-1:
+                temp = no_end[int(inp_lan)-1]
+            else:
+                temp = lan_request(lan)
+            return temp
+        temp["lan"] = lan_request(lan)
+        #temp["lan"] = 
     # Load lan again
     lann = temp["lan"]
     lan_file = Path(os.path.dirname(os.path.realpath(__file__)) + '/lan/' + lann + '.json')
@@ -265,6 +296,7 @@ if settings_filep.is_file():
     print(cutil.utils.ifcolor(lan["setting_found"],info_style,res))
 else:
     lan = lan_template
+    settings = json.loads(json.dumps(template))
     print(cutil.utils.ifcolor('Info: Creating Files... Done!',info_style,res))
     print(cutil.utils.ifcolor(lan["setting_missing"],error_style,res))
     print(cutil.utils.ifcolor(lan["setting_creat"],info_style,res))

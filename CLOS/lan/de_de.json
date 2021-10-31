@@ -19,5 +19,9 @@
 
     "wm_welcome": "Wilkommen ",
     "wm_p1": ", zum Command Line Operating System (CLOS).",
-    "wm_p2": "Du kannst diese Nachricht mit dem 'settings'-Befehl aus stellen."
+    "wm_p2": "Du kannst diese Nachricht mit dem 'settings'-Befehl aus stellen.",
+
+    "lan_de_de": "Deutsch",
+    "lan_en_us": "Amerikanisches Englisch",
+    "lan_en_uk": "Brittisches Englisch"
 }

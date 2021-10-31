@@ -19,5 +19,9 @@
 
     "wm_welcome": "Welcome ",
     "wm_p1": " to Command Line Operating System (CLOS).",
-    "wm_p2": "You can turn of this Message using the 'settings' command."
+    "wm_p2": "You can turn of this Message using the 'settings' command.",
+
+    "lan_de_de": "German",
+    "lan_en_us": "Amerikan English",
+    "lan_en_uk": "Brittish English"
 }
