@@ -40,7 +40,10 @@ class commands():
         else:
             current_file = Path(fp)
             if current_file.is_file():
-                os.system(commandf + x)
+                if 'Windows' in platform.system():
+                    os.system(commandf + x)
+                else:
+                    os.system('python3 '+commandf+x)
             else:
                 print('No File or Command found caled ' + commandf+ '. Use the \'help\' command for a list of all available commands.')
 

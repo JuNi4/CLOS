@@ -201,9 +201,13 @@ print(info_style+'Info: Creating Files...'+res,end='\r')
 fp = os.path.dirname(os.path.realpath(__file__))  + '/data/settings.json'
 settings_filep = Path(fp)
 privat_f = Path(os.path.dirname(os.path.realpath(__file__)) + '/private_data')
-if not privat_f.is_dir():
-    os.system('md "'+str(privat_f)+'"')
-os.system('attrib +h +s "'+str(privat_f)+'"')
+if 'Windows' in platform.system():
+    if not privat_f.is_dir():
+        os.system('md "'+str(privat_f)+'"')
+    os.system('attrib +h +s "'+str(privat_f)+'"')
+else:
+    if not privat_f.is_dir():
+        os.system('mkdir "'+str(privat_f)+'"')
 if settings_filep.is_file():
     settings_file = open(fp, 'r')
     settings = json.loads(settings_file.read())
