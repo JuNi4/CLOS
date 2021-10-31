@@ -83,6 +83,18 @@ class utils():
         else:
             return text
 
+    def getObjectinFolder(dir = os.path.dirname(os.path.realpath(__file__)), blacklist = [""], onlyfiles = True):
+        x = []
+        objects = os.listdir(dir)
+        file_objects = [f for f in objects if os.path.isfile(os.path.join(dir, f))]
+        if onlyfiles:
+            objlist = file_objects
+        else:
+            objlist = objects
+        for object in objlist:
+            if not object in blacklist:
+                x.append(object)
+        return x
 
 class text_style():
     class format:
