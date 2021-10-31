@@ -1,7 +1,5 @@
 /CLOS/private_data/*
 /CLOS/private_data
-/CLOS/data
-/CLOS/data/*
 /CLOS/data/settings.json
 /CLOS/data/boot_opt.json
 /CLOS/icons/*
