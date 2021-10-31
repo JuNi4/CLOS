@@ -10,7 +10,7 @@ print('Info: Importing Important Libs... Done!')
 
 boot_start = time.time()
 if 'Windows' in platform.system():
-    f = open(os.path.dirname(os.path.realpath(__file__))+'\\data\\boot_opt.json')
+    f = open(os.path.dirname(os.path.realpath(__file__))+'/data//boot_opt.json')
 else:
     f = open(os.path.dirname(os.path.realpath(__file__))+'/data/boot_opt.json')
 boot_opt = json.loads(json.dumps(f.read()))
@@ -19,7 +19,7 @@ f.close()
 # Import Color
 print('Info: Importing Libs From Libs Folder...', end='\r')
 if 'Windows' in platform.system():
-    sys.path.append(os.path.dirname(os.path.realpath(__file__))+'\libs\\')
+    sys.path.append(os.path.dirname(os.path.realpath(__file__))+'/libs/')
 else:
     sys.path.append(os.path.dirname(os.path.realpath(__file__))+'/libs/')
 import clos_utils as cutil
@@ -49,8 +49,6 @@ else:
 print(info_style+'Info: Importing More Libs...'+res,end='\r')
 if 'Windows' in platform.system():
     from urllib3.packages.six import _MovedItems
-else:
-    from urllib3.
 import http.client as httplib
 from pythonping import ping
 from pathlib import Path
@@ -102,10 +100,16 @@ else:
     dir_temp["COMMAND_DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/command_data'
     dir_temp["DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/data'
     dir_temp["LAN_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/lan'
-dirf = open(str(os.path.dirname(os.path.realpath(__file__)))+'\libs\dirs.json', 'w')
+if 'Windows' in platform.system():
+    dirf = open(str(os.path.dirname(os.path.realpath(__file__)))+'\libs\dirs.json', 'w')
+else:
+    dirf = open(str(os.path.dirname(os.path.realpath(__file__))) + '/libs/dirs.json', 'w')
 dirf.write(json.dumps(dir_temp, indent=4))
 dirf.close()
-dirf = open(str(os.path.dirname(os.path.realpath(__file__)))+'\commands\dirs.json', 'w')
+if 'Windows' in platform.system():
+    dirf = open(str(os.path.dirname(os.path.realpath(__file__)))+'\commands\dirs.json', 'w')
+else:
+    dirf = open(str(os.path.dirname(os.path.realpath(__file__))) + '/commands/dirs.json', 'w')
 dirf.write(json.dumps(dir_temp, indent=4))
 dirf.close()
 print(info_style+'Info: Checking For Internet... If Crashes, Disable Internet In Boot Settings.'+res,end='\r')
@@ -133,7 +137,7 @@ else:
 def setup(fp):
     # Load lan
     lann = temp["lan"]
-    lan_file = Path(os.path.dirname(os.path.realpath(__file__)) + '\lan\\' + lann + '.json')
+    lan_file = Path(os.path.dirname(os.path.realpath(__file__)) + '/lan/' + lann + '.json')
     lf = open(lan_file, 'r')
     lan = json.loads(lf.read())
     lf.close()
@@ -149,7 +153,7 @@ def setup(fp):
         temp["lan"] = input().lower()
     # Load lan again
     lann = temp["lan"]
-    lan_file = Path(os.path.dirname(os.path.realpath(__file__)) + '\lan\\' + lann + '.json')
+    lan_file = Path(os.path.dirname(os.path.realpath(__file__)) + '/lan/' + lann + '.json')
     lf = open(lan_file, 'r')
     lan = json.loads(lf.read())
     lf.close()
@@ -181,7 +185,10 @@ def setup(fp):
     sf.write(set)
     sf.close()
     set = json.dumps(temp_pata, indent=4)
-    sf = open(str(privat_f)+'\data_clos'+'.json', 'w')
+    if 'Windows' in platform.system():
+        sf = open(str(privat_f)+'\data_clos.json', 'w')
+    else:
+        sf = open(str(privat_f) + '/data_clos.json', 'w')
     sf.write(set)
     sf.close()
 
@@ -191,9 +198,9 @@ def setup(fp):
 
 # Load settings
 print(info_style+'Info: Creating Files...'+res,end='\r')
-fp = os.path.dirname(os.path.realpath(__file__))  + '\data\settings.json'
+fp = os.path.dirname(os.path.realpath(__file__))  + '/data/settings.json'
 settings_filep = Path(fp)
-privat_f = Path(os.path.dirname(os.path.realpath(__file__)) + '\private_data')
+privat_f = Path(os.path.dirname(os.path.realpath(__file__)) + '/private_data')
 if not privat_f.is_dir():
     os.system('md "'+str(privat_f)+'"')
 os.system('attrib +h +s "'+str(privat_f)+'"')
@@ -201,13 +208,13 @@ if settings_filep.is_file():
     settings_file = open(fp, 'r')
     settings = json.loads(settings_file.read())
     settings_file.close()
-    lan_file = Path(os.path.dirname(os.path.realpath(__file__)) + '\lan\\' + settings["lan"] + '.json')
-    lan_path = Path(os.path.dirname(os.path.realpath(__file__)) + '\lan')
+    lan_file = Path(os.path.dirname(os.path.realpath(__file__)) + '/lan/' + settings["lan"] + '.json')
+    lan_path = Path(os.path.dirname(os.path.realpath(__file__)) + '/lan')
     if not lan_file.is_file():
         #Language
         if not lan_path.is_dir():
-            os.system('mkdir ' + os.path.dirname(os.path.realpath(__file__)) + '\lan\\')
-        lan_usf = os.path.dirname(os.path.realpath(__file__)) + '\lan' + '\en_us.json'
+            os.system('mkdir ' + os.path.dirname(os.path.realpath(__file__)) + '/lan/')
+        lan_usf = os.path.dirname(os.path.realpath(__file__)) + '/lan' + '/en_us.json'
         lan_f_en_us = open(lan_usf, 'w')
         lan_f_en_us.write(lan_template)
         lan_f_en_us.close()
@@ -241,7 +248,7 @@ settings_file = open(fp, 'r')
 settings = json.loads(settings_file.read())
 settings_file.close()
 
-lan_file = Path(os.path.dirname(os.path.realpath(__file__)) + '\lan\\' + settings["lan"] + '.json')
+lan_file = Path(os.path.dirname(os.path.realpath(__file__)) + '/lan/' + settings["lan"] + '.json')
 lan_f = open(lan_file, 'r')
 lan = json.loads(lan_f.read())
 lan_f.close()
