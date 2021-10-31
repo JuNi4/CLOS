@@ -267,8 +267,6 @@ else:
     print(cutil.utils.ifcolor(lan["setting_missing"],error_style,res))
     print(cutil.utils.ifcolor(lan["setting_creat"],info_style,res))
     if skip_setup == 0:
-        do_setup = True
-        boot_end = time.time()
         setup(fp)
     else:
         f = open(fp, 'w')
@@ -280,8 +278,6 @@ else:
     settings["lan"] = temp["lan"]
 time.sleep(2)
 if settings["setup"]=="not_done":
-    do_setup = True
-    boot_end = time.time()
     setup(fp)
 
 # Welcomscreen
@@ -293,8 +289,7 @@ lan_file = Path(os.path.dirname(os.path.realpath(__file__)) + '/lan/' + settings
 lan_f = open(lan_file, 'r')
 lan = json.loads(lan_f.read())
 lan_f.close()
-if not do_setup:
-    boot_end = time.time()
+boot_end = time.time()
 boot_time1= boot_end - boot_start
 boot_time = str(boot_time1)[:4]
 print(cutil.utils.ifcolor('Info: Booting Done! Took '+str(boot_time)+' s.',info_style,res))
