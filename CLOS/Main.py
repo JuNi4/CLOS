@@ -6,16 +6,50 @@ import sys
 import time
 import json
 import platform
-print('Info: Importing Important Libs... Done!')
+from pathlib import Path
 
 boot_start = time.time()
-f = open(os.path.dirname(os.path.realpath(__file__))+'\\data\\boot_opt.json')
-boot_opt = json.loads(json.dumps(f.read()))
-f.close()
+
+print('Info: Importing Important Libs... Done!')
+
+if 'Windows' in platform.system():
+    boot_file = Path(os.path.dirname(os.path.realpath(__file__))+'\\data\\boot_opt.json')
+else:
+    boot_file = Path(os.path.dirname(os.path.realpath(__file__))+'/data/boot_opt.json')
+if boot_file.is_file():
+    if 'Windows' in platform.system():
+        f = open(os.path.dirname(os.path.realpath(__file__))+'\\data\\boot_opt.json', 'r')
+    else:
+        f = open(os.path.dirname(os.path.realpath(__file__))+'/data/boot_opt.json', 'r')
+    boot_opt = json.loads(f.read())
+    f.close()
+else:
+    boot_options_template = {
+    "internet_con": "true",
+    "default_lan": "en_us",
+    "color_enabled": True,
+    "install_libs": True
+    }
+    if 'Windows' in platform.system():
+        f = open(os.path.dirname(os.path.realpath(__file__))+'\\data\\boot_opt.json', 'w')
+    else:
+        f = open(os.path.dirname(os.path.realpath(__file__))+'/data/boot_opt.json', 'w')
+    f.write(json.dumps(boot_options_template,indent=4))
+    f.close()
+    if 'Windows' in platform.system():
+        f = open(os.path.dirname(os.path.realpath(__file__))+'\\data\\boot_opt.json', 'r')
+    else:
+        f = open(os.path.dirname(os.path.realpath(__file__))+'/data/boot_opt.json', 'r')
+    boot_opt = json.loads(f.read())
+    f.close()
+
 
 # Import Color
 print('Info: Importing Libs From Libs Folder...', end='\r')
-sys.path.append(os.path.dirname(os.path.realpath(__file__))+'\libs\\')
+if 'Windows' in platform.system():
+    sys.path.append(os.path.dirname(os.path.realpath(__file__))+'/libs/')
+else:
+    sys.path.append(os.path.dirname(os.path.realpath(__file__))+'/libs/')
 import clos_utils as cutil
 import vars
 style = cutil.text_style
@@ -23,25 +57,37 @@ info_style = style.color.Blue
 warning_style = style.color.Yellow
 error_style = style.color.Red
 res = style.color.Default + style.backcolor.Default
-print(info_style+'Info: Importing Libs From Libs Folder... Done!'+res)
+print(cutil.utils.ifcolor('Info: Importing Libs From Libs Folder... Done!',info_style,res))
 
 # Install Stuff
-if 'Windows' in platform.system():
-    print(info_style+'Info: Downloading Libs...'+res,end='\r')
-    os.system('pip install requests>nil')
-    os.system('pip install pythonping>nil')
-    os.system('pip install urllib3>nil')
-    print(info_style+'Info: Downloading Libs... Done!'+res)
+if boot_opt["install_libs"]:
+    print(cutil.utils.ifcolor('Info: Downloading Libs...',info_style,res),end='\r')
+    if 'Windows' in platform.system():
+        os.system('pip install requests>nil')
+        os.system('pip install pythonping>nil')
+        os.system('pip install urllib3>nil')
+    else:
+        os.system('pip3 install requests>nil')
+        os.system('pip3 install pythonping>nil')
+        os.system('pip3 install urllib3>nil')
+    print(cutil.utils.ifcolor('Info: Downloading Libs... Done!',info_style,res))
+    boot_opt["install_libs"] = False
+    if 'Windows' in platform.system():
+        f = open(os.path.dirname(os.path.realpath(__file__))+'\\data\\boot_opt.json', 'w')
+    else:
+        f = open(os.path.dirname(os.path.realpath(__file__))+'/data/boot_opt.json', 'w')
+    f.write(json.dumps(boot_opt,indent=4))
+    f.close()
 
 # Import More Stuff
-print(info_style+'Info: Importing More Libs...'+res,end='\r')
-from urllib3.packages.six import _MovedItems
+print(cutil.utils.ifcolor('Info: Importing More Libs...',info_style,res),end='\r')
+if 'Windows' in platform.system():
+    from urllib3.packages.six import _MovedItems
 import http.client as httplib
 from pythonping import ping
-from pathlib import Path
 import requests
 import getpass
-print(info_style+'Info: Importing More Libs... Done!'+res)
+print(cutil.utils.ifcolor('Info: Importing More Libs... Done!',info_style,res))
 
 # Set Title
 os.system('title CLOS (Command Line Operating System)')
@@ -67,26 +113,46 @@ def internet():
 # Vars
 skip_setup = 0
 dir_temp = json.loads(json.dumps(vars.dir_template))
-dir_temp["CLOS_DIR"] = str(os.path.dirname(os.path.realpath(__file__)))
-dir_temp["LIB_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\libs'
-dir_temp["COMMAND_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\commands'
-dir_temp["COMMAND_DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\command_data'
-dir_temp["DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\data'
-dir_temp["LAN_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\lan'
-dirf = open(str(os.path.dirname(os.path.realpath(__file__)))+'\libs\dirs.json', 'w')
+if 'Windows' in platform.system():
+    dir_temp["CLOS_DIR"] = str(os.path.dirname(os.path.realpath(__file__)))
+    dir_temp["LIB_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\libs'
+    dir_temp["COMMAND_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\commands'
+    dir_temp["COMMAND_DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\command_data'
+    dir_temp["DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\data'
+    dir_temp["COMMAND_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\commands'
+    dir_temp["COMMAND_DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\command_data'
+    dir_temp["DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\data'
+    dir_temp["LAN_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\lan'
+else:
+    dir_temp["CLOS_DIR"] = str(os.path.dirname(os.path.realpath(__file__)))
+    dir_temp["LIB_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/libs'
+    dir_temp["COMMAND_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/commands'
+    dir_temp["COMMAND_DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/command_data'
+    dir_temp["DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/data'
+    dir_temp["COMMAND_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/commands'
+    dir_temp["COMMAND_DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/command_data'
+    dir_temp["DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/data'
+    dir_temp["LAN_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/lan'
+if 'Windows' in platform.system():
+    dirf = open(str(os.path.dirname(os.path.realpath(__file__)))+'\libs\dirs.json', 'w')
+else:
+    dirf = open(str(os.path.dirname(os.path.realpath(__file__))) + '/libs/dirs.json', 'w')
 dirf.write(json.dumps(dir_temp, indent=4))
 dirf.close()
-dirf = open(str(os.path.dirname(os.path.realpath(__file__)))+'\commands\dirs.json', 'w')
+if 'Windows' in platform.system():
+    dirf = open(str(os.path.dirname(os.path.realpath(__file__)))+'\commands\dirs.json', 'w')
+else:
+    dirf = open(str(os.path.dirname(os.path.realpath(__file__))) + '/commands/dirs.json', 'w')
 dirf.write(json.dumps(dir_temp, indent=4))
 dirf.close()
-print(info_style+'Info: Checking For Internet... If Crashes, Disable Internet In Boot Settings.'+res,end='\r')
+print(cutil.utils.ifcolor('Info: Checking For Internet... If Crashes, Disable Internet In Boot Settings.',info_style,res),end='\r')
 if internet() == True:
     ips = requests.get('https://api.ipify.org').text
     ip = format(ips)
     locr = requests.get("https://geolocation-db.com/json/"+ip+"&position=true").json()
 else:
     locr = {'country_code': 'US', 'country_name': 'Germany', 'city': 'Tuerkenfeld', 'postal': '82299', 'latitude': 48.1053, 'longitude': 11.083, 'IPv4': '94.31.96.202', 'state': 'Bavaria'}
-print(info_style+'Info: Checking For Internet... Done! If Crashes, Disable Internet In Boot Settings.'+res)
+print(cutil.utils.ifcolor('Info: Checking For Internet... Done! If Crashes, Disable Internet In Boot Settings.',info_style,res))
 template_pata = vars.template_pata
 template = vars.template
 lan_template = vars.lan_template
@@ -104,7 +170,7 @@ else:
 def setup(fp):
     # Load lan
     lann = temp["lan"]
-    lan_file = Path(os.path.dirname(os.path.realpath(__file__)) + '\lan\\' + lann + '.json')
+    lan_file = Path(os.path.dirname(os.path.realpath(__file__)) + '/lan/' + lann + '.json')
     lf = open(lan_file, 'r')
     lan = json.loads(lf.read())
     lf.close()
@@ -120,7 +186,7 @@ def setup(fp):
         temp["lan"] = input().lower()
     # Load lan again
     lann = temp["lan"]
-    lan_file = Path(os.path.dirname(os.path.realpath(__file__)) + '\lan\\' + lann + '.json')
+    lan_file = Path(os.path.dirname(os.path.realpath(__file__)) + '/lan/' + lann + '.json')
     lf = open(lan_file, 'r')
     lan = json.loads(lf.read())
     lf.close()
@@ -152,7 +218,10 @@ def setup(fp):
     sf.write(set)
     sf.close()
     set = json.dumps(temp_pata, indent=4)
-    sf = open(str(privat_f)+'\data_clos'+'.json', 'w')
+    if 'Windows' in platform.system():
+        sf = open(str(privat_f)+'\data_clos.json', 'w')
+    else:
+        sf = open(str(privat_f) + '/data_clos.json', 'w')
     sf.write(set)
     sf.close()
 
@@ -161,24 +230,28 @@ def setup(fp):
 
 
 # Load settings
-print(info_style+'Info: Creating Files...'+res,end='\r')
-fp = os.path.dirname(os.path.realpath(__file__))  + '\data\settings.json'
+print(cutil.utils.ifcolor('Info: Creating Files...',info_style,res),end='\r')
+fp = os.path.dirname(os.path.realpath(__file__))  + '/data/settings.json'
 settings_filep = Path(fp)
-privat_f = Path(os.path.dirname(os.path.realpath(__file__)) + '\private_data')
-if not privat_f.is_dir():
-    os.system('md "'+str(privat_f)+'"')
-os.system('attrib +h +s "'+str(privat_f)+'"')
+privat_f = Path(os.path.dirname(os.path.realpath(__file__)) + '/private_data')
+if 'Windows' in platform.system():
+    if not privat_f.is_dir():
+        os.system('md "'+str(privat_f)+'"')
+    os.system('attrib +h +s "'+str(privat_f)+'"')
+else:
+    if not privat_f.is_dir():
+        os.system('mkdir "'+str(privat_f)+'"')
 if settings_filep.is_file():
     settings_file = open(fp, 'r')
     settings = json.loads(settings_file.read())
     settings_file.close()
-    lan_file = Path(os.path.dirname(os.path.realpath(__file__)) + '\lan\\' + settings["lan"] + '.json')
-    lan_path = Path(os.path.dirname(os.path.realpath(__file__)) + '\lan')
+    lan_file = Path(os.path.dirname(os.path.realpath(__file__)) + '/lan/' + settings["lan"] + '.json')
+    lan_path = Path(os.path.dirname(os.path.realpath(__file__)) + '/lan')
     if not lan_file.is_file():
         #Language
         if not lan_path.is_dir():
-            os.system('mkdir ' + os.path.dirname(os.path.realpath(__file__)) + '\lan\\')
-        lan_usf = os.path.dirname(os.path.realpath(__file__)) + '\lan' + '\en_us.json'
+            os.system('mkdir ' + os.path.dirname(os.path.realpath(__file__)) + '/lan/')
+        lan_usf = os.path.dirname(os.path.realpath(__file__)) + '/lan' + '/en_us.json'
         lan_f_en_us = open(lan_usf, 'w')
         lan_f_en_us.write(lan_template)
         lan_f_en_us.close()
@@ -186,13 +259,13 @@ if settings_filep.is_file():
     lan_f = open(lan_file, 'r')
     lan = json.loads(lan_f.read())
     lan_f.close()
-    print(info_style+'Info: Creating Files... Done!'+res)
-    print(info_style+lan["setting_found"]+res)
+    print(cutil.utils.ifcolor('Info: Creating Files... Done!',info_style,res))
+    print(cutil.utils.ifcolor(lan["setting_found"],info_style,res))
 else:
     lan = lan_template
-    print(info_style+'Info: Creating Files... Done!'+res)
-    print(error_style+lan["setting_missing"]+res)
-    print(info_style+lan["setting_creat"]+res)
+    print(cutil.utils.ifcolor('Info: Creating Files... Done!',info_style,res))
+    print(cutil.utils.ifcolor(lan["setting_missing"],error_style,res))
+    print(cutil.utils.ifcolor(lan["setting_creat"],info_style,res))
     if skip_setup == 0:
         setup(fp)
     else:
@@ -212,14 +285,14 @@ settings_file = open(fp, 'r')
 settings = json.loads(settings_file.read())
 settings_file.close()
 
-lan_file = Path(os.path.dirname(os.path.realpath(__file__)) + '\lan\\' + settings["lan"] + '.json')
+lan_file = Path(os.path.dirname(os.path.realpath(__file__)) + '/lan/' + settings["lan"] + '.json')
 lan_f = open(lan_file, 'r')
 lan = json.loads(lan_f.read())
 lan_f.close()
 boot_end = time.time()
 boot_time1= boot_end - boot_start
 boot_time = str(boot_time1)[:4]
-print(info_style+'Info: Booting Done! Took '+str(boot_time)+' s.'+res)
+print(cutil.utils.ifcolor('Info: Booting Done! Took '+str(boot_time)+' s.',info_style,res))
 if settings["scheme"]=="light": 
     print(style.backcolor.White + style.color.Black)
 else:

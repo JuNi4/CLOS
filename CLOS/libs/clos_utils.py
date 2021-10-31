@@ -1,5 +1,6 @@
 import os
 import json
+import platform
 from pathlib import Path
 
 class commands():
@@ -7,7 +8,10 @@ class commands():
         self.fpath = os.environ["CLOS_DIR"]
 
     def command(command = 'none'):
-        pjf = open(os.path.dirname(os.path.realpath(__file__))+'\dirs.json', 'r')
+        if 'Windows' in platform.system():
+            pjf = open(os.path.dirname(os.path.realpath(__file__))+'\dirs.json', 'r')
+        else:
+            pjf = open(os.path.dirname(os.path.realpath(__file__)) + '/dirs.json', 'r')
         pj = json.loads(pjf.read())
         pjf.close()
         dirs = pj["CLOS_DIR"]
@@ -18,10 +22,16 @@ class commands():
         else:
             commandf = command
             x = ''
-        # Check in command dir
-        fc = dirs + '\commands\\' + commandf + '.py'
-        # Check in current dir
-        fp = os.getcwd() + '\\' + commandf
+        if 'Windows' in platform.system():
+            # Check in command dir
+            fc = dirs + '\commands\\' + commandf + '.py'
+            # Check in current dir
+            fp = os.getcwd() + '\\' + commandf
+        else:
+            # Check in command dir
+            fc = dirs + '/commands/' + commandf + '.py'
+            # Check in current dir
+            fp = os.getcwd() + '/' + commandf
         #print(fc)
         #print(fp)
         command_file = Path(fc)
@@ -30,7 +40,10 @@ class commands():
         else:
             current_file = Path(fp)
             if current_file.is_file():
-                os.system(commandf + x)
+                if 'Windows' in platform.system():
+                    os.system(commandf + x)
+                else:
+                    os.system('python3 '+commandf+x)
             else:
                 print('No File or Command found caled ' + commandf+ '. Use the \'help\' command for a list of all available commands.')
 
@@ -47,6 +60,29 @@ class utils():
         bar = '[%s%s] %d %%' % (arrow, spaces, percent)
 
         return bar
+
+    def ifcolor(text = 'Example Text', color = '\033[32m', defaultcolor = '\033[39m'+'\033[49m'):
+        if 'Windows' in platform.system():
+            pjf = open(os.path.dirname(os.path.realpath(__file__))+'\dirs.json', 'r')
+        else:
+            pjf = open(os.path.dirname(os.path.realpath(__file__)) + '/dirs.json', 'r')
+        pj = json.loads(pjf.read())
+        pjf.close()
+        data = pj["DATA_DIR"]
+
+        if 'Windows' in platform.system():
+            boot_optf = open(data+'\\boot_opt.json', 'r')
+        else:
+            boot_optf = open(data+'/boot_opt.json', 'r')
+        boot_opt = json.loads(boot_optf.read())
+        boot_optf.close()
+        color_enable = boot_opt["color_enabled"]
+
+        if color_enable:
+            return color + text + defaultcolor
+        else:
+            return text
+
 
 class text_style():
     class format:

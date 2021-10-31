@@ -37,3 +37,9 @@ dir_template = {
     "COMMAND_DATA_DIR": "none",
     "DATA_DIR": "none"
 }
+boot_options_template = {
+    "internet_con": "true",
+    "default_lan": "en_us",
+    "color_enabled": True,
+    "install_libs": False
+}
