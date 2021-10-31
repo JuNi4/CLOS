@@ -9,7 +9,7 @@ class commands():
 
     def command(command = 'none'):
         if 'Windows' in platform.system():
-            pjf = open(os.path.dirname(os.path.realpath(__file__))+'\dirs.json', 'r')
+            pjf = open(os.path.dirname(os.path.realpath(__file__))+'\\dirs.json', 'r')
         else:
             pjf = open(os.path.dirname(os.path.realpath(__file__)) + '/dirs.json', 'r')
         pj = json.loads(pjf.read())
@@ -24,7 +24,7 @@ class commands():
             x = ''
         if 'Windows' in platform.system():
             # Check in command dir
-            fc = dirs + '\commands\\' + commandf + '.py'
+            fc = dirs + '\\commands\\' + commandf + '.py'
             # Check in current dir
             fp = os.getcwd() + '\\' + commandf
         else:
