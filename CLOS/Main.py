@@ -9,13 +9,19 @@ import platform
 print('Info: Importing Important Libs... Done!')
 
 boot_start = time.time()
-f = open(os.path.dirname(os.path.realpath(__file__))+'\\data\\boot_opt.json')
+if 'Windows' in platform.system():
+    f = open(os.path.dirname(os.path.realpath(__file__))+'\\data\\boot_opt.json')
+else:
+    f = open(os.path.dirname(os.path.realpath(__file__))+'/data/boot_opt.json')
 boot_opt = json.loads(json.dumps(f.read()))
 f.close()
 
 # Import Color
 print('Info: Importing Libs From Libs Folder...', end='\r')
-sys.path.append(os.path.dirname(os.path.realpath(__file__))+'\libs\\')
+if 'Windows' in platform.system():
+    sys.path.append(os.path.dirname(os.path.realpath(__file__))+'\libs\\')
+else:
+    sys.path.append(os.path.dirname(os.path.realpath(__file__))+'/libs/')
 import clos_utils as cutil
 import vars
 style = cutil.text_style
@@ -32,10 +38,19 @@ if 'Windows' in platform.system():
     os.system('pip install pythonping>nil')
     os.system('pip install urllib3>nil')
     print(info_style+'Info: Downloading Libs... Done!'+res)
+else:
+    print(info_style+'Info: Downloading Libs...'+res,end='\r')
+    os.system('pip3 install requests>nil')
+    os.system('pip3 install pythonping>nil')
+    os.system('pip3 install urllib3>nil')
+    print(info_style+'Info: Downloading Libs... Done!'+res)
 
 # Import More Stuff
 print(info_style+'Info: Importing More Libs...'+res,end='\r')
-from urllib3.packages.six import _MovedItems
+if 'Windows' in platform.system():
+    from urllib3.packages.six import _MovedItems
+else:
+    from urllib3.
 import http.client as httplib
 from pythonping import ping
 from pathlib import Path
@@ -67,12 +82,26 @@ def internet():
 # Vars
 skip_setup = 0
 dir_temp = json.loads(json.dumps(vars.dir_template))
-dir_temp["CLOS_DIR"] = str(os.path.dirname(os.path.realpath(__file__)))
-dir_temp["LIB_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\libs'
-dir_temp["COMMAND_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\commands'
-dir_temp["COMMAND_DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\command_data'
-dir_temp["DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\data'
-dir_temp["LAN_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\lan'
+if 'Windows' in platform.system():
+    dir_temp["CLOS_DIR"] = str(os.path.dirname(os.path.realpath(__file__)))
+    dir_temp["LIB_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\libs'
+    dir_temp["COMMAND_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\commands'
+    dir_temp["COMMAND_DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\command_data'
+    dir_temp["DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\data'
+    dir_temp["COMMAND_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\commands'
+    dir_temp["COMMAND_DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\command_data'
+    dir_temp["DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\data'
+    dir_temp["LAN_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\lan'
+else:
+    dir_temp["CLOS_DIR"] = str(os.path.dirname(os.path.realpath(__file__)))
+    dir_temp["LIB_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/libs'
+    dir_temp["COMMAND_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/commands'
+    dir_temp["COMMAND_DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/command_data'
+    dir_temp["DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/data'
+    dir_temp["COMMAND_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/commands'
+    dir_temp["COMMAND_DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/command_data'
+    dir_temp["DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/data'
+    dir_temp["LAN_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/lan'
 dirf = open(str(os.path.dirname(os.path.realpath(__file__)))+'\libs\dirs.json', 'w')
 dirf.write(json.dumps(dir_temp, indent=4))
 dirf.close()
