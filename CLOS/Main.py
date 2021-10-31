@@ -6,15 +6,43 @@ import sys
 import time
 import json
 import platform
-print('Info: Importing Important Libs... Done!')
+from pathlib import Path
 
 boot_start = time.time()
+
+print('Info: Importing Important Libs... Done!')
+
 if 'Windows' in platform.system():
-    f = open(os.path.dirname(os.path.realpath(__file__))+'/data//boot_opt.json')
+    boot_file = Path(os.path.dirname(os.path.realpath(__file__))+'\\data\\boot_opt.json')
 else:
-    f = open(os.path.dirname(os.path.realpath(__file__))+'/data/boot_opt.json')
-boot_opt = json.loads(json.dumps(f.read()))
-f.close()
+    boot_file = Path(os.path.dirname(os.path.realpath(__file__))+'/data/boot_opt.json')
+if boot_file.is_file():
+    if 'Windows' in platform.system():
+        f = open(os.path.dirname(os.path.realpath(__file__))+'\\data\\boot_opt.json', 'r')
+    else:
+        f = open(os.path.dirname(os.path.realpath(__file__))+'/data/boot_opt.json', 'r')
+    boot_opt = json.loads(f.read())
+    f.close()
+else:
+    boot_options_template = {
+    "internet_con": "true",
+    "default_lan": "en_us",
+    "color_enabled": True,
+    "install_libs": True
+    }
+    if 'Windows' in platform.system():
+        f = open(os.path.dirname(os.path.realpath(__file__))+'\\data\\boot_opt.json', 'w')
+    else:
+        f = open(os.path.dirname(os.path.realpath(__file__))+'/data/boot_opt.json', 'w')
+    f.write(json.dumps(boot_options_template,indent=4))
+    f.close()
+    if 'Windows' in platform.system():
+        f = open(os.path.dirname(os.path.realpath(__file__))+'\\data\\boot_opt.json', 'r')
+    else:
+        f = open(os.path.dirname(os.path.realpath(__file__))+'/data/boot_opt.json', 'r')
+    boot_opt = json.loads(f.read())
+    f.close()
+
 
 # Import Color
 print('Info: Importing Libs From Libs Folder...', end='\r')
@@ -29,21 +57,29 @@ info_style = style.color.Blue
 warning_style = style.color.Yellow
 error_style = style.color.Red
 res = style.color.Default + style.backcolor.Default
-print(info_style+'Info: Importing Libs From Libs Folder... Done!'+res)
+print(cutil.utils.ifcolor('Info: Importing Libs From Libs Folder... Done!',info_style,res))
 
 # Install Stuff
-if 'Windows' in platform.system():
-    print(info_style+'Info: Downloading Libs...'+res,end='\r')
-    os.system('pip install requests>nil')
-    os.system('pip install pythonping>nil')
-    os.system('pip install urllib3>nil')
-    print(info_style+'Info: Downloading Libs... Done!'+res)
-else:
-    print(info_style+'Info: Downloading Libs...'+res,end='\r')
-    os.system('pip3 install requests>nil')
-    os.system('pip3 install pythonping>nil')
-    os.system('pip3 install urllib3>nil')
-    print(info_style+'Info: Downloading Libs... Done!'+res)
+if boot_opt["install_libs"]:
+    if 'Windows' in platform.system():
+        print(info_style+'Info: Downloading Libs...'+res,end='\r')
+        os.system('pip install requests>nil')
+        os.system('pip install pythonping>nil')
+        os.system('pip install urllib3>nil')
+        print(info_style+'Info: Downloading Libs... Done!'+res)
+    else:
+        print(info_style+'Info: Downloading Libs...'+res,end='\r')
+        os.system('pip3 install requests>nil')
+        os.system('pip3 install pythonping>nil')
+        os.system('pip3 install urllib3>nil')
+        print(info_style+'Info: Downloading Libs... Done!'+res)
+    boot_opt["install_libs"] = False
+    if 'Windows' in platform.system():
+        f = open(os.path.dirname(os.path.realpath(__file__))+'\\data\\boot_opt.json', 'w')
+    else:
+        f = open(os.path.dirname(os.path.realpath(__file__))+'/data/boot_opt.json', 'w')
+    f.write(json.dumps(boot_opt,indent=4))
+    f.close()
 
 # Import More Stuff
 print(info_style+'Info: Importing More Libs...'+res,end='\r')
@@ -51,7 +87,6 @@ if 'Windows' in platform.system():
     from urllib3.packages.six import _MovedItems
 import http.client as httplib
 from pythonping import ping
-from pathlib import Path
 import requests
 import getpass
 print(info_style+'Info: Importing More Libs... Done!'+res)

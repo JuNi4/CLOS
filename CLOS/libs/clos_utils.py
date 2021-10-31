@@ -61,6 +61,29 @@ class utils():
 
         return bar
 
+    def ifcolor(text = 'Example Text', color = '\033[32m', defaultcolor = '\033[39m'+'\033[49m'):
+        if 'Windows' in platform.system():
+            pjf = open(os.path.dirname(os.path.realpath(__file__))+'\dirs.json', 'r')
+        else:
+            pjf = open(os.path.dirname(os.path.realpath(__file__)) + '/dirs.json', 'r')
+        pj = json.loads(pjf.read())
+        pjf.close()
+        data = pj["DATA_DIR"]
+
+        if 'Windows' in platform.system():
+            boot_optf = open(data+'\\boot_opt.json', 'r')
+        else:
+            boot_optf = open(data+'/boot_opt.json', 'r')
+        boot_opt = json.loads(boot_optf.read())
+        boot_optf.close()
+        color_enable = boot_opt["color_enabled"]
+
+        if color_enable:
+            return color + text + defaultcolor
+        else:
+            return text
+
+
 class text_style():
     class format:
         ResetBold       = '\033[21m'

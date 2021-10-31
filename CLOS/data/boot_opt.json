@@ -1,4 +1,6 @@
 {
     "internet_con": "true",
-    "default_lan": "en_us"
+    "default_lan": "en_us",
+    "color_enabled": true,
+    "install_libs": false
 }
