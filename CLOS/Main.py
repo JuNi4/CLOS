@@ -28,7 +28,8 @@ else:
     "internet_con": "true",
     "default_lan": "en_us",
     "color_enabled": True,
-    "install_libs": True
+    "install_libs": True,
+    "time_wait_after_startup": 2
     }
     if 'Windows' in platform.system():
         f = open(os.path.dirname(os.path.realpath(__file__))+'\\data\\boot_opt.json', 'w')
@@ -111,6 +112,7 @@ def internet():
         return False
 
 # Vars
+do_setup = False
 skip_setup = 0
 dir_temp = json.loads(json.dumps(vars.dir_template))
 if 'Windows' in platform.system():
@@ -267,6 +269,8 @@ else:
     print(cutil.utils.ifcolor(lan["setting_missing"],error_style,res))
     print(cutil.utils.ifcolor(lan["setting_creat"],info_style,res))
     if skip_setup == 0:
+        do_setup = True
+        boot_end = time.time()
         setup(fp)
     else:
         f = open(fp, 'w')
@@ -276,8 +280,10 @@ else:
     settings = json.loads(settings_file.read())
     settings_file.close()
     settings["lan"] = temp["lan"]
-time.sleep(2)
+time.sleep(boot_opt["time_wait_after_startup"])
 if settings["setup"]=="not_done":
+    do_setup = True
+    boot_end = time.time()
     setup(fp)
 
 # Welcomscreen
@@ -289,7 +295,8 @@ lan_file = Path(os.path.dirname(os.path.realpath(__file__)) + '/lan/' + settings
 lan_f = open(lan_file, 'r')
 lan = json.loads(lan_f.read())
 lan_f.close()
-boot_end = time.time()
+if not do_setup:
+    boot_end = time.time()
 boot_time1= boot_end - boot_start
 boot_time = str(boot_time1)[:4]
 print(cutil.utils.ifcolor('Info: Booting Done! Took '+str(boot_time)+' s.',info_style,res))
