@@ -61,18 +61,16 @@ print(cutil.utils.ifcolor('Info: Importing Libs From Libs Folder... Done!',info_
 
 # Install Stuff
 if boot_opt["install_libs"]:
+    print(cutil.utils.ifcolor('Info: Downloading Libs...',info_style,res),end='\r')
     if 'Windows' in platform.system():
-        print(info_style+'Info: Downloading Libs...'+res,end='\r')
         os.system('pip install requests>nil')
         os.system('pip install pythonping>nil')
         os.system('pip install urllib3>nil')
-        print(info_style+'Info: Downloading Libs... Done!'+res)
     else:
-        print(info_style+'Info: Downloading Libs...'+res,end='\r')
         os.system('pip3 install requests>nil')
         os.system('pip3 install pythonping>nil')
         os.system('pip3 install urllib3>nil')
-        print(info_style+'Info: Downloading Libs... Done!'+res)
+    print(cutil.utils.ifcolor('Info: Downloading Libs... Done!',info_style,res))
     boot_opt["install_libs"] = False
     if 'Windows' in platform.system():
         f = open(os.path.dirname(os.path.realpath(__file__))+'\\data\\boot_opt.json', 'w')
@@ -82,14 +80,14 @@ if boot_opt["install_libs"]:
     f.close()
 
 # Import More Stuff
-print(info_style+'Info: Importing More Libs...'+res,end='\r')
+print(cutil.utils.ifcolor('Info: Importing More Libs...',info_style,res),end='\r')
 if 'Windows' in platform.system():
     from urllib3.packages.six import _MovedItems
 import http.client as httplib
 from pythonping import ping
 import requests
 import getpass
-print(info_style+'Info: Importing More Libs... Done!'+res)
+print(cutil.utils.ifcolor('Info: Importing More Libs... Done!',info_style,res))
 
 # Set Title
 os.system('title CLOS (Command Line Operating System)')
@@ -147,14 +145,14 @@ else:
     dirf = open(str(os.path.dirname(os.path.realpath(__file__))) + '/commands/dirs.json', 'w')
 dirf.write(json.dumps(dir_temp, indent=4))
 dirf.close()
-print(info_style+'Info: Checking For Internet... If Crashes, Disable Internet In Boot Settings.'+res,end='\r')
+print(cutil.utils.ifcolor('Info: Checking For Internet... If Crashes, Disable Internet In Boot Settings.',info_style,res),end='\r')
 if internet() == True:
     ips = requests.get('https://api.ipify.org').text
     ip = format(ips)
     locr = requests.get("https://geolocation-db.com/json/"+ip+"&position=true").json()
 else:
     locr = {'country_code': 'US', 'country_name': 'Germany', 'city': 'Tuerkenfeld', 'postal': '82299', 'latitude': 48.1053, 'longitude': 11.083, 'IPv4': '94.31.96.202', 'state': 'Bavaria'}
-print(info_style+'Info: Checking For Internet... Done! If Crashes, Disable Internet In Boot Settings.'+res)
+print(cutil.utils.ifcolor('Info: Checking For Internet... Done! If Crashes, Disable Internet In Boot Settings.',info_style,res))
 template_pata = vars.template_pata
 template = vars.template
 lan_template = vars.lan_template
@@ -232,7 +230,7 @@ def setup(fp):
 
 
 # Load settings
-print(info_style+'Info: Creating Files...'+res,end='\r')
+print(cutil.utils.ifcolor('Info: Creating Files...',info_style,res),end='\r')
 fp = os.path.dirname(os.path.realpath(__file__))  + '/data/settings.json'
 settings_filep = Path(fp)
 privat_f = Path(os.path.dirname(os.path.realpath(__file__)) + '/private_data')
@@ -261,13 +259,13 @@ if settings_filep.is_file():
     lan_f = open(lan_file, 'r')
     lan = json.loads(lan_f.read())
     lan_f.close()
-    print(info_style+'Info: Creating Files... Done!'+res)
-    print(info_style+lan["setting_found"]+res)
+    print(cutil.utils.ifcolor('Info: Creating Files... Done!',info_style,res))
+    print(cutil.utils.ifcolor(lan["setting_found"],info_style,res))
 else:
     lan = lan_template
-    print(info_style+'Info: Creating Files... Done!'+res)
-    print(error_style+lan["setting_missing"]+res)
-    print(info_style+lan["setting_creat"]+res)
+    print(cutil.utils.ifcolor('Info: Creating Files... Done!',info_style,res))
+    print(cutil.utils.ifcolor(lan["setting_missing"],error_style,res))
+    print(cutil.utils.ifcolor(lan["setting_creat"],info_style,res))
     if skip_setup == 0:
         setup(fp)
     else:
@@ -294,7 +292,7 @@ lan_f.close()
 boot_end = time.time()
 boot_time1= boot_end - boot_start
 boot_time = str(boot_time1)[:4]
-print(info_style+'Info: Booting Done! Took '+str(boot_time)+' s.'+res)
+print(cutil.utils.ifcolor('Info: Booting Done! Took '+str(boot_time)+' s.',info_style,res))
 if settings["scheme"]=="light": 
     print(style.backcolor.White + style.color.Black)
 else:
