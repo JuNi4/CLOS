@@ -1,5 +1,6 @@
 import os
 import json
+import platform
 from pathlib import Path
 
 class commands():
@@ -7,7 +8,10 @@ class commands():
         self.fpath = os.environ["CLOS_DIR"]
 
     def command(command = 'none'):
-        pjf = open(os.path.dirname(os.path.realpath(__file__))+'\dirs.json', 'r')
+        if 'Windows' in platform.system():
+            pjf = open(os.path.dirname(os.path.realpath(__file__))+'\dirs.json', 'r')
+        else:
+            pjf = open(os.path.dirname(os.path.realpath(__file__)) + '/dirs.json', 'r')
         pj = json.loads(pjf.read())
         pjf.close()
         dirs = pj["CLOS_DIR"]
@@ -18,10 +22,16 @@ class commands():
         else:
             commandf = command
             x = ''
-        # Check in command dir
-        fc = dirs + '\commands\\' + commandf + '.py'
-        # Check in current dir
-        fp = os.getcwd() + '\\' + commandf
+        if 'Windows' in platform.system():
+            # Check in command dir
+            fc = dirs + '\commands\\' + commandf + '.py'
+            # Check in current dir
+            fp = os.getcwd() + '\\' + commandf
+        else:
+            # Check in command dir
+            fc = dirs + '/commands/' + commandf + '.py'
+            # Check in current dir
+            fp = os.getcwd() + '/' + commandf
         #print(fc)
         #print(fp)
         command_file = Path(fc)
