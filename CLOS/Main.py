@@ -347,7 +347,7 @@ print('')
 # Input
 while True:
     if boot_opt["ohp_vancy_prompt"]:
-        # Displays A Fancy prompt using oh-my-posh. Needs to be installed. (Under windows just type this into the command prompt: 'winget install JanDeDobbeleer.OhMyPosh') Offical Website: https://ohmyposh.dev
+        # Displays A Fancy prompt using oh-my-posh. Needs to be installed. (Under windows just type this into the command prompt: 'winget install JanDeDobbeleer.OhMyPosh') Offical Website: https://ohmyposh.dev   not Mine! Use at own risk!
         inp = str(input(str(os.system('oh-my-posh --config '+os.path.dirname(os.path.realpath(__file__))+boot_opt["ohp_vancy_prompt_opt_rel_path"]))[:os.system('oh-my-posh --config '+os.path.dirname(os.path.realpath(__file__))+boot_opt["ohp_vancy_prompt_opt_rel_path"]+'>nil')-1])).lower()
     else:
         inp = str(input(os.getcwd()+'>')).lower()
