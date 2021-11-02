@@ -29,7 +29,8 @@ else:
     "default_lan": "en_us",
     "color_enabled": True,
     "install_libs": True,
-    "time_wait_after_startup": 2
+    "time_wait_after_startup": 2,
+    "vancy_prompt": False
     }
     if 'Windows' in platform.system():
         f = open(os.path.dirname(os.path.realpath(__file__))+'\\data\\boot_opt.json', 'w')
@@ -344,7 +345,11 @@ print('')
 
 # Input
 while True:
-    inp = str(input(os.getcwd()+'>')).lower()
+    if boot_opt["vancy_prompt"]:
+        # Displays A Fancy prompt using oh-my-posh. Needs to be installed. (Under windows just type this into the command prompt: 'winget install JanDeDobbeleer.OhMyPosh') Offical Website: https://ohmyposh.dev
+        inp = str(input(str(os.system('oh-my-posh --config '+os.path.dirname(os.path.realpath(__file__))+boot_opt["vancy_prompt_opt_rel_path"]))[:os.system('oh-my-posh --config '+os.path.dirname(os.path.realpath(__file__))+boot_opt["vancy_prompt_opt_rel_path"]+'>nil')])).lower()
+    else:
+        inp = str(input(os.getcwd()+'>')).lower()
     if inp == 'redo_setup':
         setup(fp)
     if inp == 'setup':
