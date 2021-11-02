@@ -30,7 +30,8 @@ else:
     "color_enabled": True,
     "install_libs": True,
     "time_wait_after_startup": 2,
-    "vancy_prompt": False
+    "ohp_vancy_prompt": False,
+    "ohp_vancy_prompt_opt_rel_path": "\\libs\\vancy_prompt_options.json"
     }
     if 'Windows' in platform.system():
         f = open(os.path.dirname(os.path.realpath(__file__))+'\\data\\boot_opt.json', 'w')
