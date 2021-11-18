@@ -1,4 +1,8 @@
-# Main Command Line Operating System (CLOS) File # Änderung Nr. 4 14.8.2021 21:00
+# -----------
+# CLOS© V0.1
+# Credits: JuNi4 (https://github.com/JuNi4/CLOS)
+# -----------
+# Main Command Line Operating System (CLOS) File # Änderung Nr. 4 14.8.2021 21:00 - actually i forgot to count maybe 105th commit? and its now 18.11.2021 20:19
 # Import Stuff
 print('Info: Importing Important Libs...', end='\r')
 import os
@@ -50,7 +54,7 @@ else:
 # Import Color
 print('Info: Importing Libs From Libs Folder...', end='\r')
 if 'Windows' in platform.system():
-    sys.path.append(os.path.dirname(os.path.realpath(__file__))+'/libs/')
+    sys.path.append(os.path.dirname(os.path.realpath(__file__))+'\\libs\\')
 else:
     sys.path.append(os.path.dirname(os.path.realpath(__file__))+'/libs/')
 import clos_utils as cutil
@@ -380,5 +384,8 @@ while True:
             print('Currently Your Connected To The Internet With A Ping Of '+ms+'ms.')
         else:
             print('Currently There Is No Connection With The Internet.')
+    elif 'cd' in inp:
+        os.system('cd ..')
+        os.system('echo %cd%')
     else:
         cutil.commands.command(command = inp)
