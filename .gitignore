@@ -6,6 +6,7 @@
 /CLOS/libs/__pycache__
 /CLOS/libs/dirs.json
 /CLOS/libs/color.py
+/CLOS/libs/vancy_prompt_options.json
 /CLOS/commands/d.bat
 /CLOS/commands/dirs.json
 /CLOS/important.txt
