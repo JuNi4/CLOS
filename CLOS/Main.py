@@ -374,6 +374,7 @@ while True:
             os.system('python -c "'+inp[7:]+'"')
         else:
             os.system('python')
+    # Internet Command for getting if internet connection is available
     elif 'internet' in inp:
         if internet() == True:
             if 'internet ' in inp:
@@ -384,8 +385,19 @@ while True:
             print('Currently Your Connected To The Internet With A Ping Of '+ms+'ms.')
         else:
             print('Currently There Is No Connection With The Internet.')
+    # cd command, originally I tried to put it into another file as command but sadly that didn't work
     elif 'cd' in inp:
-        os.system('cd ..')
-        os.system('echo %cd%')
+        arg = inp.split(' ')
+        if len(arg) > 1:
+            if arg[1] == '..':
+                os.chdir('..')
+            else:
+                dirs = Path(arg[1])
+                if dirs.is_dir():
+                    os.chdir(arg[1])
+                else:
+                    print('That path does not exist!')
+        else:
+            os.system('echo %cd%')
     else:
-        cutil.commands.command(command = inp)
+        cutil.commands.command(command = inp) # It's funny that at least for now if a command is not internal, in line 404 (aka means x not found) its send to my command handler

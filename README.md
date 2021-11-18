@@ -6,6 +6,7 @@ Command Line Operating System
 - Create Commands
 - ✔ Put Vars In vars.py
 - Make Help Command
+- ✔ Make 'cd' command
 
 # How To Use:
 - Start it

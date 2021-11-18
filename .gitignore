@@ -7,8 +7,10 @@
 /CLOS/libs/dirs.json
 /CLOS/libs/color.py
 /CLOS/libs/vancy_prompt_options.json
+/CLOS/libs/nil
 /CLOS/commands/d.bat
 /CLOS/commands/dirs.json
+/CLOS/commands/stupid
 /CLOS/important.txt
 /CLOS/nil
 os
