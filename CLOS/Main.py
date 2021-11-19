@@ -176,6 +176,17 @@ else:
 
 # Setup 
 def setup(fp):
+    # Check if settings file exists - relevant if you redo the setup
+    setf = Path(os.path.dirname(os.path.realpath(__file__)) + '/data/settings.json')
+    if setf.is_file:
+        class Response:
+            def __init__(self, data):
+                self.__dict__ = json.loads(data)
+
+        response = Response(json.dumps(settings))
+
+        if hasattr(response , 'lan'):
+            temp["lan"] = settings["lan"]
     # Load lan
     lann = temp["lan"]
     lan_file = Path(os.path.dirname(os.path.realpath(__file__)) + '/lan/' + lann + '.json')
