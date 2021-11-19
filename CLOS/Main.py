@@ -101,11 +101,11 @@ os.system('title CLOS (Command Line Operating System)')
 
 # Commands
 clear = lambda: os.system('cls')
-ie = 0
+
 
 # Check for Internet
 def internet():
-    if ie == 1:
+    if boot_opt["internet_con"]:
         conn = httplib.HTTPConnection("www.google.com", timeout=5)
         try:
             conn.request("HEAD", "/")
@@ -396,9 +396,9 @@ while True:
                 if dirs.is_dir():
                     os.chdir(arg[1])
                 else:
-                    print('That path does not exist!')
+                    print('Error 404: Path Not Found!')
         else:
             os.system('echo %cd%')
     # Only thing missing would be a ls or list command...
     else:
-        cutil.commands.command(command = inp) # It's funny that at least for now if a command is not internal, in line 404 (aka means x not found) its send to my command handler
+        cutil.commands.command(command = inp) # It's funny that at least for now if a command is not internal, in line 404 (aka means x not found like Error: 404 Page not found) its send to my command handler
