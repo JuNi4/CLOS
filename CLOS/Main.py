@@ -399,5 +399,6 @@ while True:
                     print('That path does not exist!')
         else:
             os.system('echo %cd%')
+    # Only thing missing would be a ls or list command...
     else:
         cutil.commands.command(command = inp) # It's funny that at least for now if a command is not internal, in line 404 (aka means x not found) its send to my command handler
