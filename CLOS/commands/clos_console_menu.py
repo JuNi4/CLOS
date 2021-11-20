@@ -147,6 +147,7 @@ def styl_menu_vert_mult(name='ExampleMenu',prompt='Please select one of the foll
             print(backcolor+' '*2+menucolor+'│'+' '*41+tblack+'OK '+tres+'│'+backcolor+' '*2+'\033[49m')
         print(backcolor+' '*2+menucolor+'└'+'─'*44+'┘'+backcolor+' '*2+'\033[49m')
         print(backcolor+'\033[34m'+'.'*50+'\033[49m'+'\033[39m')
+        # Only continue when a key is pressed
         keyboard.read_key()
         if keyboard.is_pressed('down'):
             if selv == 0:
@@ -169,4 +170,5 @@ def styl_menu_vert_mult(name='ExampleMenu',prompt='Please select one of the foll
                     selected[sel] = True
         os.system('cls')
 
-print(styl_menu_vert_mult())
+#print(styl_menu_vert_mult(entrys=['lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol'],description=['lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol']))
+#basic_menu()
