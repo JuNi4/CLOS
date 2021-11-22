@@ -7,6 +7,14 @@ Command Line Operating System
 - ✔ Put Vars In vars.py
 - Make Help Command
 - ✔ Make 'cd' command
+- Make Installer:
+ - Steps:
+ - Select Language
+ - Choose Name
+ - Choose Password
+ - Repeat Password
+ - Select cpackages / commands to be pre installed
+ - Select install Path
 
 ## How To Use:
 - Start it
