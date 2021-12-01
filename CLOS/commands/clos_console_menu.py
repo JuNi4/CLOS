@@ -172,3 +172,8 @@ def styl_menu_vert_mult(name='ExampleMenu',prompt='Please select one of the foll
 
 #print(styl_menu_vert_mult(entrys=['lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol'],description=['lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol']))
 #basic_menu()
+
+def custom_input(prompt_question = ''):
+    inputc = ''
+    while not keyboard.is_pressed('enter'):
+        print()

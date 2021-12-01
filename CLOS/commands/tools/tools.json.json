@@ -1,0 +1,7 @@
+{
+	"objects": [
+		"clos_console_menu.py",
+		"clos_console_menu_linux.py",
+		"internet_on_notify.py"
+	]
+}
