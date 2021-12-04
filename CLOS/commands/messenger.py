@@ -88,7 +88,7 @@ def client_server(ip = ""):
                 exit()
             print(data.decode())
 
-def server():
+def server(list_server_ip = '', list_server_port = '4244', server_name = '', server_port = '4242', listtheserver = False):
     print('---------------------------------------------')
     print(' JuNi\'s Messenger Server')
     print(' By JuNi, GitHub: https://github.com/juni4')
@@ -100,15 +100,26 @@ def server():
     arg = sys.argv
     print("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Arguments givin: "+str(arg))
     print("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Setting PORT")
-    if '-p' in arg:
-        PORT = arg[arg.index('-p')+1]
-    else:
-        PORT = 4242
+    PORT = int(server_port)
     # list server interaction
     #if '-lsip' in arg:
     #    lsip = arg[arg.index('-lsip')+1]
     # "" == INADDR_ANY
     SERVER = ""
+    print("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Server listing: "+str(listtheserver))
+    if not list_server_ip == '':
+        print("["+datetime.datetime.now().strftime("%H:%M:%S")+"] List Server IP: "+list_server_ip)
+    if not list_server_port == '':
+        print("["+datetime.datetime.now().strftime("%H:%M:%S")+"] List Server Port: "+list_server_port)
+    if bool(listtheserver):
+        lspd = socket.socket()
+        try:
+            lspd.connect((list_server_ip, int(list_server_port)))
+        except:
+            print("["+datetime.datetime.now().strftime("%H:%M:%S")+"] The Listserver is not available.")
+            listtheserver = False
+
+    print("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Server NAME: "+server_name)
 
     print("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Setting up usr vars")
     usr = []
@@ -155,9 +166,9 @@ def server():
                     sock.sendto(bytes(usrn[usr.index(addr[0])]+" left the room.", encoding='utf-8'), (usraddr[usr.index(o)][0],4243))
                 if dev:
                     print('Send leave message to User Ip: '+o+' Name='+usrn[usr.index(o)])
-            usr.remove(usrindex)
-            usrn.remove(usrindex)
-            usraddr.remove(usrindex)
+            usr.pop(int(usrindex))
+            usrn.pop(int(usrindex))
+            usraddr.pop(int(usrindex))
         elif msg[0:5] == '/list':
             user_list = ''
             c = 0
@@ -240,9 +251,18 @@ def list_servers_server():
 def log(log_string):
     print()
 
+def getarg(arg, alt):
+    if not arg == '':
+        if arg in sys.argv:
+            return sys.argv[sys.argv.index(arg)+1]
+        else: return alt
+
 arg = sys.argv
 if '-s' in arg or '-server' in arg[1] or arg[1] == ' server ':
-    server()
+    if '-h' in arg:
+        print('HELP: \n -h  Help\n -name  Server Name\n -p  Server Port\n -lsip  IP of List Server\n -lsp  Port of List Server\n -els  Enable the list server')
+        exit()
+    server(list_server_ip=getarg('-lsip', 'localhost'), list_server_port=getarg('-lsp', '4244'), server_name=getarg('-name', ''), server_port=getarg('-p', '4242'), listtheserver=getarg('-els', False))
 if '-c' in arg or '-client' in arg[1] or arg[1] == ' client ':
     client()
 if '-ls' in arg or '-listserver' in arg or arg[1] == ' listserver ':
