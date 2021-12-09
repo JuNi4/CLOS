@@ -1,6 +1,7 @@
 # messenger -server -client -listserver
 
 import threading
+import platform
 import datetime
 import socket
 import sys
@@ -29,7 +30,7 @@ def client():
         s.close()
 
     if not '-standalone' in arg:
-        c_server = threading.Thread(target=client_server, args=())
+        c_server = threading.Thread(target=client_server, args=('', str(os.getpid())))
         c_server.start()
 
     pw = getarg('-pw', '')
@@ -66,7 +67,7 @@ def client():
             exit()
 
 
-def client_server(ip = ""):
+def client_server(ip = "", cpid = ''):
     # "" == INADDR_ANY
     SERVER = ip
     PORT = 4243
@@ -89,7 +90,14 @@ def client_server(ip = ""):
     while True:
             # Receive response
             data, server = sock.recvfrom(4096)
-            if data.decode() == "!leave_account_requested_by_self":
+            if data.decode()[0:32] == "!leave_account_requested_by_self":
+                if data.decode() == "!leave_account_requested_by_self _nonself":
+                    print('You got kicked!')
+                    if 'Windows' in platform.system():
+                        os.system('taskkill /PID '+cpid+' /F')
+                    else:
+                        os.system('kill '+cpid)
+                    time.sleep(2)
                 exit()
             print(data.decode())
 
@@ -196,9 +204,9 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
                             log(usrn[usr.index(addr[0])]+" joined the room.",ch_log, False)
                         #log(,ch_log, False)
                         if dev:
-                            log('Send join message to User Ip: '+o+' Name='+usrn[usr.index(o)])
+                            log('Send join message to User Ip: '+o+' Name='+usrn[usr.index(o)], l_file)
                 else:
-                    log('['+datetime.datetime.now().strftime("%H:%M:%S")+'] IP: '+addr[0]+' tried to login with a second account.')
+                    log('['+datetime.datetime.now().strftime("%H:%M:%S")+'] IP: '+addr[0]+' tried to login with a second account.', l_file)
         # Auth on Server
         elif msg[0:5] == '/auth' and epw:
             if msg[6:len(msg)] == pw:
@@ -215,21 +223,28 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
                 log('['+datetime.datetime.now().strftime("%H:%M:%S")+'] New USER IP: '+str(addr[0])+' Name: '+name, l_file)
                 for o in usr:
                     sock.sendto(bytes(usrn[usr.index(addr[0])]+" joined the room.", encoding='utf-8'), (usraddr[usr.index(o)][0],4243))
-                    if ecl:
-                        log(usrn[usr.index(addr[0])]+" joined the room.",ch_log, False)
                     #log(,ch_log, False)
                     if dev:
                         log('Send join message to User Ip: '+o+' Name='+usrn[usr.index(o)])
+                if ecl:
+                    log(usrn[usr.index(addr[0])]+" joined the room.",ch_log, False)
         # Admin auth on Server
         elif msg[0:6] == '/aauth':
             if msg[7:len(msg)] == apw:
+                log('['+datetime.datetime.now().strftime("%H:%M:%S")+'] USER IP: '+str(addr[0])+' Name: '+usrn[usr.index(addr[0])]+' became mod.', l_file)
                 admin_auth.append(addr[0])
+                for o in admin_auth:
+                    sock.sendto(bytes(usrn[usr.index(addr[0])]+" became mod.", encoding='utf-8'), (usraddr[usr.index(o)][0],4243))
+                    if dev:
+                        log('Send mod message to User Ip: '+o+' Name='+usrn[usr.index(o)],l_file)
         # /leave command
         elif msg[0:6] == '/leave':
             # get usr index in usr list
             usrindex = usr.index(addr[0])
             # log message that usr xy left
-            log('['+datetime.datetime.now().strftime("%H:%M:%S")+'] User with IP '+addr[0]+' and Name '+usrn[usr.index(addr[0])]+' left.')
+            log('['+datetime.datetime.now().strftime("%H:%M:%S")+'] User with IP '+addr[0]+' and Name '+usrn[usr.index(addr[0])]+' left.', l_file)
+            if ecl:
+                log(usrn[usr.index(addr[0])]+" left the room.",ch_log, False)
             # send all usrs leave message
             for o in usr:
                 if o == addr[0]:
@@ -242,18 +257,16 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
                 if dev:
                     # debug mesage
                     log('Send leave message to User Ip: '+o+' Name='+usrn[usr.index(o)])
-            # remove usr from usr lists
+            if epw:
+                auth.pop(int(usrindex))
+            # remove usr from admin list
+            if addr[0] in admin_auth:
+                admin_auth.pop(usrindex)
+             # remove usr from usr lists
             usr.pop(int(usrindex))
             usrn.pop(int(usrindex))
             usraddr.pop(int(usrindex))
             # remove usr from auth list
-            if epw:
-                auth.pop(int(usrindex))
-            # remove usr from admin list
-            if usr[usrindex] in admin_auth:
-                admin_auth.pop(usrindex)
-            if ecl:
-                log(usrn[usr.index(addr[0])]+" left the room.",ch_log, False)
         # list command
         elif msg[0:5] == '/list':
             user_list = ''
@@ -268,7 +281,7 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
                 lmsg ="There is "+str(len(usr))+" person in the room: "+user_list
             else:
                 lmsg = lmsg ="There are "+str(len(usr))+" persons in the room: "+user_list
-            log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] [Server] "+lmsg)
+            log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] [Server] "+lmsg, l_file)
             for o in usr:
                 if ecl:
                     log(lmsg,ch_log, False)
@@ -277,7 +290,7 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
                     log('Send userlist to User Ip: '+o+' Name='+usrn[usr.index(o)])
         # Admin commands
         elif msg[0:1] == '!':
-            def ac(c,istr, ofs = 1, low = True):
+            def ac(c,istr, ofs = 0, low = True):
                 if low:
                     istr = istr[ofs:len(c)].lower()
                     c = c.lower()
@@ -289,63 +302,68 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
                 else:
                     return False
             if addr[0] in admin_auth :
-                if ac('help',msg):
+                if ac('!help',msg, low = False):
                     hmsg = ' !help  Shows this message\n !chatlog_clear  Clears the chat log - the log wich is send to a user on join\n !chatlog_dis  Diables the chat log and it will no longer be send to usrs on join\n !chatlog_en  Enables the chatlog and all writen messages will be send to joining usrs\n !kick  Kicks the Person (usrname)'
-                    sock.sendto(bytes(hmsg, encoding='utf-8'), (usraddr[usr.index(o)][0],4243))
-                if ac('chatlog_clear',msg):
+                    sock.sendto(bytes(hmsg, encoding='utf-8'), (addr[0],4243))
+                if ac('!chatlog_clear',msg):
                     f = open(ch_log, 'w')
                     f.write('')
                     f.close()
-                if ac('chatlog_en',msg):
+                if ac('!chatlog_en',msg):
                     ecl = True
-                if ac('chatlog_dis',msg):
+                if ac('!chatlog_dis',msg):
                     ecl = False
-                if ac('kick',msg):
+                if ac('!kick',msg):
                     # get usr index in usr list
-                    usrindex = usr.index(addr[0])
+                    usrindex = usrn.index(msg[6:len(msg)])
                     # log message that usr xy left
-                    log('['+datetime.datetime.now().strftime("%H:%M:%S")+'] User with IP '+addr[0]+' and Name '+usrn[usr.index(addr[0])]+' got kicked by '+usrn[usr.index(addr[0])]+'.')
+                    log('['+datetime.datetime.now().strftime("%H:%M:%S")+'] User with IP '+addr[0]+' and Name '+usrn[usr.index(addr[0])]+' got kicked by '+usrn[usr.index(addr[0])]+'.', l_file)
+                    if ecl:
+                        log(usrn[usr.index(addr[0])]+" left the room.",ch_log, False)
                     # send all usrs leave message
                     for o in usr:
-                        if o == addr[0]:
+                        if usrn[usr.index(o)] == msg[6:len(msg)]:
                             # if its the person who want's to leave, send the cs a exit message
-                            sock.sendto(bytes("!leave_account_requested_by_self _nonself", encoding='utf-8'), (usraddr[usr.index(o)][0],4243))
+                            sock.sendto(bytes("!leave_account_requested_by_self _nonself", encoding='utf-8'), (usraddr[usrn.index(msg[6:len(msg)])][0],4243))
                         else:
-                            if usr[o] in admin_auth:
-                                sock.sendto(bytes(usrn[usr.index(addr[0])]+" got kicked by "+usrn[usr.index(addr[0])]+'.', encoding='utf-8'), (usraddr[usr.index(o)][0],4243))
+                            if o in admin_auth:
+                                sock.sendto(bytes(usrn[usrn.index(msg[6:len(msg)])]+" got kicked by "+usrn[usr.index(addr[0])]+'.', encoding='utf-8'), (usraddr[usr.index(o)][0],4243))
                             else:
                                 # else send leave message
-                                sock.sendto(bytes(usrn[usr.index(addr[0])]+" left the room.", encoding='utf-8'), (usraddr[usr.index(o)][0],4243))
+                                sock.sendto(bytes(usrn[usrn.index(msg[6:len(msg)])]+" left the room.", encoding='utf-8'), (usraddr[usr.index(o)][0],4243))
                                 
                         if dev:
                             # debug mesage
                             log('Send leave message to User Ip: '+o+' Name='+usrn[usr.index(o)])
-                    # remove usr from usr lists
-                    usr.pop(int(usrindex))
-                    usrn.pop(int(usrindex))
-                    usraddr.pop(int(usrindex))
                     # remove usr from auth list
                     if epw:
                         auth.pop(int(usrindex))
                     # remove usr from admin list
                     if usr[usrindex] in admin_auth:
                         admin_auth.pop(usrindex)
-                    if ecl:
-                        log(usrn[usr.index(addr[0])]+" left the room.",ch_log, False)
+                    # remove usr from usr lists
+                    usr.pop(int(usrindex))
+                    usrn.pop(int(usrindex))
+                    usraddr.pop(int(usrindex))
+                    
+            else:
+                sock.sendto(bytes('Error: You are not permitted to do that!', encoding='utf-8'), (addr[0],4243))
+                log('['+datetime.datetime.now().strftime("%H:%M:%S")+'] Error: USR '+usrn[usr.index(addr[0])]+' tried to execute Admin Commands while not authed', l_file)
         elif addr[0] in usr:
-            log('['+datetime.datetime.now().strftime("%H:%M:%S")+'] <'+usrn[usr.index(str(addr[0]))]+'> '+msg)
-            retmsg = '<'+usrn[usr.index(str(addr[0]))]+'> '+msg
-            for o in usr:
-                if not o == addr[0]:
-                    sock.sendto(bytes(retmsg, encoding='utf-8'), (usraddr[usr.index(o)][0],4243))
-                    if ecl:
-                        log(retmsg,ch_log, False)
-                    if dev:
-                        log('Send message to User Ip: '+o+' Name='+usrn[usr.index(o)])
-                #strdata = data.decode()
-                #retmsg = '<'+usrn[usr.index(str(addr[0]))]+'> '+msg + strdata
-                #con.sendall(retmsg.encode())
-        
+            if addr[0] in auth or epw == False:
+                log('['+datetime.datetime.now().strftime("%H:%M:%S")+'] <'+usrn[usr.index(str(addr[0]))]+'> '+msg, l_file)
+                retmsg = '<'+usrn[usr.index(str(addr[0]))]+'> '+msg
+                for o in usr:
+                    if not o == addr[0]:
+                        sock.sendto(bytes(retmsg, encoding='utf-8'), (usraddr[usr.index(o)][0],4243))
+                        if ecl:
+                            log(retmsg,ch_log, False)
+                        if dev:
+                            log('Send message to User Ip: '+o+' Name='+usrn[usr.index(o)], l_file)
+                    #strdata = data.decode()
+                    #retmsg = '<'+usrn[usr.index(str(addr[0]))]+'> '+msg + strdata
+                    #con.sendall(retmsg.encode())
+
 
 
 def list_servers_server(ip = '', PORT = '', log_file = ''):
@@ -423,7 +441,7 @@ def list_servers_server(ip = '', PORT = '', log_file = ''):
             for o in reg_servers_ip:
                 sn = 12-len(reg_servers_name[c])
                 sip =17-len(reg_servers_ip[c])
-                sp = 8-len(reg_servers_p)
+                sp = 9-len(reg_servers_p)
                 sn2 = ' '*sn
                 sip2= ' '*sip
                 if reg_servers_epw[c] == 'True':
