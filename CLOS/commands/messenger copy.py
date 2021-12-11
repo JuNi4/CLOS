@@ -574,7 +574,7 @@ if len(arg) > 1:
 
 # If you do not enter any extra details an "UI" will apper to input any data
 class smenu():
-    def styl_menu_vert(name='ExampleMenu',prompt='Pleae select one of the following:' , entrys=['Entry 1','Entry 2','Entry 3'],description=['The Entry 1 of the menu. Press ENTER to select it','Lorem Ipsulm','LOL'],backcolor = rgb(14.1,44.7,78.4),menucolor= rgb(89.8,89.8,89.8),selcolor = rgb(40,40,40), sup = False):
+    def styl_menu_vert(name='ExampleMenu',prompt='Pleae select one of the following:' , entrys=['Entry 1','Entry 2','Entry 3'],description=['The Entry 1 of the menu. Press ENTER to select it','Lorem Ipsulm','LOL'],backcolor='\033[44m',menucolor='\033[47m',selcolor='\033[100m', sup = False):
         namel = len(name)
         namelengh = 44-namel
         promptl = 43-len(prompt)
@@ -626,7 +626,7 @@ class smenu():
 
     #print(styl_menu_vert())
 
-    def styl_menu_vert_mult(name='ExampleMenu',prompt='Please select one of the following:' , entrys=['Entry 1','Entry 2','Entry 3'],description=['The Entry 1 of the menu. Press ENTER to select it','Lorem Ipsulm','LOL'],backcolor = rgb(14.1,44.7,78.4),menucolor= rgb(89.8,89.8,89.8),selcolor = rgb(40,40,40), sup = False):
+    def styl_menu_vert_mult(name='ExampleMenu',prompt='Please select one of the following:' , entrys=['Entry 1','Entry 2','Entry 3'],description=['The Entry 1 of the menu. Press ENTER to select it','Lorem Ipsulm','LOL'],backcolor='\033[44m',menucolor='\033[47m',selcolor='\033[100m', sup = False):
         selected = []
         for object in entrys:
             selected.append(False)
@@ -708,7 +708,7 @@ class smenu():
     #print(styl_menu_vert_mult(entrys=['lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol'],description=['lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol']))
     #basic_menu()
 
-    def custom_input_menu(name = 'Example Prompt', prompt='Please select one of the following:' , entrys=['Entry 1:','Entry 2:','Entry 3:'], description=['The Entry 1 of the menu. Press ENTER to select it','Lorem Ipsulm','LOL'], sup = False,backcolor = rgb(14.1,44.7,78.4),menucolor= rgb(89.8,89.8,89.8),selcolor = rgb(40,40,40), txt = brgb(171, 171, 171), stxt = brgb(150, 150, 150), default_vals = ['','already something'], space = False):
+    def custom_input_menu(name = 'Example Prompt', prompt='Please select one of the following:' , entrys=['Entry 1:','Entry 2:','Entry 3:'], description=['The Entry 1 of the menu. Press ENTER to select it','Lorem Ipsulm','LOL'], sup = False,backcolor='\033[44m',menucolor='\033[47m',selcolor='\033[100m', txt = brgb(171, 171, 171), stxt = brgb(150, 150, 150), default_vals = ['','already something'], space = False):
         #nswhitelist = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
         #swhitelist = [""]
         #blist = str(keyboard.all_modifiers)
@@ -825,7 +825,7 @@ class smenu():
 
 
     # Prompt
-    def prompt(name='ExampleMenu', text = 'This is and A or B Prompt. Select the Button thith the ARRow key and hit enter', abut = 'Cancle', bbut = 'OK', sup = False,backcolor = rgb(14.1,44.7,78.4),menucolor= rgb(89.8,89.8,89.8),selcolor = rgb(40,40,40)):
+    def prompt(name='ExampleMenu', text = 'This is and A or B Prompt. Select the Button thith the ARRow key and hit enter', abut = 'Cancle', bbut = 'OK', sup = False,backcolor='\033[44m',menucolor='\033[47m',selcolor='\033[100m'):
         namel = len(name)
         namelengh = 44-namel
         promptl = 43-len(text)

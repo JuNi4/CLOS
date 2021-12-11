@@ -340,8 +340,3 @@ def prompt(name='ExampleMenu', text = 'This is and A or B Prompt. Select the But
         while keyboard.is_pressed(x):
             pass
         os.system('cls')
-        
-
-print(custom_input_menu())
-prompt()
-styl_menu_vert_mult()
