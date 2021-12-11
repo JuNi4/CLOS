@@ -154,7 +154,7 @@ def styl_menu_vert_mult(name='ExampleMenu',prompt='Please select one of the foll
         print(backcolor+' '*2+menucolor+'└'+'─'*44+'┘'+backcolor+' '*2+'\033[49m')
         print(backcolor+'\033[34m'+'.'*50+'\033[49m'+'\033[39m')
         # Only continue when a key is pressed
-        keyboard.read_key()
+        x = keyboard.read_key()
         if keyboard.is_pressed('down'):
             if selv == 0:
                 sel += 1
@@ -174,6 +174,9 @@ def styl_menu_vert_mult(name='ExampleMenu',prompt='Please select one of the foll
                     selected[sel] = False
                 else:
                     selected[sel] = True
+        
+        while keyboard.is_pressed(x):
+            pass
         os.system('cls')
 
 #print(styl_menu_vert_mult(entrys=['lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol'],description=['lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol']))
@@ -258,19 +261,19 @@ def custom_input_menu(name = 'Example Prompt', prompt='Please select one of the 
         print(backcolor+' '*2+menucolor+'└'+'─'*44+'┘'+backcolor+' '*2+'\033[49m')
         print(backcolor+'\033[34m'+'.'*50+'\033[49m'+'\033[39m')
         # Only continue when a key is pressed
-        def b(v = '', a = '', b = ''):
-            pass
-        keyboard.on_release(b, sup)
+        #def b(v = '', a = '', b = ''):
+        #    pass
+        #keyboard.on_release(b, sup)
         x = keyboard.normalize_name(keyboard.read_key(sup))
-        if x == 'down' or x == 'nach-unten':
+        if keyboard.is_pressed('down'):
             if selv == 0:
                 sel += 1
-        elif x == 'up' or x == 'nach-oben':
+        if keyboard.is_pressed('up'):
             if selv == 0:
                 sel -= 1
-        elif x == 'left' or x == 'nach-links':
+        if keyboard.is_pressed('left'):
             selv -= 1
-        elif x == 'right' or x == 'nach-rechts':
+        if keyboard.is_pressed('right'):
             selv += 1
         elif x == 'enter':
             if selv == 1:
@@ -289,6 +292,8 @@ def custom_input_menu(name = 'Example Prompt', prompt='Please select one of the 
                 #def x(x):
                 #    pass
                 #keyboard.on_release(x)
+        while keyboard.is_pressed(x):
+            pass
         os.system('cls')
 
 
@@ -323,7 +328,7 @@ def prompt(name='ExampleMenu', text = 'This is and A or B Prompt. Select the But
             print(backcolor+' '*2+menucolor+'│ '+tblack+abut+tres+' '*blen+tblack+selcolor+bbut+tres+menucolor+' │'+backcolor+' '*2+'\033[49m')
         print(backcolor+' '*2+menucolor+'└'+'─'*44+'┘'+backcolor+' '*2+'\033[49m')
         print(backcolor+'\033[34m'+'.'*50+'\033[49m'+'\033[39m')
-        keyboard.read_key(sup)
+        x = keyboard.read_key(sup)
         if keyboard.is_pressed('left'):
             sel -= 1
         if keyboard.is_pressed('right'):
@@ -331,8 +336,12 @@ def prompt(name='ExampleMenu', text = 'This is and A or B Prompt. Select the But
         if keyboard.is_pressed('enter'):
             done = True
             return sel
+        
+        while keyboard.is_pressed(x):
+            pass
         os.system('cls')
+        
 
 print(custom_input_menu())
-#prompt()
+prompt()
 styl_menu_vert_mult()
