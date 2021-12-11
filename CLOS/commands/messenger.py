@@ -146,7 +146,7 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
 
             try:
                 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-                sock.sendto(bytes('list_register '+cserver_ip+' '+str(PORT)+' '+server_name+' '+str(epw),'utf-8'), (list_server_ip, int(list_server_port)))
+                sock.sendto(bytes('list_register '+cserver_ip+' '+str(PORT)+' '+server_name+' '+str(epw)+' 0','utf-8'), (list_server_ip, int(list_server_port)))
                 sock.close()
                 log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Server Registered.", l_file)
             except:
@@ -165,6 +165,8 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
     usraddr = []
     auth = []
     admin_auth = []
+    waitlistn = []
+    waitlistip = []
 
     log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Creating UDP Socket", l_file)
     # Create a UDP socket
@@ -207,6 +209,11 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
                             log('Send join message to User Ip: '+o+' Name='+usrn[usr.index(o)], l_file)
                 else:
                     log('['+datetime.datetime.now().strftime("%H:%M:%S")+'] IP: '+addr[0]+' tried to login with a second account.', l_file)
+            else:
+                name = msg[6:len(msg)]
+                waitlistn.append(name)
+                waitlistip.append(addr[0])
+
         # Auth on Server
         elif msg[0:5] == '/auth' and epw:
             if msg[6:len(msg)] == pw:
@@ -214,7 +221,7 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
             if not addr[0] in usr:
                 # ..let USR join
                 # set name of usr
-                name = msg[6:len(msg)]
+                name = waitlistn[waitlistip.index(addr)]
                 # add usr values to joined list
                 usr.append(str(addr[0]))
                 usrn.append(name)
@@ -349,6 +356,10 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
             else:
                 sock.sendto(bytes('Error: You are not permitted to do that!', encoding='utf-8'), (addr[0],4243))
                 log('['+datetime.datetime.now().strftime("%H:%M:%S")+'] Error: USR '+usrn[usr.index(addr[0])]+' tried to execute Admin Commands while not authed', l_file)
+        elif addr[0] == list_server_ip and msg == '_Still Active dude?':
+            time.sleep(0.1)
+            log('['+datetime.datetime.now().strftime("%H:%M:%S")+'] List Server Ping',l_file)
+            sock.sendto(bytes('list_update '+cserver_ip+' '+str(PORT)+' '+server_name+' '+str(epw)+' '+str(len(usr)),'utf-8'), (list_server_ip, int(list_server_port)))
         elif addr[0] in usr:
             if addr[0] in auth or epw == False:
                 log('['+datetime.datetime.now().strftime("%H:%M:%S")+'] <'+usrn[usr.index(str(addr[0]))]+'> '+msg, l_file)
@@ -389,6 +400,7 @@ def list_servers_server(ip = '', PORT = '', log_file = ''):
     reg_servers_p = []
     reg_servers_name = []
     reg_servers_epw = []
+    reg_servers_uc = []
 
     log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Creating UDP Socket", l_file)
     # Create a UDP socket
@@ -410,18 +422,34 @@ def list_servers_server(ip = '', PORT = '', log_file = ''):
         # refresh server list
         c = 0
         for o in reg_servers_ip:
-            lspd = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             try:
-                log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Server with Name "+reg_servers_name[c]+" and IP "+reg_servers_ip[c]+" is stil Active.", l_file)
+                sock.sendto(bytes('_Still Active dude?', encoding='utf-8'), (o,int(reg_servers_p[c])))
+                data2, address = sock.recvfrom(4096)
+                addr2 = address
+                msg2 = data2.decode()
+                larg = msg2.split(' ')
+                if larg[0] == 'list_update':
+                    reg_servers_ip[c] = larg[1]
+                    reg_servers_name[c] = larg[3]
+                    reg_servers_p[c] = larg[2]
+                    reg_servers_epw[c] = larg[4]
+                    reg_servers_uc[c] = larg[5]
+                    log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Server with Name "+reg_servers_name[c]+" and IP "+reg_servers_ip[c]+" is stil Active.", l_file)
+                else:
+                    log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Server with Name "+reg_servers_name[c]+" and IP "+reg_servers_ip[c]+" is inactive and will be removed from Serverlist.", l_file)
+                    reg_servers_ip.pop(c)
+                    reg_servers_name.pop(c)
+                    reg_servers_p.pop(c)
+                    reg_servers_epw.pop(c)
+                    reg_servers_uc.pop(c)
                 #lspd.connect((reg_servers_ip[c], int(reg_servers_p[c])))
-                lspd.close()
             except:
                 log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Server with Name "+reg_servers_name[c]+" and IP "+reg_servers_ip[c]+" is inactive and will be removed from Serverlist.", l_file)
                 reg_servers_ip.pop(c)
                 reg_servers_name.pop(c)
                 reg_servers_p.pop(c)
                 reg_servers_epw.pop(c)
-                lspd.close()
+                reg_servers_uc.pop(c)
             c += 0
         log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Refreshed server list.", l_file)
         if msg[0:13] == 'list_register':
@@ -432,25 +460,26 @@ def list_servers_server(ip = '', PORT = '', log_file = ''):
             reg_servers_name.append(larg[3])
             reg_servers_p.append(larg[2])
             reg_servers_epw.append(larg[4])
+            reg_servers_uc.append(larg[5])
             #print(reg_servers_ip,reg_servers_epw)
             
         elif msg[0:5] == '/list':
             sock.sendto(bytes('All known Servers:', encoding='utf-8'), (addr[0],4243))
-            sock.sendto(bytes(' Name:        IP:              Port:      PW(Y/N):', encoding='utf-8'), (addr[0],4243))
+            sock.sendto(bytes(' Name:        IP:              Port:      PW(Y/N):   USR:', encoding='utf-8'), (addr[0],4245))
             c = 0
             for o in reg_servers_ip:
                 sn = 12-len(reg_servers_name[c])
                 sip =17-len(reg_servers_ip[c])
-                sp = 9-len(reg_servers_p)
+                sp = 8-len(reg_servers_p)
                 sn2 = ' '*sn
                 sip2= ' '*sip
                 if reg_servers_epw[c] == 'True':
                     pwq = 'Y'
                 else:
                     pwq = 'N'
-                sock.sendto(bytes('  '+reg_servers_name[c]+sn2+reg_servers_ip[c]+sip2+reg_servers_p[c]+' '*sp+pwq, encoding='utf-8'), (addr[0],4243))
+                sock.sendto(bytes('  '+reg_servers_name[c]+sn2+reg_servers_ip[c]+sip2+reg_servers_p[c]+' '*sp+pwq+' '*10+reg_servers_uc[c], encoding='utf-8'), (addr[0],4245))
                 c += 1
-            sock.sendto(bytes('!system_message:end', encoding='utf-8'), (addr[0],4243))
+            sock.sendto(bytes('!system_message:end', encoding='utf-8'), (addr[0],4245))
             if dev:
                 log("["+datetime.datetime.now().strftime("%H:%M:%S")+'] Send serverlist to User Ip: '+o+' Name='+addr[0], l_file)
         elif msg[0:5] == '/join':
@@ -509,7 +538,7 @@ if len(arg) > 1:
         sock.close()
         # ip and port for list server
         SERVER = ""
-        PORT = 4243
+        PORT = 4245
 
         # Puffergroesse fuer recv()
         BUF_SIZE = 1024
