@@ -1,4 +1,5 @@
 import os
+import sys
 import json
 import platform
 from pathlib import Path
@@ -41,7 +42,7 @@ class commands():
             current_file = Path(fp)
             if current_file.is_file():
                 if 'Windows' in platform.system():
-                    os.system(commandf + x)
+                    os.system('python '+commandf + x)
                 else:
                     os.system('python3 '+commandf+x)
             else:
@@ -96,7 +97,25 @@ class utils():
                 x.append(object)
         return x
 
+    def if_win():
+        if 'Windows' in platform.system():
+            return True
+        else:
+            return False
+
+    def getarg(arg, alt):
+        if not arg == '':
+            if arg in sys.argv:
+                return sys.argv[sys.argv.index(arg) + 1]
+            else:
+                return alt
+
 class text_style():
+    res = '\033[21m'+'\033[22m'+'\033[24m'+'\033[25m'+'\033[27m'+'\033[28m'+'\033[39m'+'\033[49m'
+    def text_rgb(r=0, g=255, b=50):
+        return '\033[38;2;' + str(r) + ';' + str(g) + ';' + str(b) + 'm'
+    def back_rgb(r=0, g=255, b=50):
+        return '\033[48;2;' + str(r) + ';' + str(g) + ';' + str(b) + 'm'
     class format:
         ResetBold       = '\033[21m'
         ResetDim        = '\033[22m'

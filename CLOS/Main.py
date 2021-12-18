@@ -21,12 +21,17 @@ print('Info: Imp orting Important Libs... Done!')
 # Boot options file
 boot_file = Path(os.path.dirname(os.path.realpath(__file__))+'\\data\\boot_opt.json')
 
+# Spacer
+sp = '\\'
+
 # If not os is windows make it unix path
 if not 'Windows' in platform.system():
-    boot_file.replace('\\', '/')
+    boot_file = Path(os.path.dirname(os.path.realpath(__file__))+'/data/boot_opt.json')
+    sp = '/'
 
 # Check if data folder exists
-if Path()
+if not Path(os.path.dirname(os.path.realpath(__file__))+sp+'data').is_dir():
+    os.system('mkdir '+os.path.dirname(os.path.realpath(__file__))+sp+'data')
 if Path(boot_file).is_file():
     if 'Windows' in platform.system():
         f = open(os.path.dirname(os.path.realpath(__file__))+'\\data\\boot_opt.json', 'r')
@@ -70,8 +75,11 @@ style = cutil.text_style
 info_style = style.color.Blue
 warning_style = style.color.Yellow
 error_style = style.color.Red
-res = style.color.Default + style.backcolor.Default
+res = cutil.text_style.res
 print(cutil.utils.ifcolor('Info: Importing Libs From Libs Folder... Done!',info_style,res))
+
+# Easy way to get os
+iswin = cutil.utils.if_win()
 
 # Install Stuff
 if boot_opt["install_libs"]:
@@ -104,10 +112,14 @@ import getpass
 print(cutil.utils.ifcolor('Info: Importing More Libs... Done!',info_style,res))
 
 # Set Title
-os.system('title CLOS (Command Line Operating System)')
+if iswin:
+    os.system('title CLOS (Command Line Operating System)')
 
 # Commands
-clear = lambda: os.system('cls')
+if iswin:
+    clear = lambda: os.system('cls')
+else:
+    clear = lambda: os.system('clear')
 
 
 # Check for Internet
