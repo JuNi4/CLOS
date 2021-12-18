@@ -1,6 +1,6 @@
 # <ins>CLOS</ins>
 ## Command Line Operating System
-### By <ins>[JuNi4](https:/github.com/JuNi4)</ins>
+### By <ins>[JuNi4](https:/JuNi4)</ins>
 
 > ### <ins>To Do</ins>:
 >- ✔ Fix Command Search
