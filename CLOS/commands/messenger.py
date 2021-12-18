@@ -4,6 +4,7 @@ import threading
 import platform
 import datetime
 import keyboard
+import pathlib
 import socket
 import sys
 import os
@@ -47,7 +48,7 @@ def client():
         # Socket erzeugen
         # Wir nutzen IPv4, TCP/IP
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        server_address = (SERVER, PORT)
+        server_address = (SERVER, int(PORT))
 
         # Verbindung aufbauen
         # TODO: Fehler-Auswertung fehlt!!!
@@ -574,7 +575,7 @@ if len(arg) > 1:
 
 # If you do not enter any extra details an "UI" will apper to input any data
 class smenu():
-    def styl_menu_vert(name='ExampleMenu',prompt='Pleae select one of the following:' , entrys=['Entry 1','Entry 2','Entry 3'],description=['The Entry 1 of the menu. Press ENTER to select it','Lorem Ipsulm','LOL'],backcolor = rgb(14.1,44.7,78.4),menucolor= rgb(89.8,89.8,89.8),selcolor = rgb(40,40,40), sup = False):
+    def styl_menu_vert(name='ExampleMenu',prompt='Pleae select one of the following:' , entrys=['Entry 1','Entry 2','Entry 3'],description=['The Entry 1 of the menu. Press ENTER to select it','Lorem Ipsulm','LOL'],backcolor = '\033[44m',menucolor= '\033[47m',selcolor = '\033[100m', sup = False):
         namel = len(name)
         namelengh = 44-namel
         promptl = 43-len(prompt)
@@ -583,7 +584,8 @@ class smenu():
         #Colors
         tres = '\033[39m'
         tblack = '\033[30m'
-        lcol = rgb(80,80,80)
+        #lcol = rgb(80,80,80)
+        lcol = ''
 
         while done == False:
             if sel > len(entrys)-1:
@@ -626,7 +628,7 @@ class smenu():
 
     #print(styl_menu_vert())
 
-    def styl_menu_vert_mult(name='ExampleMenu',prompt='Please select one of the following:' , entrys=['Entry 1','Entry 2','Entry 3'],description=['The Entry 1 of the menu. Press ENTER to select it','Lorem Ipsulm','LOL'],backcolor = rgb(14.1,44.7,78.4),menucolor= rgb(89.8,89.8,89.8),selcolor = rgb(40,40,40), sup = False):
+    def styl_menu_vert_mult(name='ExampleMenu',prompt='Please select one of the following:' , entrys=['Entry 1','Entry 2','Entry 3'],description=['The Entry 1 of the menu. Press ENTER to select it','Lorem Ipsulm','LOL'],backcolor = '\033[44m',menucolor= '\033[47m',selcolor = '\033[100m', sup = False):
         selected = []
         for object in entrys:
             selected.append(False)
@@ -639,7 +641,8 @@ class smenu():
         tres = '\033[39m'
         tblack = '\033[30m'
         selv = 0
-        lcol = rgb(80,80,80)
+        #lcol = rgb(80,80,80)
+        lcol = ''
 
         while done == False:
             if sel > len(entrys)-1:
@@ -708,7 +711,7 @@ class smenu():
     #print(styl_menu_vert_mult(entrys=['lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol'],description=['lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol','lol']))
     #basic_menu()
 
-    def custom_input_menu(name = 'Example Prompt', prompt='Please select one of the following:' , entrys=['Entry 1:','Entry 2:','Entry 3:'], description=['The Entry 1 of the menu. Press ENTER to select it','Lorem Ipsulm','LOL'], sup = False,backcolor = rgb(14.1,44.7,78.4),menucolor= rgb(89.8,89.8,89.8),selcolor = rgb(40,40,40), txt = brgb(171, 171, 171), stxt = brgb(150, 150, 150), default_vals = ['','already something'], space = False):
+    def custom_input_menu(name = 'Example Prompt', prompt='Please select one of the following:' , entrys=['Entry 1:','Entry 2:','Entry 3:'], description=['The Entry 1 of the menu. Press ENTER to select it','Lorem Ipsulm','LOL'], sup = False,backcolor = '\033[44m',menucolor= '\033[47m',selcolor = '\033[100m', txt = brgb(171, 171, 171), stxt = brgb(150, 150, 150), default_vals = ['','already something'], space = False):
         #nswhitelist = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
         #swhitelist = [""]
         #blist = str(keyboard.all_modifiers)
@@ -743,7 +746,8 @@ class smenu():
         #Colors
         tres = '\033[39m'
         tblack = '\033[30m'
-        lcol = rgb(80,80,80)
+        #lcol = rgb(80,80,80)
+        lcol = ''
         selv = 0
 
         while done == False:
@@ -825,7 +829,7 @@ class smenu():
 
 
     # Prompt
-    def prompt(name='ExampleMenu', text = 'This is and A or B Prompt. Select the Button thith the ARRow key and hit enter', abut = 'Cancle', bbut = 'OK', sup = False,backcolor = rgb(14.1,44.7,78.4),menucolor= rgb(89.8,89.8,89.8),selcolor = rgb(40,40,40)):
+    def prompt(name='ExampleMenu', text = 'This is and A or B Prompt. Select the Button thith the ARRow key and hit enter', abut = 'Cancle', bbut = 'OK', sup = False,backcolor = '\033[44m',menucolor= '\033[47m',selcolor = '\033[100m'):
         namel = len(name)
         namelengh = 44-namel
         promptl = 43-len(text)
@@ -834,7 +838,8 @@ class smenu():
         #Colors
         tres = '\033[39m'
         tblack = '\033[30m'
-        lcol = rgb(80,80,80)
+        #lcol = rgb(80,80,80)
+        lcol = ''
 
         while done == False:
             if sel > 1:
@@ -875,3 +880,39 @@ pts = smenu.styl_menu_vert(name = 'JuNi\'s Messenger', entrys=['Client', 'Server
 # Client Route
 if pts == 0:
     serveri = smenu.custom_input_menu(name='Messenger', entrys=['Server IP:', 'Server  P:'], prompt = 'Please anwer the questions below:', default_vals=['','4242'], description=['The IP of the server you want to connect to.', 'The Port of the server you want to connect to. Leave as it is if you don\'t have a port.'])
+    usrcrd = smenu.custom_input_menu(name='Messenger', entrys=['User Name:', 'Password: '], prompt = 'Please anwer the questions below:', default_vals=[os.getlogin(),''], description=['Your User Name that will be displayed on the Server','The Password for the Server, Leave blank if you don\'t need it.'])
+    if 'Windows' in platform.system():
+        batfile = smenu.prompt(name='Messenger',text='Do You Wan\'t to Create a Batch file? This can later be used to Quickly start the messenger with youre settings wich you just entered', abut='No', bbut='Yes')
+    else:
+        batfile = smenu.prompt(name='Messenger',text='Do You Wan\'t to Create a Bash file? This can later be used to Quickly start the messenger with youre settings wich you just entered', abut='No', bbut='Yes')
+    
+    # Get Vars set up
+    server_IP= serveri[0]
+    server_P = serveri[1]
+
+    usrn = usrcrd[0]
+    if not usrcrd[1] == '':
+        batpw = ' -pw '+ usrcrd[1]
+        pw = usrcrd[0]
+    else:
+        batpw = ''
+        pw = ''
+
+    if batfile == 1:
+        batfname = smenu.custom_input_menu(name='Messenger', entrys=['File Name:'], prompt = 'Please input the File Name:', default_vals=[os.getlogin()+'\'s_messenger'], description=['The name of the Messenger "Profile" File.'])
+        if 'Windows' in platform.system():
+            f = open('C:\\Users\\'+os.getlogin()+'\\Desktop\\'+batfname[0]+'.bat', 'w')
+            f.write('python '+os.path.dirname(os.path.realpath(__file__))+'\\'+pathlib.Path(__file__).name+' -c -ip '+server_IP+' -p '+server_P+' -u '+usrn+batpw)
+            f.close()
+        else:
+            f = open(os.path.dirname(os.path.realpath(__file__))+batfname[0]+'.sh', 'w')
+            f.write('#!/bin/bash\npython3 '+os.path.dirname(os.path.realpath(__file__))+'/'+pathlib.Path(__file__).name+' -c -ip '+server_IP+' -p '+server_P+' -u '+usrn+batpw)
+            f.close()
+# Server Route
+if pts == 1:
+    srvcrd = smenu.custom_input_menu(name='Messenger Server', entrys=['Server Port:    ', 'Server Password:'], prompt = 'Please answer the questions below:', default_vals=['4242',''], description=['The Server Port that the clients will connect to','The Password for the Server, Leave blank if you don\'t wan\'t one. Every Client has to enter this'])
+    if smenu.prompt(name='Messenger Server',text='Do You wan\'t to enable Server Listing. This will send some information to the List server so your serve will be easesar to find. (No Listing Of PW or USRNs)', abut='No', bbut='Yes') == 1:
+        pass
+    else:
+        sls = ''
+# List Server Route
