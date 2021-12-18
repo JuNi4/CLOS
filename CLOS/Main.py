@@ -5,6 +5,7 @@
 # Main Command Line Operating System (CLOS) File # Änderung Nr. 4 14.8.2021 21:00 - actually i forgot to count maybe 105th commit? and its now 18.11.2021 20:19
 # Import Stuff
 print('Info: Importing Important Libs...', end='\r')
+# Import IMPORTANT libs
 import os
 import sys
 import time
@@ -12,15 +13,21 @@ import json
 import platform
 from pathlib import Path
 
+# Boot timestamp
 boot_start = time.time()
 
-print('Info: Importing Important Libs... Done!')
+print('Info: Imp orting Important Libs... Done!')
 
-if 'Windows' in platform.system():
-    boot_file = Path(os.path.dirname(os.path.realpath(__file__))+'\\data\\boot_opt.json')
-else:
-    boot_file = Path(os.path.dirname(os.path.realpath(__file__))+'/data/boot_opt.json')
-if boot_file.is_file():
+# Boot options file
+boot_file = Path(os.path.dirname(os.path.realpath(__file__))+'\\data\\boot_opt.json')
+
+# If not os is windows make it unix path
+if not 'Windows' in platform.system():
+    boot_file.replace('\\', '/')
+
+# Check if data folder exists
+if Path()
+if Path(boot_file).is_file():
     if 'Windows' in platform.system():
         f = open(os.path.dirname(os.path.realpath(__file__))+'\\data\\boot_opt.json', 'r')
     else:
