@@ -298,7 +298,7 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
 
         # Auth on Server
         elif msg[0:5] == '/auth' and epw:
-            if msg[6:len(msg)] == pw:
+            if msg[6:len(msg)] == pw and not addr[0] in auth:
                 auth.append(addr[0])
             if not addr[0] in usr:
                 # ..let USR join
@@ -331,7 +331,7 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
                             sock.sendto(bytes(o,'utf-8'), (addr[0],4243))
         # Admin auth on Server
         elif msg[0:6] == '/aauth':
-            if msg[7:len(msg)] == apw:
+            if msg[7:len(msg)] == apw and not addr[0] in admin_auth:
                 log('['+datetime.datetime.now().strftime("%H:%M:%S")+'] USER IP: '+str(addr[0])+' Name: '+usrn[usr.index(addr[0])]+' became mod.', l_file)
                 admin_auth.append(addr[0])
                 for o in admin_auth:
