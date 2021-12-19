@@ -111,7 +111,6 @@ def client_server(ip = "", cpid = '', toasts = True):
                 pass
             else:
                 tempWindowName=win32gui.GetWindowText (win32gui.GetForegroundWindow())
-            cwin = tempWindowName
             hWnd = windll.user32.GetForegroundWindow()
             length = windll.user32.GetWindowTextLengthW(hWnd)
             buf = create_unicode_buffer(length + 1)
@@ -120,6 +119,7 @@ def client_server(ip = "", cpid = '', toasts = True):
                 fwin = buf.value
             else:
                 fwin = None
+            return tempWindowName==fwin
         else:
             disp = display.Display()
             root = disp.screen().root
@@ -132,7 +132,7 @@ def client_server(ip = "", cpid = '', toasts = True):
             scr = Wnck.Screen.get_default()
             scr.force_update()
             cwin = scr.get_active_window().get_xid()
-        return fwin==cwin
+            return fwin==cwin
     # Toasts
     def Toast(msg, titl):
         if 'Windows' in platform.system():
