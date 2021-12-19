@@ -390,6 +390,8 @@ def list_servers_server(ip = '', PORT = '', log_file = ''):
 
     if log_file == '':
         l_file = os.path.dirname(os.path.realpath(__file__))+'\\list_server_log.txt'
+        if not 'Windows' in platform.system():
+            l_file.replace('\\', '/')
     else:
         l_file = log_file
     log('\n\nlog from '+"--"+datetime.datetime.now().strftime("%Y/%m/%D %H:%M:%S")+"--\n", l_file, False)
@@ -472,7 +474,7 @@ def list_servers_server(ip = '', PORT = '', log_file = ''):
             #print(reg_servers_ip,reg_servers_epw)
             
         elif msg[0:5] == '/list':
-            sock.sendto(bytes('All known Servers:', encoding='utf-8'), (addr[0],4243))
+            sock.sendto(bytes('All known Servers:', encoding='utf-8'), (addr[0],4245))
             sock.sendto(bytes(' Name:        IP:              Port:      PW(Y/N):   USR:', encoding='utf-8'), (addr[0],4245))
             c = 0
             for o in reg_servers_ip:
