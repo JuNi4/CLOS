@@ -16,6 +16,7 @@ def rgb(r=0,g=255,b=50):
 def brgb(r=0,g=255,b=50):
     return '\033[48;2;'+str(r)+';'+str(g)+';'+str(b)+'m'
 
+# Ćlient
 def client():
     arg = sys.argv
     if '-ip' in arg:
@@ -74,7 +75,7 @@ def client():
             time.sleep(2)
             exit()
 
-
+# Client Server used to recive messages
 def client_server(ip = "", cpid = ''):
     # "" == INADDR_ANY
     SERVER = ip
@@ -109,8 +110,14 @@ def client_server(ip = "", cpid = ''):
                 exit()
             print(data.decode())
 
+# Server
 def server(list_server_ip = '', list_server_port = '4244', server_name = '', server_port = '4242', listtheserver = False, ch_log = '', l_file = '', epw = False, pw ='', apw = 'jf/eu§nf(7UF+3ef5#]534*', ecl = True):
-    log('\n\nlog from '+"--"+datetime.datetime.now().strftime("%Y/%m/%D %H:%M:%S")+"--\n", l_file, False)
+    
+    if l_file == '':
+        l_file = os.path.dirname(os.path.realpath(__file__))+'\\server_log.txt'
+        if not 'Windows' in platform.system:
+            l_file = os.path.dirname(os.path.realpath(__file__))+'/server_log.txt'
+    log('\n\nlog from '+"--"+datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")+"--\n", l_file, False)
     log('---------------------------------------------', l_file)
     log(' JuNi\'s Messenger Server', l_file)
     log(' By JuNi, GitHub: https://github.com/juni4', l_file)
@@ -383,18 +390,17 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
                     #retmsg = '<'+usrn[usr.index(str(addr[0]))]+'> '+msg + strdata
                     #con.sendall(retmsg.encode())
 
-
-
+# List Server
 def list_servers_server(ip = '', PORT = '', log_file = ''):
     dev = False
 
     if log_file == '':
         l_file = os.path.dirname(os.path.realpath(__file__))+'\\list_server_log.txt'
         if not 'Windows' in platform.system():
-            l_file.replace('\\', '/')
+            l_file = os.path.dirname(os.path.realpath(__file__))+'/list_server_log.txt'
     else:
         l_file = log_file
-    log('\n\nlog from '+"--"+datetime.datetime.now().strftime("%Y/%m/%D %H:%M:%S")+"--\n", l_file, False)
+    log('\n\nlog from '+"--"+datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")+"--\n", l_file, False)
     log('---------------------------------------------', l_file)
     log(' JuNi\'s Messenger List Server', l_file)
     log(' By JuNi, GitHub: https://github.com/juni4', l_file)
