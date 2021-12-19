@@ -24,6 +24,7 @@ if not 'Windows' in platform.system():
 
 if 'Windows' in platform.system():
     from win10toast import ToastNotifier
+    import win32gui
 
 # RGB
 def rgb(r=0,g=255,b=50):
@@ -102,15 +103,22 @@ def client():
 def client_server(ip = "", cpid = '', toasts = True):
     # If current window in focus
     def isFocused():
+        if 'Windows' in platform.system():
+            cwin=win32gui.GetWindowText (win32gui.GetForegroundWindow())
+            if (cwin==win32gui.GetWindowText (win32gui.GetForegroundWindow())):
+                pass
+            else:
+                cwin=win32gui.GetWindowText (win32gui.GetForegroundWindow())
+        else:
+            scr = Wnck.Screen.get_default()
+            scr.force_update()
+            cwin = scr.get_active_window().get_xid()
         disp = display.Display()
         root = disp.screen().root
         pointer_info = request.QueryPointer(display = disp.display, window = root)
         root_xpos, root_ypos = (pointer_info._data['root_x'], pointer_info._data['root_y'])
         targetwindow = disp.get_input_focus().focus
         fwin = targetwindow.id
-        scr = Wnck.Screen.get_default()
-        scr.force_update()
-        cwin = scr.get_active_window().get_xid()
         if fwin == cwin:
             return True
         else:
