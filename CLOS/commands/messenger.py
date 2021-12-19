@@ -4,6 +4,7 @@ from getpass import getpass
 import threading
 import platform
 import datetime
+from typing import BinaryIO
 import keyboard
 import pathlib
 import socket
@@ -223,30 +224,30 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
         log('['+datetime.datetime.now().strftime("%H:%M:%S")+'] User with IP '+addr[0]+' and Name '+usrn[usr.index(addr[0])]+' got kicked by '+did+' reason: '+msg+'.', l_file)
         if ecl:
             log(usrn[usrn.index(tusr)]+" left the room.",ch_log, False)
-            # send all usrs leave message
-            for o in usr:
-                if usrn[usr.index(o)] == usrn[usrn.index(tusr)]:
-                    # if its the person who want's to leave, send the cs a exit message
-                    sock.sendto(bytes("!leave_account_requested_by_self "+kickindex+" __msg:"+msg, encoding='utf-8'), (usraddr[usrn.index(tusr)][0],4243))
+        # send all usrs leave message
+        for o in usr:
+            if usrn[usr.index(o)] == usrn[usrn.index(tusr)]:
+                # if its the person who want's to leave, send the cs a exit message
+                sock.sendto(bytes("!leave_account_requested_by_self "+kickindex+" __msg:"+msg, encoding='utf-8'), (usraddr[usrn.index(tusr)][0],4243))
+            else:
+                if o in admin_auth:
+                    sock.sendto(bytes(usrn[usrn.index(tusr)]+" got kicked by "+did+'.', encoding='utf-8'), (usraddr[usr.index(o)][0],4243))
                 else:
-                    if o in admin_auth:
-                        sock.sendto(bytes(usrn[usrn.index(tusr)]+" got kicked by "+did+'.', encoding='utf-8'), (usraddr[usr.index(o)][0],4243))
-                    else:
-                        # else send leave message
-                        sock.sendto(bytes(usrn[usrn.index(tusr)]+" left the room.", encoding='utf-8'), (usraddr[usr.index(o)][0],4243))
-                if dev:
-                    # debug mesage
-                    log('Send leave message to User Ip: '+o+' Name='+usrn[usr.index(o)])
-            # remove usr from auth list
-            if epw:
-                auth.pop(int(usrindex))
-            # remove usr from admin list
-            if usr[usrindex] in admin_auth:
-                admin_auth.pop(usrindex)
-                # remove usr from usr lists
-                usr.pop(int(usrindex))
-                usrn.pop(int(usrindex))
-                usraddr.pop(int(usrindex))
+                    # else send leave message
+                    sock.sendto(bytes(usrn[usrn.index(tusr)]+" left the room.", encoding='utf-8'), (usraddr[usr.index(o)][0],4243))
+            if dev:
+                # debug mesage
+                log('Send leave message to User Ip: '+o+' Name='+usrn[usr.index(o)])
+        # remove usr from auth list
+        if epw:
+            auth.pop(int(usrindex))
+        # remove usr from admin list
+        if usr[usrindex] in admin_auth:
+            admin_auth.pop(usrindex)
+            # remove usr from usr lists
+            usr.pop(int(usrindex))
+            usrn.pop(int(usrindex))
+            usraddr.pop(int(usrindex))
     log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Done!", l_file)
     log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Awaiting Input...", l_file)
 
@@ -279,7 +280,8 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
                         for line in clog:
                             chlog_ar.append(line.rstrip())
                         clog.close()
-                        chlog_ar.pop(len(chlog_ar)-1)
+                        #if not len(chlog_ar) == 0:
+                        #    chlog_ar.pop(len(chlog_ar)-1)
                         for o in chlog_ar:
                             sock.sendto(bytes(o,'utf-8'), (addr[0],4243))
                         if dev:
@@ -331,7 +333,8 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
                         for line in clog:
                             chlog_ar.append(line.rstrip())
                         clog.close()
-                        chlog_ar.pop(len(chlog_ar)-1)
+                        #if not len(chlog_ar) == 0:
+                        #    chlog_ar.pop(len(chlog_ar)-1)
                         for o in chlog_ar:
                             sock.sendto(bytes(o,'utf-8'), (addr[0],4243))
         # Admin auth on Server
@@ -376,6 +379,8 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
             usrn.pop(int(usrindex))
             usraddr.pop(int(usrindex))
             # remove usr from auth list
+            if addr[0] in auth:
+                auth.pop(usrindex)
         # list command
         elif msg[0:5] == '/list':
             user_list = ''
