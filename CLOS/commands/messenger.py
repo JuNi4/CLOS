@@ -17,10 +17,10 @@ import time
 from Xlib import X, XK, protocol, display, Xcursorfont
 from Xlib.ext import xtest
 from Xlib.protocol import request
-import os
-import gi
-gi.require_version("Wnck", "3.0")
-from gi.repository import Wnck
+if not 'Windows' in platform.system():
+    import gi
+    gi.require_version("Wnck", "3.0")
+    from gi.repository import Wnck
 
 if 'Windows' in platform.system():
     from win10toast import ToastNotifier
