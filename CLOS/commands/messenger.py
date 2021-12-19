@@ -197,8 +197,41 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
     #log('starting up on {} port {}'.format(*server_address))
     sock.bind(server_address)
     log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Server opened on port: "+ str(PORT), l_file)
+    log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Creating server functions", l_file)
+    def kick(tusr, msg, did):
+        # get usr index in usr list
+        usrindex = usrn.index(usr)
+        # log message that usr xy left
+        log('['+datetime.datetime.now().strftime("%H:%M:%S")+'] User with IP '+addr[0]+' and Name '+usrn[usr.index(addr[0])]+' got kicked by '+usrn[usr.index(addr[0])]+'.', l_file)
+        if ecl:
+            log(usrn[usr.index(tusr)]+" left the room.",ch_log, False)
+            # send all usrs leave message
+            for o in usr:
+                if usrn[usr.index(o)] == msg[6:len(msg)]:
+                    # if its the person who want's to leave, send the cs a exit message
+                    sock.sendto(bytes("!leave_account_requested_by_self _nonself __msg:"+msg, encoding='utf-8'), (usraddr[usrn.index(tusr)][0],4243))
+                else:
+                    if o in admin_auth:
+                        sock.sendto(bytes(usrn[usrn.index(tusr)]+" got kicked by "+usrn[usr.index(did)]+'.', encoding='utf-8'), (usraddr[usr.index(o)][0],4243))
+                    else:
+                        # else send leave message
+                        sock.sendto(bytes(usrn[usrn.index(tusr)]+" left the room.", encoding='utf-8'), (usraddr[usr.index(o)][0],4243))
+                if dev:
+                    # debug mesage
+                    log('Send leave message to User Ip: '+o+' Name='+usrn[usr.index(o)])
+            # remove usr from auth list
+            if epw:
+                auth.pop(int(usrindex))
+            # remove usr from admin list
+            if usr[usrindex] in admin_auth:
+                admin_auth.pop(usrindex)
+                # remove usr from usr lists
+                usr.pop(int(usrindex))
+                usrn.pop(int(usrindex))
+                usraddr.pop(int(usrindex))
     log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Done!", l_file)
     log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Awaiting Input...", l_file)
+
     while True:
         data, address = sock.recvfrom(4096)
         addr = address
@@ -341,30 +374,45 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
                     log('Send userlist to User Ip: '+o+' Name='+usrn[usr.index(o)])
         # Admin commands
         elif msg[0:1] == '!':
-            def ac(c,istr, ofs = 0, low = True):
+            cmdlist = ['help','chatlog_clear','chatlog_en','chatlog_dis','kick', 'stop']
+            def ac(c,istr, ofs = 1, low = True):
                 if low:
-                    istr = istr[ofs:len(c)].lower()
+                    istr = istr[ofs:len(c)+ofs].lower()
                     c = c.lower()
                 else:
-                    istr = istr[ofs:len(c)]
-                    c = c
+                    istr = istr[ofs:len(c)+ofs]
                 if istr == c:
                     return True
                 else:
                     return False
             if addr[0] in admin_auth :
-                if ac('!help',msg, low = False):
+                if ac(cmdlist[0],msg, low = False):
                     hmsg = ' !help  Shows this message\n !chatlog_clear  Clears the chat log - the log wich is send to a user on join\n !chatlog_dis  Diables the chat log and it will no longer be send to usrs on join\n !chatlog_en  Enables the chatlog and all writen messages will be send to joining usrs\n !kick  Kicks the Person (usrname)'
                     sock.sendto(bytes(hmsg, encoding='utf-8'), (addr[0],4243))
-                if ac('!chatlog_clear',msg):
+                if ac(cmdlist[1],msg):
                     f = open(ch_log, 'w')
                     f.write('')
                     f.close()
-                if ac('!chatlog_en',msg):
+                    for o in admin_auth:
+                        if o == addr[0]:
+                            sock.sendto(bytes('You cleared the Chat Log'.format(addr[0]),'utf-8'), (o,4243))
+                        else:
+                            sock.sendto(bytes('User {0} cleared the Chat Log'.format(addr[0]),'utf-8'), (o,4243))
+                if ac(cmdlist[2],msg):
                     ecl = True
-                if ac('!chatlog_dis',msg):
+                    for o in admin_auth:
+                        if o == addr[0]:
+                            sock.sendto(bytes('You enabled the Chat Log'.format(addr[0]),'utf-8'), (o,4243))
+                        else:
+                            sock.sendto(bytes('User {0} enabled the Chat Log'.format(addr[0]),'utf-8'), (o,4243))
+                if ac(cmdlist[3],msg):
                     ecl = False
-                if ac('!kick',msg):
+                    for o in admin_auth:
+                        if o == addr[0]:
+                            sock.sendto(bytes('You disabled the Chat Log'.format(addr[0]),'utf-8'), (o,4243))
+                        else:
+                            sock.sendto(bytes('User {0} disabled the Chat Log'.format(addr[0]),'utf-8'), (o,4243))
+                if ac(cmdlist[4],msg):
                     # get usr index in usr list
                     usrindex = usrn.index(msg[6:len(msg)])
                     # log message that usr xy left
@@ -396,7 +444,13 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
                     usr.pop(int(usrindex))
                     usrn.pop(int(usrindex))
                     usraddr.pop(int(usrindex))
-                    
+                if ac(cmdlist[5], msg):
+                    for o in admin_auth:
+                        if o == addr[0]:
+                            sock.sendto(bytes('You disabled the Chat Log'.format(addr[0]),'utf-8'), (o,4243))
+                        else:
+                            sock.sendto(bytes('User {0} Stopped the server'.format(addr[0]),'utf-8'), (o,4243))
+                    exit()
             else:
                 sock.sendto(bytes('Error: You are not permitted to do that!', encoding='utf-8'), (addr[0],4243))
                 log('['+datetime.datetime.now().strftime("%H:%M:%S")+'] Error: USR '+usrn[usr.index(addr[0])]+' tried to execute Admin Commands while not authed', l_file)

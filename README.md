@@ -1,5 +1,5 @@
 # <ins>CLOS</ins>
-## Command Line Operating System
+## Command Line Operating System (Actually a Shell)
 ### By <ins>[JuNi4](https:/JuNi4)</ins>
 
 > ### <ins>To Do</ins>:
@@ -9,13 +9,13 @@
 >- Make Help Command
 >- ✔ Make 'cd' command
 >- Make Installer:
->  - Steps:
->    - Select Language
->    - Choose Name
->    - Choose Password
->    - Repeat Password
->    - Select cpackages / commands to be pre installed
->    - Select install Path
+>   - Steps:
+>     - Select Language
+>     - Choose Name
+>     - Choose Password
+>     - Repeat Password
+>     - Select cpackages / commands to be pre installed
+>     - Select install Path
 >- Make multiple user support
 
 > ### <ins>How To Use:</ins>
@@ -26,4 +26,4 @@
 
 > ### <ins>Notes:</ins>
 >- Linux might have problems with some commands
->- Potentional Fix: run CLOS with `sudo python3 [Clos File]`
+>   - Potentional Fix: run CLOS with `sudo python3 [Clos File]`
