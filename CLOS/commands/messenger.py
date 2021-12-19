@@ -1,16 +1,29 @@
 # messenger -server -client -listserver
 
 from getpass import getpass
+import re
 import threading
 import platform
 import datetime
-from typing import BinaryIO
+import subprocess
 import keyboard
 import pathlib
 import socket
 import sys
 import os
 import time
+
+# Window Focus and Toast stuff
+from Xlib import X, XK, protocol, display, Xcursorfont
+from Xlib.ext import xtest
+from Xlib.protocol import request
+import os
+import gi
+gi.require_version("Wnck", "3.0")
+from gi.repository import Wnck
+
+if 'Windows' in platform.system():
+    from win10toast import ToastNotifier
 
 # RGB
 def rgb(r=0,g=255,b=50):
@@ -40,8 +53,13 @@ def client():
         client_name = s.getsockname()[0]
         s.close()
 
+    if not 'disToasts' in arg:
+        toasts = True
+    else:
+        toasts = False
+
     if not '-standalone' in arg:
-        c_server = threading.Thread(target=client_server, args=('', str(os.getpid())))
+        c_server = threading.Thread(target=client_server, args=('', str(os.getpid()), toasts))
         c_server.start()
 
     pw = getarg('-pw', '')
@@ -81,7 +99,29 @@ def client():
             exit()
 
 # Client Server used to recive messages
-def client_server(ip = "", cpid = ''):
+def client_server(ip = "", cpid = '', toasts = True):
+    # If current window in focus
+    def isFocused():
+        disp = display.Display()
+        root = disp.screen().root
+        pointer_info = request.QueryPointer(display = disp.display, window = root)
+        root_xpos, root_ypos = (pointer_info._data['root_x'], pointer_info._data['root_y'])
+        targetwindow = disp.get_input_focus().focus
+        fwin = targetwindow.id
+        scr = Wnck.Screen.get_default()
+        scr.force_update()
+        cwin = scr.get_active_window().get_xid()
+        if fwin == cwin:
+            return True
+        else:
+            return False
+    # Toasts
+    def Toast(msg, titl):
+        if 'Windows' in platform.system():
+            toaster = ToastNotifier()
+            toaster.show_toast(titl,msg)
+        else:
+            subprocess.Popen(['notify-send', titl, msg])
     # "" == INADDR_ANY
     SERVER = ip
     PORT = 4243
@@ -105,17 +145,24 @@ def client_server(ip = "", cpid = ''):
             # Receive response
             data, server = sock.recvfrom(4096)
             if data.decode()[0:32] == "!leave_account_requested_by_self":
-                if data.decode()[0:42] == "!leave_account_requested_by_self _nonself ":
+                if data.decode()[0:41] == "!leave_account_requested_by_self _nonself":
                     if data.decode()[42:48] == "__msg:":
                         print('You got Kicked! Reason: '+data.decode()[48:])
+                        if not isFocused():
+                            Toast("Disconnected: Kicked: "+data.decode()[48:], "Messenger")
                     else:
                         print('You got kicked!')
+                        if not isFocused():
+                            Toast("Disconnected: Kicked", "Messenger")
                     if 'Windows' in platform.system():
-                        os.system('taskkill /PID '+cpid+' /F')
+                        os.system('taskkill /PID '+cpid+' /F>nil')
                     else:
-                        os.system('kill '+cpid)
+                        os.system('kill '+cpid+'>nil')
+                    
                     time.sleep(2)
                 elif data.decode()[0:42] == "!leave_account_requested_by_self _svclosed":
+                    if not isFocused():
+                        Toast("Disconnected: Server Closed", "Messenger")
                     print('Server Closed')
                     if 'Windows' in platform.system():
                         os.system('taskkill /PID '+cpid+' /F>nil')
@@ -123,7 +170,10 @@ def client_server(ip = "", cpid = ''):
                         os.system('kill '+cpid+'>nil')
                     time.sleep(2)
                 exit()
+            
             print(data.decode())
+            if not isFocused():
+                Toast(data.decode(), "Messenger")
 
 # Server
 def server(list_server_ip = '', list_server_port = '4244', server_name = '', server_port = '4242', listtheserver = False, ch_log = '', l_file = '', epw = False, pw ='', apw = 'jf/eu§nf(7UF+3ef5#]534*', ecl = True):
@@ -244,10 +294,10 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
         # remove usr from admin list
         if usr[usrindex] in admin_auth:
             admin_auth.pop(usrindex)
-            # remove usr from usr lists
-            usr.pop(int(usrindex))
-            usrn.pop(int(usrindex))
-            usraddr.pop(int(usrindex))
+        # remove usr from usr lists
+        usr.pop(int(usrindex))
+        usrn.pop(int(usrindex))
+        usraddr.pop(int(usrindex))
     log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Done!", l_file)
     log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Awaiting Input...", l_file)
 
@@ -307,10 +357,10 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
         elif msg[0:5] == '/auth' and epw:
             if msg[6:len(msg)] == pw and not addr[0] in auth:
                 auth.append(addr[0])
-            if not addr[0] in usr:
+            if not addr[0] in usr and addr[0] in waitlistip:
                 # ..let USR join
                 # set name of usr
-                name = waitlistn[waitlistip.index(addr)]
+                name = waitlistn[waitlistip.index(addr[0])]
                 # add usr values to joined list
                 usr.append(str(addr[0]))
                 usrn.append(name)
@@ -337,6 +387,8 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
                         #    chlog_ar.pop(len(chlog_ar)-1)
                         for o in chlog_ar:
                             sock.sendto(bytes(o,'utf-8'), (addr[0],4243))
+                waitlistip.pop(waitlistip.index(usr))
+                waitlistn.pop(waitlistip.index(usr))
         # Admin auth on Server
         elif msg[0:6] == '/aauth' and addr[0] in usr:
             if msg[7:len(msg)] == apw and not addr[0] in admin_auth:
@@ -443,28 +495,27 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
                         else:
                             sock.sendto(bytes('User {0} disabled the Chat Log'.format(addr[0]),'utf-8'), (o,4243))
                 if ac(cmdlist[4],msg):
-                    if not tusr in usr:
+                    if not msg[6:len(msg)] in usrn:
                         print('['+datetime.datetime.now().strftime("%H:%M:%S")+'] USR '+did+' tried to kick a person who isn\'t in this room')
                         sock.sendto(bytes('Sorry but this Person in\'t in this room','utf-8'))
                     else:
                         # get usr index in usr list
                         usrindex = usrn.index(msg[6:len(msg)])
                         # log message that usr xy left
-                        log('['+datetime.datetime.now().strftime("%H:%M:%S")+'] User with IP '+addr[0]+' and Name '+usrn[usr.index(addr[0])]+' got kicked by '+usrn[usr.index(addr[0])]+'.', l_file)
+                        log('['+datetime.datetime.now().strftime("%H:%M:%S")+'] User with IP '+usr[usrindex]+' and Name '+usrn[usrindex]+' got kicked by '+usrn[usr.index(addr[0])]+'.', l_file)
                         if ecl:
                             log(usrn[usr.index(addr[0])]+" left the room.",ch_log, False)
                         # send all usrs leave message
                         for o in usr:
                             if usrn[usr.index(o)] == msg[6:len(msg)]:
                                 # if its the person who want's to leave, send the cs a exit message
-                                sock.sendto(bytes("!leave_account_requested_by_self _nonself", encoding='utf-8'), (usraddr[usrn.index(msg[6:len(msg)])][0],4243))
+                                sock.sendto(bytes("!leave_account_requested_by_self _nonself", encoding='utf-8'), (o,4243))
                             else:
                                 if o in admin_auth:
-                                    sock.sendto(bytes(usrn[usrn.index(msg[6:len(msg)])]+" got kicked by "+usrn[usr.index(addr[0])]+'.', encoding='utf-8'), (usraddr[usr.index(o)][0],4243))
+                                    sock.sendto(bytes(usrn[usrn.index(msg[6:len(msg)])]+" got kicked by "+usrn[usr.index(addr[0])]+'.', encoding='utf-8'), (o,4243))
                                 else:
                                     # else send leave message
-                                    sock.sendto(bytes(usrn[usrn.index(msg[6:len(msg)])]+" left the room.", encoding='utf-8'), (usraddr[usr.index(o)][0],4243))
-                                
+                                    sock.sendto(bytes(usrn[usrn.index(msg[6:len(msg)])]+" left the room.", encoding='utf-8'), (o,4243))
                             if dev:
                                 # debug mesage
                                 log('Send leave message to User Ip: '+o+' Name='+usrn[usr.index(o)])
