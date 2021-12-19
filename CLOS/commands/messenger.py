@@ -72,7 +72,7 @@ def client():
         mymsg = input("")
         if mymsg == '/auth' or mymsg == '/aauth':
             password = getpass()
-        mymsg += ' '+password
+            mymsg += ' '+password
         sendMsg(bytes(mymsg, 'utf-8'))
         if mymsg[0:6] == '/leave':
             print('Leaving...')
@@ -213,6 +213,10 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
     log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Creating server functions", l_file)
     def kick(tusr, msg, did, kickindex = '_nonself'):
         # get usr index in usr list
+        if not tusr in usr:
+            print('['+datetime.datetime.now().strftime("%H:%M:%S")+'] USR '+did+' tried to kick a person who isn\'t in this room')
+            sock.sendto(bytes('Sorry but this Person in\'t in this room','utf-8'))
+            return
         usrindex = usr.index(tusr)
         # log message that usr xy left
         log('['+datetime.datetime.now().strftime("%H:%M:%S")+'] User with IP '+addr[0]+' and Name '+usrn[usr.index(addr[0])]+' got kicked by '+did+' reason: '+msg+'.', l_file)
@@ -330,7 +334,7 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
                         for o in chlog_ar:
                             sock.sendto(bytes(o,'utf-8'), (addr[0],4243))
         # Admin auth on Server
-        elif msg[0:6] == '/aauth':
+        elif msg[0:6] == '/aauth' and addr[0] in usr:
             if msg[7:len(msg)] == apw and not addr[0] in admin_auth:
                 log('['+datetime.datetime.now().strftime("%H:%M:%S")+'] USER IP: '+str(addr[0])+' Name: '+usrn[usr.index(addr[0])]+' became mod.', l_file)
                 admin_auth.append(addr[0])
@@ -405,7 +409,7 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
                     return True
                 else:
                     return False
-            if addr[0] in admin_auth :
+            if addr[0] in admin_auth:
                 if ac(cmdlist[0],msg, low = False):
                     hmsg = ' !help  Shows this message\n !chatlog_clear  Clears the chat log - the log wich is send to a user on join\n !chatlog_dis  Diables the chat log and it will no longer be send to usrs on join\n !chatlog_en  Enables the chatlog and all writen messages will be send to joining usrs\n !kick  Kicks the Person (usrname)\n !stop  Stoppes the Server.'
                     sock.sendto(bytes(hmsg, encoding='utf-8'), (addr[0],4243))
@@ -433,37 +437,41 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
                         else:
                             sock.sendto(bytes('User {0} disabled the Chat Log'.format(addr[0]),'utf-8'), (o,4243))
                 if ac(cmdlist[4],msg):
-                    # get usr index in usr list
-                    usrindex = usrn.index(msg[6:len(msg)])
-                    # log message that usr xy left
-                    log('['+datetime.datetime.now().strftime("%H:%M:%S")+'] User with IP '+addr[0]+' and Name '+usrn[usr.index(addr[0])]+' got kicked by '+usrn[usr.index(addr[0])]+'.', l_file)
-                    if ecl:
-                        log(usrn[usr.index(addr[0])]+" left the room.",ch_log, False)
-                    # send all usrs leave message
-                    for o in usr:
-                        if usrn[usr.index(o)] == msg[6:len(msg)]:
-                            # if its the person who want's to leave, send the cs a exit message
-                            sock.sendto(bytes("!leave_account_requested_by_self _nonself", encoding='utf-8'), (usraddr[usrn.index(msg[6:len(msg)])][0],4243))
-                        else:
-                            if o in admin_auth:
-                                sock.sendto(bytes(usrn[usrn.index(msg[6:len(msg)])]+" got kicked by "+usrn[usr.index(addr[0])]+'.', encoding='utf-8'), (usraddr[usr.index(o)][0],4243))
+                    if not tusr in usr:
+                        print('['+datetime.datetime.now().strftime("%H:%M:%S")+'] USR '+did+' tried to kick a person who isn\'t in this room')
+                        sock.sendto(bytes('Sorry but this Person in\'t in this room','utf-8'))
+                    else:
+                        # get usr index in usr list
+                        usrindex = usrn.index(msg[6:len(msg)])
+                        # log message that usr xy left
+                        log('['+datetime.datetime.now().strftime("%H:%M:%S")+'] User with IP '+addr[0]+' and Name '+usrn[usr.index(addr[0])]+' got kicked by '+usrn[usr.index(addr[0])]+'.', l_file)
+                        if ecl:
+                            log(usrn[usr.index(addr[0])]+" left the room.",ch_log, False)
+                        # send all usrs leave message
+                        for o in usr:
+                            if usrn[usr.index(o)] == msg[6:len(msg)]:
+                                # if its the person who want's to leave, send the cs a exit message
+                                sock.sendto(bytes("!leave_account_requested_by_self _nonself", encoding='utf-8'), (usraddr[usrn.index(msg[6:len(msg)])][0],4243))
                             else:
-                                # else send leave message
-                                sock.sendto(bytes(usrn[usrn.index(msg[6:len(msg)])]+" left the room.", encoding='utf-8'), (usraddr[usr.index(o)][0],4243))
+                                if o in admin_auth:
+                                    sock.sendto(bytes(usrn[usrn.index(msg[6:len(msg)])]+" got kicked by "+usrn[usr.index(addr[0])]+'.', encoding='utf-8'), (usraddr[usr.index(o)][0],4243))
+                                else:
+                                    # else send leave message
+                                    sock.sendto(bytes(usrn[usrn.index(msg[6:len(msg)])]+" left the room.", encoding='utf-8'), (usraddr[usr.index(o)][0],4243))
                                 
-                        if dev:
-                            # debug mesage
-                            log('Send leave message to User Ip: '+o+' Name='+usrn[usr.index(o)])
-                    # remove usr from auth list
-                    if epw:
-                        auth.pop(int(usrindex))
-                    # remove usr from admin list
-                    if usr[usrindex] in admin_auth:
-                        admin_auth.pop(usrindex)
-                    # remove usr from usr lists
-                    usr.pop(int(usrindex))
-                    usrn.pop(int(usrindex))
-                    usraddr.pop(int(usrindex))
+                            if dev:
+                                # debug mesage
+                                log('Send leave message to User Ip: '+o+' Name='+usrn[usr.index(o)])
+                        # remove usr from auth list
+                        if epw:
+                            auth.pop(int(usrindex))
+                        # remove usr from admin list
+                        if usr[usrindex] in admin_auth:
+                            admin_auth.pop(usrindex)
+                        # remove usr from usr lists
+                        usr.pop(int(usrindex))
+                        usrn.pop(int(usrindex))
+                        usraddr.pop(int(usrindex))
                 # Stop command
                 if ac(cmdlist[5], msg):
                     for o in usr:
@@ -476,11 +484,15 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
                     exit()
                 if ac(cmdlist[6], msg):
                     tmsg1 = msg.split(' ')
-                    tmsg2 = tmsg1[0]+''+tmsg1[1]
+                    tmsg2 = tmsg1[0]+' '+tmsg1[1]+' '
                     reason = tmsg1[1]
                     tusr = msg[len(tmsg2):]
-                    did = usrn[usr.index(addr[0])]
-                    kick(tusr, reason, did)
+                    if not tusr in usr:
+                        print('['+datetime.datetime.now().strftime("%H:%M:%S")+'] USR '+usrn[usr.index(addr[0])]+' tried to kick a person who isn\'t in this room')
+                        sock.sendto(bytes('Sorry but this Person in\'t in this room','utf-8'), (addr[0],4243))
+                    else:
+                        did = usrn[usr.index(addr[0])]
+                        kick(tusr, reason, did)
             else:
                 sock.sendto(bytes('Error: You are not permitted to do that!', encoding='utf-8'), (addr[0],4243))
                 log('['+datetime.datetime.now().strftime("%H:%M:%S")+'] Error: USR '+usrn[usr.index(addr[0])]+' tried to execute Admin Commands while not authed', l_file)

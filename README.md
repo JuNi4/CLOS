@@ -1,6 +1,7 @@
 # <ins>CLOS</ins>
 ## Command Line Operating System (Actually a Shell)
 ### By <ins>[JuNi4](https:/JuNi4)</ins>
+#### Actually this is a shell not a Operating system but completely in python
 
 > ### <ins>To Do</ins>:
 >- ✔ Fix Command Search
