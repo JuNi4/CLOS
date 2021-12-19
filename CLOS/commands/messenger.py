@@ -106,11 +106,12 @@ def client_server(ip = "", cpid = '', toasts = True):
     # If current window in focus
     def isFocused():
         if 'Windows' in platform.system():
-            cwin=win32gui.GetWindowText (win32gui.GetForegroundWindow())
-            if (cwin==win32gui.GetWindowText (win32gui.GetForegroundWindow())):
+            tempWindowName=win32gui.GetWindowText (win32gui.GetForegroundWindow())
+            if (tempWindowName==win32gui.GetWindowText (win32gui.GetForegroundWindow())):
                 pass
             else:
-                cwin=win32gui.GetWindowText (win32gui.GetForegroundWindow())
+                tempWindowName=win32gui.GetWindowText (win32gui.GetForegroundWindow())
+            cwin = tempWindowName
             hWnd = windll.user32.GetForegroundWindow()
             length = windll.user32.GetWindowTextLengthW(hWnd)
             buf = create_unicode_buffer(length + 1)
@@ -136,7 +137,7 @@ def client_server(ip = "", cpid = '', toasts = True):
     def Toast(msg, titl):
         if 'Windows' in platform.system():
             toaster = ToastNotifier()
-            toaster.show_toast(titl,msg)
+            toaster.show_toast("titl","lol",)
         else:
             subprocess.Popen(['notify-send', titl, msg])
     # "" == INADDR_ANY
