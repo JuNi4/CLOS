@@ -25,6 +25,8 @@ if not 'Windows' in platform.system():
 if 'Windows' in platform.system():
     from win10toast import ToastNotifier
     import win32gui
+    from typing import Optional
+    from ctypes import wintypes, windll, create_unicode_buffer
 
 # RGB
 def rgb(r=0,g=255,b=50):
@@ -109,16 +111,24 @@ def client_server(ip = "", cpid = '', toasts = True):
                 pass
             else:
                 cwin=win32gui.GetWindowText (win32gui.GetForegroundWindow())
+            hWnd = windll.user32.GetForegroundWindow()
+            length = windll.user32.GetWindowTextLengthW(hWnd)
+            buf = create_unicode_buffer(length + 1)
+            windll.user32.GetWindowTextW(hWnd, buf, length + 1)
+            if buf.value:
+                fwin = buf.value
+            else:
+                fwin = None
         else:
             scr = Wnck.Screen.get_default()
             scr.force_update()
             cwin = scr.get_active_window().get_xid()
-        disp = display.Display()
-        root = disp.screen().root
-        pointer_info = request.QueryPointer(display = disp.display, window = root)
-        root_xpos, root_ypos = (pointer_info._data['root_x'], pointer_info._data['root_y'])
-        targetwindow = disp.get_input_focus().focus
-        fwin = targetwindow.id
+            disp = display.Display()
+            root = disp.screen().root
+            pointer_info = request.QueryPointer(display = disp.display, window = root)
+            root_xpos, root_ypos = (pointer_info._data['root_x'], pointer_info._data['root_y'])
+            targetwindow = disp.get_input_focus().focus
+            fwin = targetwindow.id
         if fwin == cwin:
             return True
         else:
