@@ -115,8 +115,12 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
     
     if l_file == '':
         l_file = os.path.dirname(os.path.realpath(__file__))+'\\server_log.txt'
-        if not 'Windows' in platform.system:
+        if not 'Windows' in platform.system():
             l_file = os.path.dirname(os.path.realpath(__file__))+'/server_log.txt'
+    if ch_log == '':
+        ch_log = os.path.dirname(os.path.realpath(__file__))+'\\messenger_chat_log.txt'
+        if not 'Windows' in platform.system():
+            ch_log = os.path.dirname(os.path.realpath(__file__))+'/messenger_chat_log.txt'
     log('\n\nlog from '+"--"+datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")+"--\n", l_file, False)
     log('---------------------------------------------', l_file)
     log(' JuNi\'s Messenger Server', l_file)
@@ -222,6 +226,19 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
                         #log(,ch_log, False)
                         if dev:
                             log('Send join message to User Ip: '+o+' Name='+usrn[usr.index(o)], l_file)
+                    # Send chat log
+                    if ecl:
+                        log('['+datetime.datetime.now().strftime("%H:%M:%S")+'] Sending Chat log to '+usrn[usr.index(addr[0])], l_file)
+                        # Read chatlog file
+                        clog = open(ch_log, 'r')
+                        chlog_ar = []
+                        for line in clog:
+                            chlog_ar.append(line.rstrip())
+                        clog.close()
+                        chlog_ar.pop(len(chlog_ar)-1)
+                        for o in chlog_ar:
+                            sock.sendto(bytes(o,'utf-8'), (addr[0],4243))
+
                 else:
                     log('['+datetime.datetime.now().strftime("%H:%M:%S")+'] IP: '+addr[0]+' tried to login with a second account.', l_file)
             else:
@@ -250,6 +267,18 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
                         log('Send join message to User Ip: '+o+' Name='+usrn[usr.index(o)])
                 if ecl:
                     log(usrn[usr.index(addr[0])]+" joined the room.",ch_log, False)
+                # Send chat log
+                    if ecl:
+                        log('['+datetime.datetime.now().strftime("%H:%M:%S")+'] Sending Chat log to '+usrn[usr.index(addr[0])], l_file)
+                        # Read chatlog file
+                        clog = open(ch_log, 'r')
+                        chlog_ar = []
+                        for line in clog:
+                            chlog_ar.append(line.rstrip())
+                        clog.close()
+                        chlog_ar.pop(len(chlog_ar)-1)
+                        for o in chlog_ar:
+                            sock.sendto(bytes(o,'utf-8'), (addr[0],4243))
         # Admin auth on Server
         elif msg[0:6] == '/aauth':
             if msg[7:len(msg)] == apw:
@@ -304,9 +333,9 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
             else:
                 lmsg = lmsg ="There are "+str(len(usr))+" persons in the room: "+user_list
             log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] [Server] "+lmsg, l_file)
+            if ecl:
+                log(lmsg,ch_log, False)
             for o in usr:
-                if ecl:
-                    log(lmsg,ch_log, False)
                 sock.sendto(bytes(lmsg, encoding='utf-8'), (usraddr[usr.index(o)][0],4243))
                 if dev:
                     log('Send userlist to User Ip: '+o+' Name='+usrn[usr.index(o)])
@@ -386,6 +415,8 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
                             log(retmsg,ch_log, False)
                         if dev:
                             log('Send message to User Ip: '+o+' Name='+usrn[usr.index(o)], l_file)
+                if ecl:
+                    log(retmsg, ch_log, False)
                     #strdata = data.decode()
                     #retmsg = '<'+usrn[usr.index(str(addr[0]))]+'> '+msg + strdata
                     #con.sendall(retmsg.encode())
@@ -537,7 +568,7 @@ if len(arg) > 1:
             ecl = True
         else:
             ecl = False
-        server(list_server_ip=getarg('-lsip', 'localhost'), list_server_port=getarg('-lsp', '4244'), server_name=getarg('-name', ''), server_port=getarg('-p', '4242'), listtheserver=els, l_file=getarg('-lf', os.path.dirname(os.path.realpath(__file__))+'\\messenger_server_log.txt'), ch_log=getarg('-cl', os.path.dirname(os.path.realpath(__file__))+'\\messenger_chat_log.txt'), ecl=ecl, apw=getarg('-apw','jf/eu§nf(7UF+3ef5#]534*'), epw = epw, pw = getarg('-pw', ''))
+        server(list_server_ip=getarg('-lsip', 'localhost'), list_server_port=getarg('-lsp', '4244'), server_name=getarg('-name', ''), server_port=getarg('-p', '4242'), listtheserver=els, l_file=getarg('-lf', ''), ch_log=getarg('-cl', ''), ecl=ecl, apw=getarg('-apw','jf/eu§nf(7UF+3ef5#]534*'), epw = epw, pw = getarg('-pw', ''))
     # Client launcher
     if '-c' in arg or '-client' in arg[1] or arg[1] == ' client ':
         client()
