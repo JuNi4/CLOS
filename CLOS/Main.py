@@ -1,5 +1,5 @@
 # -----------
-# CLOS© V0.1
+# CLOS V0.5
 # Credits: JuNi4 (https://github.com/JuNi4/CLOS)
 # -----------
 # Main Command Line Operating System (CLOS) File # Änderung Nr. 4 14.8.2021 21:00 - actually i forgot to count maybe 105th commit? and its now 18.11.2021 20:19
