@@ -120,19 +120,18 @@ def client_server(ip = "", cpid = '', toasts = True):
             else:
                 fwin = None
         else:
-            scr = Wnck.Screen.get_default()
-            scr.force_update()
-            cwin = scr.get_active_window().get_xid()
             disp = display.Display()
             root = disp.screen().root
             pointer_info = request.QueryPointer(display = disp.display, window = root)
             root_xpos, root_ypos = (pointer_info._data['root_x'], pointer_info._data['root_y'])
             targetwindow = disp.get_input_focus().focus
+            scr = Wnck.Screen.get_default()
+            scr.force_update()
             fwin = targetwindow.id
-        if fwin == cwin:
-            return True
-        else:
-            return False
+            scr = Wnck.Screen.get_default()
+            scr.force_update()
+            cwin = scr.get_active_window().get_xid()
+        return fwin==cwin
     # Toasts
     def Toast(msg, titl):
         if 'Windows' in platform.system():
