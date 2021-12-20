@@ -309,7 +309,7 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
         x = True
         c = 1 
         tuser2 = ''
-        while x and c > 99:
+        while x and c > 100:
             if tusrn in usrn:
                 if tuser2 == '':
                     tuser2 == tusrn + str(c)
