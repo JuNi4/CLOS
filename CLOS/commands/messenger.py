@@ -121,11 +121,12 @@ def client_server(ip = "", cpid = '', toasts = True):
             return True
     # Toasts
     def Toast(msg, titl):
-        if 'Windows' in platform.system():
-            toaster = ToastNotifier()
-            toaster.show_toast("titl","lol",)
-        else:
-            subprocess.Popen(['notify-send', titl, msg])
+        if toasts:
+            if 'Windows' in platform.system():
+                toaster = ToastNotifier()
+                toaster.show_toast("titl","lol",)
+            else:
+                subprocess.Popen(['notify-send', titl, msg])
     # "" == INADDR_ANY
     SERVER = ip
     PORT = 4243
@@ -304,6 +305,23 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
         usr.pop(int(usrindex))
         usrn.pop(int(usrindex))
         usraddr.pop(int(usrindex))
+    def is_usrn_taken(tusrn):
+        x = True
+        c = 1 
+        tuser2 = ''
+        while x and c > 99:
+            if tusrn in usrn:
+                if tuser2 == '':
+                    tuser2 == tusrn + str(c)
+                else:
+                    tuser2[:len(tuser2)-1] = str(c)
+            else:
+                if tuser2 == '':
+                    tuser2 == tusrn
+                x = False
+            c += 1
+        return tuser2
+
     log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Done!", l_file)
     log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Awaiting Input...", l_file)
 
@@ -320,7 +338,7 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
                 if not addr[0] in usr:
                     # ..let USR join
                     # set name of usr
-                    name = msg[6:len(msg)]
+                    name = is_usrn_taken(msg[6:len(msg)])
                     # add usr values to joined list
                     usr.append(str(addr[0]))
                     usrn.append(name)
@@ -366,7 +384,7 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
             if not addr[0] in usr and addr[0] in waitlistip:
                 # ..let USR join
                 # set name of usr
-                name = waitlistn[waitlistip.index(addr[0])]
+                name = is_usrn_taken(waitlistn[waitlistip.index(addr[0])])
                 # add usr values to joined list
                 usr.append(str(addr[0]))
                 usrn.append(name)
