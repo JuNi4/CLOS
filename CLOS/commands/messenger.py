@@ -1,4 +1,8 @@
 # messenger -server -client -listserver
+# Server example: python3 messenger.py -s -els -lsip 192.168.178.53 -ecl -name Server
+# list Server:    python3 messenger.py -ls
+# client          python3 messenger.py -c -u NAME -ip localhost
+
 
 from getpass import getpass
 import re
@@ -12,21 +16,6 @@ import socket
 import sys
 import os
 import time
-
-# Window Focus and Toast stuff
-from Xlib import X, XK, protocol, display, Xcursorfont
-from Xlib.ext import xtest
-from Xlib.protocol import request
-if not 'Windows' in platform.system():
-    import gi
-    gi.require_version("Wnck", "3.0")
-    from gi.repository import Wnck
-
-if 'Windows' in platform.system():
-    from win10toast import ToastNotifier
-    import win32gui
-    from typing import Optional
-    from ctypes import wintypes, windll, create_unicode_buffer
 
 # RGB
 def rgb(r=0,g=255,b=50):
@@ -103,24 +92,19 @@ def client():
 
 # Client Server used to recive messages
 def client_server(ip = "", cpid = '', toasts = True):
+    # Window Focus and Toast stuff
+    if not 'Windows' in platform.system():
+        import gi
+        gi.require_version("Wnck", "3.0")
+        from gi.repository import Wnck
+        from Xlib import X, XK, protocol, display, Xcursorfont
+        from Xlib.ext import xtest
+        from Xlib.protocol import request
+    else:
+        from win10toast import ToastNotifier
     # If current window in focus
     def isFocused():
-        if 'Windows' in platform.system():
-            tempWindowName=win32gui.GetWindowText (win32gui.GetForegroundWindow())
-            if (tempWindowName==win32gui.GetWindowText (win32gui.GetForegroundWindow())):
-                pass
-            else:
-                tempWindowName=win32gui.GetWindowText (win32gui.GetForegroundWindow())
-            hWnd = windll.user32.GetForegroundWindow()
-            length = windll.user32.GetWindowTextLengthW(hWnd)
-            buf = create_unicode_buffer(length + 1)
-            windll.user32.GetWindowTextW(hWnd, buf, length + 1)
-            if buf.value:
-                fwin = buf.value
-            else:
-                fwin = None
-            return tempWindowName==fwin
-        else:
+        if not 'Windows' in platform.system():
             disp = display.Display()
             root = disp.screen().root
             pointer_info = request.QueryPointer(display = disp.display, window = root)
@@ -133,6 +117,8 @@ def client_server(ip = "", cpid = '', toasts = True):
             scr.force_update()
             cwin = scr.get_active_window().get_xid()
             return fwin==cwin
+        else:
+            return False
     # Toasts
     def Toast(msg, titl):
         if 'Windows' in platform.system():
@@ -188,8 +174,10 @@ def client_server(ip = "", cpid = '', toasts = True):
                         os.system('kill '+cpid+'>nil')
                     time.sleep(2)
                 exit()
-            
-            print(data.decode())
+            elif data.decode()[:19]=='!important_message ':
+                print(data.decode()[19:])
+                Toast(data.decode()[19:], "Messenger")
+            else: print(data.decode())
             if not isFocused():
                 Toast(data.decode(), "Messenger")
 
@@ -474,7 +462,7 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
                     log('Send userlist to User Ip: '+o+' Name='+usrn[usr.index(o)])
         # Admin commands
         elif msg[0:1] == '!':
-            cmdlist = ['help','chatlog_clear','chatlog_en','chatlog_dis','kick', 'stop', 'reasonkick']
+            cmdlist = ['help','chatlog_clear','chatlog_en','chatlog_dis','kick', 'stop', 'reasonkick', 'imp']
             def ac(c,istr, ofs = 1, low = True):
                 if low:
                     istr = istr[ofs:len(c)+ofs].lower()
@@ -487,7 +475,7 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
                     return False
             if addr[0] in admin_auth:
                 if ac(cmdlist[0],msg, low = False):
-                    hmsg = ' !help  Shows this message\n !chatlog_clear  Clears the chat log - the log wich is send to a user on join\n !chatlog_dis  Diables the chat log and it will no longer be send to usrs on join\n !chatlog_en  Enables the chatlog and all writen messages will be send to joining usrs\n !kick  Kicks the Person (usrname)\n !stop  Stoppes the Server.'
+                    hmsg = ' !help  Shows this message\n !chatlog_clear  Clears the chat log - the log wich is send to a user on join\n !chatlog_dis  Diables the chat log and it will no longer be send to usrs on join\n !chatlog_en  Enables the chatlog and all writen messages will be send to joining usrs\n !kick  Kicks the Person (usrname)\n !stop  Stoppes the Server.\n !imp  Important message with toast for every usr'
                     sock.sendto(bytes(hmsg, encoding='utf-8'), (addr[0],4243))
                 if ac(cmdlist[1],msg):
                     f = open(ch_log, 'w')
@@ -568,6 +556,16 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
                     else:
                         did = usrn[usr.index(addr[0])]
                         kick(tusr, reason, did)
+                if ac(cmdlist[7],msg):
+                    log('['+datetime.datetime.now().strftime("%H:%M:%S")+'] Important Message: <'+usrn[usr.index(str(addr[0]))]+'> '+msg[1+len(cmdlist[7]+' '):], l_file)
+                    retmsg = '<'+usrn[usr.index(str(addr[0]))]+'> '+msg[1+len(cmdlist[7]+' '):]
+                    for o in usr:
+                        if not o == addr[0]:
+                            sock.sendto(bytes('!important_message '+retmsg, encoding='utf-8'), (usraddr[usr.index(o)][0],4243))
+                            if ecl:
+                                log(retmsg,ch_log, False)
+                            if dev:
+                                log('Send message to User Ip: '+o+' Name='+usrn[usr.index(o)], l_file)
             else:
                 sock.sendto(bytes('Error: You are not permitted to do that!', encoding='utf-8'), (addr[0],4243))
                 log('['+datetime.datetime.now().strftime("%H:%M:%S")+'] Error: USR '+usrn[usr.index(addr[0])]+' tried to execute Admin Commands while not authed', l_file)
