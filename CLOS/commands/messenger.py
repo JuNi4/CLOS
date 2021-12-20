@@ -178,9 +178,11 @@ def client_server(ip = "", cpid = '', toasts = True):
             elif data.decode()[:19]=='!important_message ':
                 print(data.decode()[19:])
                 Toast(data.decode()[19:], "Messenger")
-            else: print(data.decode())
-            if not isFocused():
-                Toast(data.decode(), "Messenger")
+            else: 
+                print(data.decode())
+                if not 'Windows' in platform.system():
+                    if not isFocused():
+                        Toast(data.decode(), "Messenger")
 
 # Server
 def server(list_server_ip = '', list_server_port = '4244', server_name = '', server_port = '4242', listtheserver = False, ch_log = '', l_file = '', epw = False, pw ='', apw = 'jf/eu§nf(7UF+3ef5#]534*', ecl = True):
