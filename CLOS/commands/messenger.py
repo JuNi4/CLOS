@@ -118,7 +118,7 @@ def client_server(ip = "", cpid = '', toasts = True):
             cwin = scr.get_active_window().get_xid()
             return fwin==cwin
         else:
-            return False
+            return True
     # Toasts
     def Toast(msg, titl):
         if 'Windows' in platform.system():
