@@ -1,5 +1,6 @@
 {
 	"objects": [
-		"messenger.py"
+		"messenger.py",
+		"weather.py"
 	]
 }
