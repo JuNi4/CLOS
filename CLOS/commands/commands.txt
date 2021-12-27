@@ -1,2 +1,5 @@
 Commands Folder. Use Python Files. Is Main Folder For Commands. The name of the file is the command.
 So if a file woulld be called test(.py), if you would type test into the terminal, it would execute the test.py file.
+
+If it requires adminestrator perms on linux, put it in sudo/sudo.json under "objects"
+If you just wan't it to require a password, put it in sudo/pw.json under "objects"
