@@ -11,13 +11,14 @@
 /CLOS/commands/d.bat
 /CLOS/commands/dirs.json
 /CLOS/commands/stupid
+CLOS/commands/list_server_log.txt
+CLOS/commands/messenger_chat_log.txt
+CLOS/commands/messenger_server_log.txt
+CLOS/command_data/weatherapi.txt
 /CLOS/important.txt
 /CLOS/nil
 os
 nil
-CLOS/commands/list_server_log.txt
-CLOS/commands/messenger_chat_log.txt
-CLOS/commands/messenger_server_log.txt
 CLOS/platform
 CLOS/sys
 CLOS/json

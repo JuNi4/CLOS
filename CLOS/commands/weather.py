@@ -1,4 +1,5 @@
 import requests
+import pathlib
 import json
 
 # Function for only showing two numbers after decimal point    This accepts string and float
@@ -24,7 +25,9 @@ def declimit(number,declim,decdot = '.',replace=''):
 # API web address
 addr = "https://api.openweathermap.org/data/2.5/weather?q=Ilsede&appid={0[0]}"
 # api key and Cittyplaceholder
-api = ["a85e9bca9503b1586b8cc8722c8a6c19", "Citty"]
+# The API key you cab get from https://openweathermap.org/api wich is free, has to be pasted into the weatherapi.txt file that needs to go into the command_data folder
+if not pathlib.Path()
+api = [, "Citty"]
 #ips = requests.get('https://ipinfo.io/loc').text
 #ip = format(ips)
 #locr = requests.get("https://geolocation-db.com/json/"+ip+"&position=true").json()

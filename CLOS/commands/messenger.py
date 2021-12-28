@@ -104,21 +104,20 @@ def client_server(ip = "", cpid = '', toasts = True):
         from win10toast import ToastNotifier
     # If current window in focus
     def isFocused():
-        if not 'Windows' in platform.system():
-            disp = display.Display()
-            root = disp.screen().root
-            pointer_info = request.QueryPointer(display = disp.display, window = root)
-            root_xpos, root_ypos = (pointer_info._data['root_x'], pointer_info._data['root_y'])
-            targetwindow = disp.get_input_focus().focus
-            scr = Wnck.Screen.get_default()
-            scr.force_update()
-            fwin = targetwindow.id
-            scr = Wnck.Screen.get_default()
-            scr.force_update()
-            cwin = scr.get_active_window().get_xid()
-            return fwin==cwin
-        else:
+        if 'Windows' in platform.system():
             return True
+        disp = display.Display()
+        root = disp.screen().root
+        pointer_info = request.QueryPointer(display = disp.display, window = root)
+        root_xpos, root_ypos = (pointer_info._data['root_x'], pointer_info._data['root_y'])
+        targetwindow = disp.get_input_focus().focus
+        scr = Wnck.Screen.get_default()
+        scr.force_update()
+        fwin = targetwindow.id
+        scr = Wnck.Screen.get_default()
+        scr.force_update()
+        cwin = scr.get_active_window().get_xid()
+        return fwin==cwin
     # Toasts
     def Toast(msg, titl):
         if toasts:
