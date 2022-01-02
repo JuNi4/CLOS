@@ -14,7 +14,7 @@
 #  - Bad Word Kicker
 #  - Temp Ban
 #  - Fixing long Duration for messages to arrive on Windows
-#
+#  - Sending images riqueres splitting the json string at every ',' because the string would otherwise be to long for images over ~10x10
 from getpass import getpass
 import re
 import threading
