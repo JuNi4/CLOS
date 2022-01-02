@@ -224,7 +224,7 @@ def client():
                         sendMsg(bytes((sendspl[i+1]+sendspl[i+2]+sendspl[i+3]+sendspl[i+4]+sendspl[i+5]+sendspl[i+6]+sendspl[i+7]+sendspl[i+8]+sendspl[i+9]+sendspl[i+10]).replace('\n','').replace(' ', ''),'utf-8'))
                     if int((len(sendspl)-1)/10) < len(sendspl):
                         for i in range(0,len(sendspl)-int((len(sendspl)-1)/10)):
-                            sendMsg(bytes((sendspl[len(sendspl)-int((len(sendspl)-1)/10)+i].replace('\n','').replace(' ', ''),'utf-8'))
+                            sendMsg(bytes((sendspl[len(sendspl)-int((len(sendspl)-1)/10)+i].replace('\n','').replace(' ', ''),'utf-8')))
                 else:
                     print('System: Wrong File Format. Only png or jpg.')
         else: sendMsg(bytes(mymsg, 'utf-8'))
