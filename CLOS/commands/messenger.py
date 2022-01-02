@@ -220,11 +220,15 @@ def client():
                     sendMsg(bytes('/img '+sendspl[0], 'utf-8'))
                     time.sleep(0.001)
                     # Send rest of message
-                    for i in range(0,int((len(sendspl)-1)/10)):
-                        sendMsg(bytes((sendspl[i+1]+sendspl[i+2]+sendspl[i+3]+sendspl[i+4]+sendspl[i+5]+sendspl[i+6]+sendspl[i+7]+sendspl[i+8]+sendspl[i+9]+sendspl[i+10]).replace('\n','').replace(' ', ''),'utf-8'))
-                    if int((len(sendspl)-1)/10) < len(sendspl):
-                        for i in range(0,len(sendspl)-int((len(sendspl)-1)/10)):
-                            sendMsg(bytes(sendspl[len(sendspl)-int((len(sendspl)-1)/10)+i].replace('\n','').replace(' ', ''),'utf-8'))
+                    a = len(sendspl)
+                    print(str(a),str(int(a/10)*10),str(int(a/10)*10 < a))
+                    for i in range(0,int(a/10)):
+                        sendMsg(bytes((sendspl[i*10+1]+','+sendspl[i*10+2]+','+sendspl[i*10+3]+','+sendspl[i*10+4]+','+sendspl[i*10+5]+','+sendspl[i*10+6]+','+sendspl[i*10+7]+','+sendspl[i*10+8]+','+sendspl[i*10+9]+','+sendspl[i*10+10]).replace('\n','').replace(' ', ''),'utf-8'))
+                    if int(a/10)*10 < a:
+                        for i in range(0,a-int(a/10)*10):
+                            nsy = len(sendspl)-int(a/10)
+                            sendMsg(bytes(sendspl[nsy+i+1].replace('\n','').replace(' ', ''),'utf-8'))
+                    print('System: Done!')
                 else:
                     print('System: Wrong File Format. Only png or jpg.')
         else: sendMsg(bytes(mymsg, 'utf-8'))
@@ -674,6 +678,7 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
             # Recive every part part of the image
             while not '}' in list(rcvstr):
                 data, address = sock.recvfrom(4096)
+                print(data.decode())
                 #log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Reciving... "+data.decode(), l_file)
                 if address[0] == addr[0]:
                     #log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Reciving Imagedata: "+data.decode().replace(' ','').replace('\n',''), l_file)
@@ -703,7 +708,8 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
                 sock.sendto(bytes('!img '+sendspl[0], 'utf-8'), (o,4243))
                 time.sleep(0.001)
                 # Send rest of message
-                for i in range(0,int((len(sendspl)-1)/10)):
+                a = len(sendspl)-1
+                for i in range(0,int(a/10)):
                     sock.sendto(bytes((sendspl[i+1]+sendspl[i+2]+sendspl[i+3]+sendspl[i+4]+sendspl[i+5]+sendspl[i+6]+sendspl[i+7]+sendspl[i+8]+sendspl[i+9]+sendspl[i+10]).replace('\n','').replace(' ', ''),'utf-8'),(o,4243))
         # Admin commands
         elif msg[0:1] == '!':
