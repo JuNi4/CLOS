@@ -1,9 +1,20 @@
-# messenger -server -client -listserver
-# Server example: python3 messenger.py -s -els -lsip 192.168.178.53 -ecl -name Server
-# list Server:    python3 messenger.py -ls
-# client          python3 messenger.py -c -u NAME -ip localhost
-
-
+# -----------
+# Messenger
+# Credits: JuNi4 (https://github.com/JuNi4/CLOS)
+# -----------
+#
+# Example Commands:
+#  messenger -server -client -listserver
+#  Server example: python3 messenger.py -s -els -lsip 192.168.178.53 -ecl -name Server
+#  list Server:    python3 messenger.py -ls
+#  client          python3 messenger.py -c -u NAME -ip localhost
+#
+# ToDo:
+#  - Images send
+#  - Bad Word Kicker
+#  - Temp Ban
+#
+#
 from getpass import getpass
 import re
 import threading
