@@ -201,15 +201,27 @@ def client():
         if mymsg == '/auth' or mymsg == '/aauth':
             password = getpass()
             mymsg += ' '+password
+        # Send an Image to the Server
         if mymsg == '/img':
+            # Make tkinter window object
             root = tk.Tk()
             root.withdraw()
 
+            # Open file dialog
             file_path = filedialog.askopenfilename()
+            # Continue only if a path has been selected
             if not file_path == '':
-                if file_path[len(file_path)-3:] == 'png' or file_path[len(file_path)-3:] == 'jpg':
+                # Check if the is a png or jpg
+                if file_path[len(file_path)-3:].lower() == 'png' or file_path[len(file_path)-3:].lower() == 'jpg':
+                    # Load file into Json
                     print('System: Sending File: '+file_path+' To Server..')
-                    sendMsg(bytes('/img '+itj.img_to_json(1,1,file_path), 'utf-8'))
+                    sendspl = itj.img_to_json(1,1,file_path).split(',')
+                    # Send first Part of message
+                    sendMsg(bytes('/img '+sendspl[0], 'utf-8'))
+                    time.sleep(0.001)
+                    # Send rest of message
+                    for i in range(0,int((len(sendspl)-1)/10)):
+                        sendMsg(bytes((sendspl[i+1]+sendspl[i+2]+sendspl[i+3]+sendspl[i+4]+sendspl[i+5]+sendspl[i+6]+sendspl[i+7]+sendspl[i+8]+sendspl[i+9]+sendspl[i+10]).replace('\n','').replace(' ', ''),'utf-8'))
                 else:
                     print('System: Wrong File Format. Only png or jpg.')
         else: sendMsg(bytes(mymsg, 'utf-8'))
@@ -310,17 +322,30 @@ def client_server(ip = "", cpid = '', toasts = True):
                 print(data.decode()[19:])
                 Toast(data.decode()[19:], "Messenger")
             elif data.decode()[:4] == '!img':
-                imgjson = data.decode()[5:]
-                ij = json.loads(imgjson)
+                rcvstr = data.decode()[5:]+','
+                # Recive every part part of the image
+                while not '}' in list(rcvstr):
+                    data, address = sock.recvfrom(4096)
+                    if not '}' in list(data.decode()):
+                        rcvstr += data.decode()+','
+                    else:
+                        rcvstr += data.decode()
+                # Print Json Image data
+                print(rcvstr.replace('\n','').replace(' ', ''))
+                # Load text to json
+                ij = json.loads(rcvstr)
                 w = int(ij["w"])
                 h = int(ij["h"])
                 sc = 1
+                # shrink image down if needed
                 while w > 38 or h > 38:
                     sc += 1
                     w = int(w/sc)
                     h = int(h/sc)
-                if show_img:
-                    itj.json_to_text(1,sc,imgjson)
+                # get calculated shrink values and shrink
+                sendji = itj.manage_json(1,sc,rcvstr)
+                # display
+                itj.json_to_text(1,sc,sendji)
             else: 
                 print(data.decode())
                 if not 'Windows' in platform.system():
@@ -642,23 +667,41 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
                     log('Send userlist to User Ip: '+o+' Name='+usrn[usr.index(o)])
         elif msg[0:4] == '/img' and addr[0] in usr:
             log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Recived Image from USR: "+usrn[usr.index(addr[0])], l_file)
-            print(msg[5:])
-            ij = json.loads(msg[5:])
+            rcvstr = msg[5:]+','
+            # Recive every part part of the image
+            while not '}' in list(rcvstr):
+                data, address = sock.recvfrom(4096)
+                #log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Reciving... "+data.decode(), l_file)
+                if address[0] == addr[0]:
+                    #log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Reciving Imagedata: "+data.decode().replace(' ','').replace('\n',''), l_file)
+                    if not '}' in list(data.decode()):
+                        rcvstr += data.decode()+','
+                    else:
+                        rcvstr += data.decode()
+            # Print Json Image data
+            print(rcvstr.replace('\n','').replace(' ', ''))
+            # Load text to json
+            ij = json.loads(rcvstr)
             w = int(ij["w"])
             h = int(ij["h"])
             sc = 1
+            # shrink image down if needed
             while w > 38 or h > 38:
                 sc += 1
                 w = int(w/sc)
                 h = int(h/sc)
-            sendji = itj.manage_json(1,sc,msg[5:])
-            itj.json_to_text(1,sc,msg[5:])
-            if ecl:
-                log('!msg '+sendji,ch_log, False)
+            # get calculated shrink values and shrink
+            sendji = itj.manage_json(1,sc,rcvstr)
+            # display
+            itj.json_to_text(1,sc,sendji)
+            sendspl = sendji.split(',')
+            # Send first Part of message
             for o in usr:
-                sock.sendto(bytes('!msg '+sendji, encoding='utf-8'), (usraddr[usr.index(o)][0],4243))
-                if dev:
-                    log('Send Image to User Ip: '+o+' Name='+usrn[usr.index(o)])
+                sock.sendto(bytes('!img '+sendspl[0], 'utf-8'), (o,4243))
+                time.sleep(0.001)
+                # Send rest of message
+                for i in range(0,int((len(sendspl)-1)/10)):
+                    sock.sendto(bytes((sendspl[i+1]+sendspl[i+2]+sendspl[i+3]+sendspl[i+4]+sendspl[i+5]+sendspl[i+6]+sendspl[i+7]+sendspl[i+8]+sendspl[i+9]+sendspl[i+10]).replace('\n','').replace(' ', ''),'utf-8'),(o,4243))
         # Admin commands
         elif msg[0:1] == '!':
             cmdlist = ['help','chatlog_clear','chatlog_en','chatlog_dis','kick', 'stop', 'reasonkick', 'imp']
