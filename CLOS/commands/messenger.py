@@ -464,12 +464,12 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
         tuser2 = tusrn
         while x and c < 100:
             if tuser2 in usrn:
-                if tuser2 == '':
+                if tuser2 == tusrn:
                     tuser2 == tusrn + str(c)
                 else:
                     tuser2 = tuser2[:len(tuser2)-1]+str(c)
             else:
-                if tuser2 == '':
+                if tuser2 == tusrn:
                     tuser2 == tusrn
                     log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Usrname "+tuser2+" wasn\'t taken", l_file)
                 else:
@@ -507,7 +507,6 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
                     log('['+datetime.datetime.now().strftime("%H:%M:%S")+'] New USER IP: '+str(addr[0])+' Name: '+name, l_file)
                     # Send chat log
                     if ecl:
-                        
                         # Read chatlog file
                         log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Reading Chat log", l_file)
                         clog = open(ch_log, 'r')
@@ -641,8 +640,9 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
                 sock.sendto(bytes(lmsg, encoding='utf-8'), (usraddr[usr.index(o)][0],4243))
                 if dev:
                     log('Send userlist to User Ip: '+o+' Name='+usrn[usr.index(o)])
-        elif msg[0:4] == '/img':
+        elif msg[0:4] == '/img' and addr[0] in usr:
             log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Recived Image from USR: "+usrn[usr.index(addr[0])], l_file)
+            print(msg[5:])
             ij = json.loads(msg[5:])
             w = int(ij["w"])
             h = int(ij["h"])
