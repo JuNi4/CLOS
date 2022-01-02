@@ -13,7 +13,7 @@
 #  - Images send
 #  - Bad Word Kicker
 #  - Temp Ban
-#
+#  - Fixing long Duration for messages to arrive on Windows
 #
 from getpass import getpass
 import re
@@ -27,6 +27,112 @@ import socket
 import sys
 import os
 import time
+# File Dialog
+import tkinter as tk
+from tkinter import filedialog
+
+# Pillow to read every pixel from a image
+from PIL import Image
+# Json for img to json convertion and vice versa
+import json
+
+# Images
+class itj(): 
+    class color():
+        r = '\033[1;0m'
+        def rgb(r=0,g=255,b=50):
+            return '\033[38;2;'+str(r)+';'+str(g)+';'+str(b)+'m'
+
+    def img_to_text(scling = 1, shrink = 1, img = 'img.png', rgb = color.rgb, r = color.r):
+        scling = int(scling)
+        shrink = int(shrink)
+        img = Image.open(img)
+        img = img.convert('RGB')
+        scaling = img.size
+        i = 0
+        while i+shrink <= scaling[1]:
+            i2 = 0
+            pval = ''
+            while i2+shrink <= scaling[0]:
+                val = img.getpixel((i2,i))
+                pval = pval+rgb(val[0], val[1], val[2])+'██'*scling
+                i2 += shrink
+            i += shrink
+            print(pval+r)
+
+    def img_to_json(scling = 1, shrink = 1, img = 'img.png', rgb = color.rgb, r = color.r):
+        jo = {
+            "name": "lol",
+            "w": 0,
+            "h": 0,
+            "pix": []
+        }
+        jol = json.loads(json.dumps(jo))
+        sp = '/'
+        if 'Windows' in platform.system():
+            sp = '\\'
+        jol["name"] = img.split(sp)[len(img.split(sp))-1]
+        scling = int(scling)
+        shrink = int(shrink)
+        img = Image.open(img)
+        img = img.convert('RGB')
+        scaling = img.size
+        jol["w"] = int(scaling[0]/shrink)
+        jol["h"] = int(scaling[1]/shrink)
+        i = 0
+        while i+shrink <= scaling[1]:
+            i2 = 0
+            pval = []
+            while i2+shrink <= scaling[0]:
+                val = img.getpixel((i2,i))
+                pval.append([val[0],val[1],val[2]])
+                i2 += shrink
+            i += shrink
+            jol["pix"].append(pval)
+        return json.dumps(jol, indent=4)
+    
+    def json_to_text(scling = 1, shrink = 1, json2 = '{"name": "lol", "w": 0, "h": 0, "pix":[[],[]]}', rgb = color.rgb, r = color.r):
+        img = json.loads(json2)
+        scling = int(scling)
+        shrink = int(shrink)
+        scaling = (img["w"],img["h"])
+        i = 0
+        while i+shrink <= scaling[1]:
+            i2 = 0
+            pval = ''
+            while i2+shrink <= scaling[0]:
+                val = img["pix"][i][i2]
+                pval = pval+rgb(val[0], val[1], val[2])+'██'*scling
+                i2 += shrink
+            i += shrink
+            print(pval+r)
+
+    def manage_json(scling = 1, shrink = 1, json2 = '{"name": "lol", "w": 0, "h": 0, "pix":[[0,0,0],[]]}', rgb = color.rgb, r = color.r):
+        jo = {
+            "name": "lol",
+            "w": 0,
+            "h": 0,
+            "pix": []
+        }
+        jol = json.loads(json.dumps(jo))
+        img = json.loads(json2)
+        scling = int(scling)
+        shrink = int(shrink)
+        jol["name"] = img["name"]
+        jol["w"] = int(img["w"]/shrink)
+        jol["h"] = int(img["h"]/shrink)
+        scaling = (img["w"],img["h"])
+        i = 0
+        while i+shrink <= scaling[1]:
+            i2 = 0
+            pval = []
+            while i2+shrink <= scaling[0]:
+                val = img["pix"][i][i2]
+                pval.append([val[0],val[1],val[2]])
+                i2 += shrink
+            i += shrink
+            jol["pix"].append(pval)
+        return json.dumps(jol, indent=4)
 
 # RGB
 def rgb(r=0,g=255,b=50):
@@ -95,7 +201,18 @@ def client():
         if mymsg == '/auth' or mymsg == '/aauth':
             password = getpass()
             mymsg += ' '+password
-        sendMsg(bytes(mymsg, 'utf-8'))
+        if mymsg == '/img':
+            root = tk.Tk()
+            root.withdraw()
+
+            file_path = filedialog.askopenfilename()
+            if not file_path == '':
+                if file_path[len(file_path)-3:] == 'png' or file_path[len(file_path)-3:] == 'jpg':
+                    print('System: Sending File: '+file_path+' To Server..')
+                    sendMsg(bytes('/img '+itj.img_to_json(1,1,file_path), 'utf-8'))
+                else:
+                    print('System: Wrong File Format. Only png or jpg.')
+        else: sendMsg(bytes(mymsg, 'utf-8'))
         if mymsg[0:6] == '/leave':
             print('Leaving...')
             time.sleep(2)
@@ -155,6 +272,10 @@ def client_server(ip = "", cpid = '', toasts = True):
     sock.bind(server_address)
 
     #print("Server arbeitet auf Port ", PORT, sep="")
+    show_img = True
+    if '-disimg' in sys.argv:
+        show_img = False
+
 
     while True:
             # Receive response
@@ -188,6 +309,18 @@ def client_server(ip = "", cpid = '', toasts = True):
             elif data.decode()[:19]=='!important_message ':
                 print(data.decode()[19:])
                 Toast(data.decode()[19:], "Messenger")
+            elif data.decode()[:4] == '!img':
+                imgjson = data.decode()[5:]
+                ij = json.loads(imgjson)
+                w = int(ij["w"])
+                h = int(ij["h"])
+                sc = 1
+                while w > 38 or h > 38:
+                    sc += 1
+                    w = int(w/sc)
+                    h = int(h/sc)
+                if show_img:
+                    itj.json_to_text(1,sc,imgjson)
             else: 
                 print(data.decode())
                 if not 'Windows' in platform.system():
@@ -263,13 +396,18 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
     
 
     log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Setting up usr vars", l_file)
+    # USR Specific vars for holding USR data
     usr = []
     usrn= []
     usraddr = []
     auth = []
     admin_auth = []
+    timeout = []
+    log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Setting up Waitlist vars", l_file)
+    # Waitlist var
     waitlistn = []
     waitlistip = []
+    log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Setting up usr vars complete: usr, usrn, usraddr, auth, adminauth, waitlistn, waitlistip, timeout", l_file)
 
     log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Creating UDP Socket", l_file)
     # Create a UDP socket
@@ -282,6 +420,7 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
     sock.bind(server_address)
     log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Server opened on port: "+ str(PORT), l_file)
     log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Creating server functions", l_file)
+    log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Creating kick function", l_file)
     def kick(tusr, msg, did, kickindex = '_nonself'):
         # get usr index in usr list
         if not tusr in usrn:
@@ -317,19 +456,24 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
         usr.pop(int(usrindex))
         usrn.pop(int(usrindex))
         usraddr.pop(int(usrindex))
+    log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Creating is_usrn_taken function", l_file)
     def is_usrn_taken(tusrn):
+        log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Checking if usrname is already taken", l_file)
         x = True
         c = 1 
-        tuser2 = ''
-        while x and c > 100:
-            if tusrn in usrn:
+        tuser2 = tusrn
+        while x and c < 100:
+            if tuser2 in usrn:
                 if tuser2 == '':
                     tuser2 == tusrn + str(c)
                 else:
-                    tuser2[:len(tuser2)-1] = str(c)
+                    tuser2 = tuser2[:len(tuser2)-1]+str(c)
             else:
                 if tuser2 == '':
                     tuser2 == tusrn
+                    log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Usrname "+tuser2+" wasn\'t taken", l_file)
+                else:
+                    log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Usrname was taken and is now "+tuser2, l_file)
                 x = False
             c += 1
         return tuser2
@@ -344,10 +488,14 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
         #log(str(addr)+': '+data.decode(), "'", sep="")
         # Join server
         if msg[0:5] == '/join':
+            log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Join Message by IP: "+addr[0]+" is trying to join.", l_file)
             # If user is permitted to join...
             if addr[0] in auth or epw == False:
+                
                 # ..and not already connected...
                 if not addr[0] in usr:
+                    log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Usr is allowed to Join and will join", l_file)
+                    log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Adding usr to usr lists", l_file)
                     # ..let USR join
                     # set name of usr
                     name = is_usrn_taken(msg[6:len(msg)])
@@ -359,8 +507,9 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
                     log('['+datetime.datetime.now().strftime("%H:%M:%S")+'] New USER IP: '+str(addr[0])+' Name: '+name, l_file)
                     # Send chat log
                     if ecl:
-                        log('['+datetime.datetime.now().strftime("%H:%M:%S")+'] Sending Chat log to '+usrn[usr.index(addr[0])], l_file)
+                        
                         # Read chatlog file
+                        log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Reading Chat log", l_file)
                         clog = open(ch_log, 'r')
                         chlog_ar = []
                         for line in clog:
@@ -368,6 +517,7 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
                         clog.close()
                         #if not len(chlog_ar) == 0:
                         #    chlog_ar.pop(len(chlog_ar)-1)
+                        log('['+datetime.datetime.now().strftime("%H:%M:%S")+'] Sending Chat log to '+usrn[usr.index(addr[0])], l_file)
                         for o in chlog_ar:
                             sock.sendto(bytes(o,'utf-8'), (addr[0],4243))
                         if dev:
@@ -391,6 +541,7 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
 
         # Auth on Server
         elif msg[0:5] == '/auth' and epw:
+            log('['+datetime.datetime.now().strftime("%H:%M:%S")+'] Recived auth command from IP: '+addr[0], l_file)
             if msg[6:len(msg)] == pw and not addr[0] in auth:
                 auth.append(addr[0])
             if not addr[0] in usr and addr[0] in waitlistip:
@@ -490,6 +641,24 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
                 sock.sendto(bytes(lmsg, encoding='utf-8'), (usraddr[usr.index(o)][0],4243))
                 if dev:
                     log('Send userlist to User Ip: '+o+' Name='+usrn[usr.index(o)])
+        elif msg[0:4] == '/img':
+            log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Recived Image from USR: "+usrn[usr.index(addr[0])], l_file)
+            ij = json.loads(msg[5:])
+            w = int(ij["w"])
+            h = int(ij["h"])
+            sc = 1
+            while w > 38 or h > 38:
+                sc += 1
+                w = int(w/sc)
+                h = int(h/sc)
+            sendji = itj.manage_json(1,sc,msg[5:])
+            itj.json_to_text(1,sc,msg[5:])
+            if ecl:
+                log('!msg '+sendji,ch_log, False)
+            for o in usr:
+                sock.sendto(bytes('!msg '+sendji, encoding='utf-8'), (usraddr[usr.index(o)][0],4243))
+                if dev:
+                    log('Send Image to User Ip: '+o+' Name='+usrn[usr.index(o)])
         # Admin commands
         elif msg[0:1] == '!':
             cmdlist = ['help','chatlog_clear','chatlog_en','chatlog_dis','kick', 'stop', 'reasonkick', 'imp']
