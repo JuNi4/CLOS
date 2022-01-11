@@ -193,7 +193,8 @@ def client():
 
     if not pw == '':
         sendMsg(bytes('/auth '+pw, 'utf-8'))
-    sendMsg(bytes('/join '+client_name, 'utf-8'))
+    jmsg = '/join '+str(client_name)
+    sendMsg(bytes(jmsg, 'utf-8'))
 
     # Hauptschleife
     while True:
@@ -222,13 +223,13 @@ def client():
                     a = len(sendspl)
                     #print(str(a),str(int(a/10)*10),str(int(a/10)*10 < a))
                     for i in range(0,int(a/10)):
-                        sendMsg(bytes((sendspl[i*10+1]+','+sendspl[i*10+2]+','+sendspl[i*10+3]+','+sendspl[i*10+4]+','+sendspl[i*10+5]+','+sendspl[i*10+6]+','+sendspl[i*10+7]+','+sendspl[i*10+8]+','+sendspl[i*10+9]+','+sendspl[i*10+10]).replace('\n','').replace(' ', ''),'utf-8'))
+                        sendMsg(bytes((sendspl[i*10+1]+','+sendspl[i*10+2]+','+sendspl[i*10+3]+','+sendspl[i*10+4]+','+sendspl[i*10+5]+','+sendspl[i*10+6]+','+sendspl[i*10+7]+','+sendspl[i*10+8]+','+sendspl[i*10+9]+','+sendspl[i*10+10]).replace(' ', ''),'utf-8'))
                     time.sleep(0.5)
-                    if int(a/10)*10 < a:
+                    if int(a/10)*10 < a-1:
                         for i in range(0,a-int(a/10)*10):
                             nsy = int(a/10)*10
                             print(nsy+i)
-                            sendMsg(bytes(sendspl[nsy+i].replace('\n','').replace(' ', ''),'utf-8'))
+                            sendMsg(bytes(sendspl[nsy+i].replace(' ', ''),'utf-8'))
                     print('System: Done!')
                 else:
                     print('System: Wrong File Format. Only png or jpg.')
@@ -515,9 +516,14 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
     log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Awaiting Input...", l_file)
 
     while True:
-        data, address = sock.recvfrom(4096)
-        addr = address
-        msg = data.decode()
+        try:
+            data, address = sock.recvfrom(4096)
+            addr = address
+            msg = data.decode()
+        except:
+            print("OOps... Something went wrong")
+            addr = ["0", 0]
+            msg = ""
         #log(str(addr)+': '+data.decode(), "'", sep="")
         # Join server
         if msg[0:5] == '/join':
@@ -690,6 +696,7 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
             # Print Json Image data
             #print(rcvstr.replace('\n','').replace(' ', ''))
             # Load text to json
+            print(rcvstr)
             ij = json.loads(rcvstr)
             w = int(ij["w"])
             h = int(ij["h"])
@@ -702,6 +709,7 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
             # get calculated shrink values and shrink
             sendji = itj.manage_json(1,sc,rcvstr)
             # display
+            log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Image '"+ij["name"]+"':", l_file)
             itj.json_to_text(1,sc,sendji)
             sendspl = sendji.split(',')
             # Send first Part of message
@@ -712,12 +720,13 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
                 a = len(sendspl)
                 #print(str(a),str(int(a/10)*10),str(int(a/10)*10 < a))
                 for i in range(0,int(a/10)):
-                    sock.sendto(bytes((sendspl[i*10+1]+','+sendspl[i*10+2]+','+sendspl[i*10+3]+','+sendspl[i*10+4]+','+sendspl[i*10+5]+','+sendspl[i*10+6]+','+sendspl[i*10+7]+','+sendspl[i*10+8]+','+sendspl[i*10+9]+','+sendspl[i*10+10]).replace('\n','').replace(' ', ''),'utf-8'),(o,4243))
-                time.sleep(0.5)
-                if int(a/10)*10 < a:
-                    for i in range(0,a-int(a/10)*10):
-                        nsy = int(a/10)*10
-                        sock.sendto(bytes(sendspl[nsy+i].replace('\n','').replace(' ', ''),'utf-8'),(o,4243))
+                    sock.sendto(bytes((sendspl[i*10+1]+','+sendspl[i*10+2]+','+sendspl[i*10+3]+','+sendspl[i*10+4]+','+sendspl[i*10+5]+','+sendspl[i*10+6]+','+sendspl[i*10+7]+','+sendspl[i*10+8]+','+sendspl[i*10+9]+','+sendspl[i*10+10]).replace(' ', ''),'utf-8'),(o,4243))
+                    time.sleep(0.5)
+                    if int(a/10)*10 < a-1:
+                        for i in range(0,a-int(a/10)*10):
+                            nsy = int(a/10)*10
+                            print(nsy+i)
+                            sock.sendto(bytes(sendspl[nsy+i].replace(' ', ''),'utf-8'),(o,4243))
         # Admin commands
         elif msg[0:1] == '!':
             cmdlist = ['help','chatlog_clear','chatlog_en','chatlog_dis','kick', 'stop', 'reasonkick', 'imp']

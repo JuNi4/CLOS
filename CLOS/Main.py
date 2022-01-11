@@ -76,6 +76,45 @@ info_style = style.color.Blue
 warning_style = style.color.Yellow
 error_style = style.color.Red
 res = cutil.text_style.res
+
+# Create Dirs.json
+# Load the Dirs.json template
+dir_temp = json.loads(json.dumps(vars.dir_template))
+# Set All paths corrrectly
+if 'Windows' in platform.system():
+    dir_temp["CLOS_DIR"] = str(os.path.dirname(os.path.realpath(__file__)))
+    dir_temp["LIB_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\\libs'
+    dir_temp["COMMAND_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\\commands'
+    dir_temp["COMMAND_DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\\command_data'
+    dir_temp["DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\\data'
+    dir_temp["COMMAND_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\\commands'
+    dir_temp["COMMAND_DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\\command_data'
+    dir_temp["DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\\data'
+    dir_temp["LAN_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\\lan'
+else:
+    dir_temp["CLOS_DIR"] = str(os.path.dirname(os.path.realpath(__file__)))
+    dir_temp["LIB_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/libs'
+    dir_temp["COMMAND_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/commands'
+    dir_temp["COMMAND_DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/command_data'
+    dir_temp["DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/data'
+    dir_temp["COMMAND_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/commands'
+    dir_temp["COMMAND_DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/command_data'
+    dir_temp["DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/data'
+    dir_temp["LAN_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/lan'
+# Write Files
+if 'Windows' in platform.system():
+    dirf = open(str(os.path.dirname(os.path.realpath(__file__)))+'\libs\dirs.json', 'w')
+else:
+    dirf = open(str(os.path.dirname(os.path.realpath(__file__))) + '/libs/dirs.json', 'w')
+dirf.write(json.dumps(dir_temp, indent=4))
+dirf.close()
+if 'Windows' in platform.system():
+    dirf = open(str(os.path.dirname(os.path.realpath(__file__)))+'\commands\dirs.json', 'w')
+else:
+    dirf = open(str(os.path.dirname(os.path.realpath(__file__))) + '/commands/dirs.json', 'w')
+dirf.write(json.dumps(dir_temp, indent=4))
+dirf.close()
+
 print(cutil.utils.ifcolor('Info: Importing Libs From Libs Folder... Done!',info_style,res))
 
 # Easy way to get os
@@ -139,39 +178,6 @@ def internet():
 # Vars
 do_setup = False
 skip_setup = 0
-dir_temp = json.loads(json.dumps(vars.dir_template))
-if 'Windows' in platform.system():
-    dir_temp["CLOS_DIR"] = str(os.path.dirname(os.path.realpath(__file__)))
-    dir_temp["LIB_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\libs'
-    dir_temp["COMMAND_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\commands'
-    dir_temp["COMMAND_DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\command_data'
-    dir_temp["DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\data'
-    dir_temp["COMMAND_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\commands'
-    dir_temp["COMMAND_DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\command_data'
-    dir_temp["DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\data'
-    dir_temp["LAN_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\lan'
-else:
-    dir_temp["CLOS_DIR"] = str(os.path.dirname(os.path.realpath(__file__)))
-    dir_temp["LIB_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/libs'
-    dir_temp["COMMAND_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/commands'
-    dir_temp["COMMAND_DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/command_data'
-    dir_temp["DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/data'
-    dir_temp["COMMAND_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/commands'
-    dir_temp["COMMAND_DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/command_data'
-    dir_temp["DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/data'
-    dir_temp["LAN_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/lan'
-if 'Windows' in platform.system():
-    dirf = open(str(os.path.dirname(os.path.realpath(__file__)))+'\libs\dirs.json', 'w')
-else:
-    dirf = open(str(os.path.dirname(os.path.realpath(__file__))) + '/libs/dirs.json', 'w')
-dirf.write(json.dumps(dir_temp, indent=4))
-dirf.close()
-if 'Windows' in platform.system():
-    dirf = open(str(os.path.dirname(os.path.realpath(__file__)))+'\commands\dirs.json', 'w')
-else:
-    dirf = open(str(os.path.dirname(os.path.realpath(__file__))) + '/commands/dirs.json', 'w')
-dirf.write(json.dumps(dir_temp, indent=4))
-dirf.close()
 print(cutil.utils.ifcolor('Info: Checking For Internet... If Crashes, Disable Internet In Boot Settings.',info_style,res),end='\r')
 if internet() == True:
     ips = requests.get('https://api.ipify.org').text
