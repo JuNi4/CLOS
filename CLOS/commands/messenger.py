@@ -228,7 +228,7 @@ def client():
                     if int(a/10)*10 < a-1:
                         for i in range(0,a-int(a/10)*10):
                             nsy = int(a/10)*10
-                            print(nsy+i)
+                            #print(nsy+i)
                             sendMsg(bytes(sendspl[nsy+i].replace(' ', ''),'utf-8'))
                     print('System: Done!')
                 else:
@@ -721,7 +721,6 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
                 #print(str(a),str(int(a/10)*10),str(int(a/10)*10 < a))
                 for i in range(0,int(a/10)):
                     sock.sendto(bytes((sendspl[i*10+1]+','+sendspl[i*10+2]+','+sendspl[i*10+3]+','+sendspl[i*10+4]+','+sendspl[i*10+5]+','+sendspl[i*10+6]+','+sendspl[i*10+7]+','+sendspl[i*10+8]+','+sendspl[i*10+9]+','+sendspl[i*10+10]).replace(' ', ''),'utf-8'),(o,4243))
-                    time.sleep(0.5)
                 if int(a/10)*10 < a-1:
                     for i in range(0,a-int(a/10)*10):
                         nsy = int(a/10)*10
