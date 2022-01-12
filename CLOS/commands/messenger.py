@@ -247,7 +247,7 @@ def client():
                         time.sleep(0.01)
                     #time.sleep(0.5)
                     if int(a/10)*10 < a-1:
-                        for i in range(0,(int(a/10)*10)-2):
+                        for i in range(0,(int(a/10)*10)+2):
                             if a-1 >= ((int(a/10)*10)+i)-2:
                                 sendMsg(bytes((sendspl[((int(a/10)*10)+i)-2]).replace(' ', ''),'utf-8'))
                     print('System: Done!')
