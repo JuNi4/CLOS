@@ -206,7 +206,7 @@ def client():
             password = getpass()
             mymsg += ' '+password
         # Send an Image to the Server
-        if mymsg == '/img':
+        if mymsg[:4] == '/img':
             # Make tkinter window object
             root = tk.Tk()
             root.withdraw()
@@ -225,14 +225,18 @@ def client():
                     ij = json.loads(sendspl)
                     w = int(ij["w"])
                     h = int(ij["h"])
+                    w2 = w
+                    h2 = h
                     sc = 1
+                    print('OLD W&H: '+str(w)+' '+str(h))
                     # shrink image down if needed
-                    while w > 38 or h > 38:
+                    while w2 > 38 or h2 > 38:
                         sc += 1
-                        w = int(w/sc)
-                        h = int(h/sc)
+                        w2 = int(w/sc)
+                        h2 = int(h/sc)
                     # get calculated shrink values and shrink
-                    sendji = itj.manage_json(1,sc,sendspl)
+                    print('NEW W&H: '+str(w/sc)+' '+str(h/sc)+' AND SCALE: '+str(1/sc)+' times original wh')
+                    sendspl = itj.manage_json(1,sc,sendspl)
                     sendspl = sendspl.split(',')
                     sendMsg(bytes('/img '+sendspl[0], 'utf-8'))
                     # Send rest of message
@@ -240,14 +244,12 @@ def client():
                     #print(str(a),str(int(a/10)*10),str(int(a/10)*10 < a))
                     for i in range(0,int(a/10)):
                         sendMsg(bytes((sendspl[i*10+1]+','+sendspl[i*10+2]+','+sendspl[i*10+3]+','+sendspl[i*10+4]+','+sendspl[i*10+5]+','+sendspl[i*10+6]+','+sendspl[i*10+7]+','+sendspl[i*10+8]+','+sendspl[i*10+9]+','+sendspl[i*10+10]).replace(' ', ''),'utf-8'))
-                        time.sleep(0.001)
-                    time.sleep(0.5)
+                        time.sleep(0.01)
+                    #time.sleep(0.5)
                     if int(a/10)*10 < a-1:
-                        for i in range(0,a-int(a/10)*10):
-                            nsy = int(a/10)*10
-                            #print(nsy+i)
-                            sendMsg(bytes(sendspl[nsy+i].replace(' ', ''),'utf-8'))
-                            time.sleep(0.001)
+                        for i in range(0,(int(a/10)*10)-2):
+                            if a-1 >= ((int(a/10)*10)+i)-2:
+                                sendMsg(bytes((sendspl[((int(a/10)*10)+i)-2]).replace(' ', ''),'utf-8'))
                     print('System: Done!')
                 else:
                     print('System: Wrong File Format. Only png or jpg.')
@@ -363,12 +365,14 @@ def client_server(ip = "", cpid = '', toasts = True):
                 ij = json.loads(rcvstr)
                 w = int(ij["w"])
                 h = int(ij["h"])
+                w2 = w
+                h2 = h
                 sc = 1
                 # shrink image down if needed
-                while w > 38 or h > 38:
+                while w2 > 38 or h2 > 38:
                     sc += 1
-                    w = int(w/sc)
-                    h = int(h/sc)
+                    w2 = int(w/sc)
+                    h2 = int(h/sc)
                 # get calculated shrink values and shrink
                 sendji = itj.manage_json(1,sc,rcvstr)
                 # display
@@ -717,12 +721,14 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
             ij = json.loads(rcvstr)
             w = int(ij["w"])
             h = int(ij["h"])
+            w2 = w
+            h2 = h
             sc = 1
             # shrink image down if needed
-            while w > 38 or h > 38:
+            while w2 > 38 or h2 > 38:
                 sc += 1
-                w = int(w/sc)
-                h = int(h/sc)
+                w2 = int(w/sc)
+                h2 = int(h/sc)
             # get calculated shrink values and shrink
             sendji = itj.manage_json(1,sc,rcvstr)
             # display
@@ -739,13 +745,11 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
                 #print(str(a),str(int(a/10)*10),str(int(a/10)*10 < a))
                 for i in range(0,int(a/10)):
                     sock.sendto(bytes((sendspl[i*10+1]+','+sendspl[i*10+2]+','+sendspl[i*10+3]+','+sendspl[i*10+4]+','+sendspl[i*10+5]+','+sendspl[i*10+6]+','+sendspl[i*10+7]+','+sendspl[i*10+8]+','+sendspl[i*10+9]+','+sendspl[i*10+10]).replace(' ', ''),'utf-8'),(o,4243))
-                    time.sleep(0.001)
+                    time.sleep(0.1)
                 if int(a/10)*10 < a-1:
-                    for i in range(0,a-int(a/10)*10):
-                        nsy = int(a/10)*10
-                        #print(nsy+i)
-                        sock.sendto(bytes(sendspl[nsy+i].replace(' ', ''),'utf-8'),(o,4243))
-                        time.sleep(0.001)
+                    for i in range(0,(int(a/10)*10)-2):
+                        if a-1 >= ((int(a/10)*10)+i)-2:
+                            sock.sendto(bytes((sendspl[((int(a/10)*10)+i)-2]).replace(' ', ''),'utf-8'),(o,4243))
         # Admin commands
         elif msg[0:1] == '!':
             cmdlist = ['help','chatlog_clear','chatlog_en','chatlog_dis','kick', 'stop', 'reasonkick', 'imp']
