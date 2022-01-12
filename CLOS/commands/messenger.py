@@ -130,10 +130,7 @@ class itj():
                 try:
                     val = img["pix"][i][i2]
                 except:
-                    try:
-                        val = img["pix"][i2][i]
-                    except:
-                        val = [0,0,0]
+                    val = img["pix"][i2][i]
                 pval.append([val[0],val[1],val[2]])
                 i2 += shrink
             i += shrink
@@ -253,7 +250,6 @@ def client():
                         for i in range(0,(int(a/10)*10)-2):
                             if a-1 >= ((int(a/10)*10)+i)-2:
                                 sendMsg(bytes((sendspl[((int(a/10)*10)+i)-2]).replace(' ', ''),'utf-8'))
-                                time.sleep(0.01)
                     print('System: Done!')
                 else:
                     print('System: Wrong File Format. Only png or jpg.')
@@ -749,13 +745,11 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
                 #print(str(a),str(int(a/10)*10),str(int(a/10)*10 < a))
                 for i in range(0,int(a/10)):
                     sock.sendto(bytes((sendspl[i*10+1]+','+sendspl[i*10+2]+','+sendspl[i*10+3]+','+sendspl[i*10+4]+','+sendspl[i*10+5]+','+sendspl[i*10+6]+','+sendspl[i*10+7]+','+sendspl[i*10+8]+','+sendspl[i*10+9]+','+sendspl[i*10+10]).replace(' ', ''),'utf-8'),(o,4243))
-                    time.sleep(0.01)
-                    #time.sleep(0.5)
-                    if int(a/10)*10 < a-1:
-                        for i in range(0,(int(a/10)*10)-2):
-                            if a-1 >= ((int(a/10)*10)+i)-2:
-                                sock.sendto(bytes((sendspl[((int(a/10)*10)+i)-2]).replace(' ', ''),'utf-8'),(o,4243))
-                                time.sleep(0.01)
+                    time.sleep(0.1)
+                if int(a/10)*10 < a-1:
+                    for i in range(0,(int(a/10)*10)-2):
+                        if a-1 >= ((int(a/10)*10)+i)-2:
+                            sock.sendto(bytes((sendspl[((int(a/10)*10)+i)-2]).replace(' ', ''),'utf-8'),(o,4243))
         # Admin commands
         elif msg[0:1] == '!':
             cmdlist = ['help','chatlog_clear','chatlog_en','chatlog_dis','kick', 'stop', 'reasonkick', 'imp']
