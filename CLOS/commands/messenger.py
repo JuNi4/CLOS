@@ -227,12 +227,14 @@ def client():
                     #print(str(a),str(int(a/10)*10),str(int(a/10)*10 < a))
                     for i in range(0,int(a/10)):
                         sendMsg(bytes((sendspl[i*10+1]+','+sendspl[i*10+2]+','+sendspl[i*10+3]+','+sendspl[i*10+4]+','+sendspl[i*10+5]+','+sendspl[i*10+6]+','+sendspl[i*10+7]+','+sendspl[i*10+8]+','+sendspl[i*10+9]+','+sendspl[i*10+10]).replace(' ', ''),'utf-8'))
+                        time.sleep(0.001)
                     time.sleep(0.5)
                     if int(a/10)*10 < a-1:
                         for i in range(0,a-int(a/10)*10):
                             nsy = int(a/10)*10
                             #print(nsy+i)
                             sendMsg(bytes(sendspl[nsy+i].replace(' ', ''),'utf-8'))
+                            time.sleep(0.001)
                     print('System: Done!')
                 else:
                     print('System: Wrong File Format. Only png or jpg.')
@@ -724,11 +726,13 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
                 #print(str(a),str(int(a/10)*10),str(int(a/10)*10 < a))
                 for i in range(0,int(a/10)):
                     sock.sendto(bytes((sendspl[i*10+1]+','+sendspl[i*10+2]+','+sendspl[i*10+3]+','+sendspl[i*10+4]+','+sendspl[i*10+5]+','+sendspl[i*10+6]+','+sendspl[i*10+7]+','+sendspl[i*10+8]+','+sendspl[i*10+9]+','+sendspl[i*10+10]).replace(' ', ''),'utf-8'),(o,4243))
+                    time.sleep(0.001)
                 if int(a/10)*10 < a-1:
                     for i in range(0,a-int(a/10)*10):
                         nsy = int(a/10)*10
                         #print(nsy+i)
                         sock.sendto(bytes(sendspl[nsy+i].replace(' ', ''),'utf-8'),(o,4243))
+                        time.sleep(0.001)
         # Admin commands
         elif msg[0:1] == '!':
             cmdlist = ['help','chatlog_clear','chatlog_en','chatlog_dis','kick', 'stop', 'reasonkick', 'imp']
