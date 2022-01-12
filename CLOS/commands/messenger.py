@@ -219,8 +219,21 @@ def client():
                 if file_path[len(file_path)-3:].lower() == 'png' or file_path[len(file_path)-3:].lower() == 'jpg':
                     # Load file into Json
                     print('System: Sending File: '+file_path+' To Server..')
-                    sendspl = itj.img_to_json(1,1,file_path).split(',')
+                    sendspl = itj.img_to_json(1,1,file_path)
                     # Send first Part of message
+                    # Load text to json
+                    ij = json.loads(sendspl)
+                    w = int(ij["w"])
+                    h = int(ij["h"])
+                    sc = 1
+                    # shrink image down if needed
+                    while w > 38 or h > 38:
+                        sc += 1
+                        w = int(w/sc)
+                        h = int(h/sc)
+                    # get calculated shrink values and shrink
+                    sendji = itj.manage_json(1,sc,sendspl)
+                    sendspl = sendspl.split(',')
                     sendMsg(bytes('/img '+sendspl[0], 'utf-8'))
                     # Send rest of message
                     a = len(sendspl)
