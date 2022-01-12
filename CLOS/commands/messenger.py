@@ -520,8 +520,8 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
             data, address = sock.recvfrom(4096)
             addr = address
             msg = data.decode()
-        except:
-            print("OOps... Something went wrong")
+        except Exception as exp:
+            log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] An Error Acurred: "+str(exp), l_file)
             addr = ["0", 0]
             msg = ""
         #log(str(addr)+': '+data.decode(), "'", sep="")
@@ -696,7 +696,6 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
             # Print Json Image data
             #print(rcvstr.replace('\n','').replace(' ', ''))
             # Load text to json
-            print(rcvstr)
             ij = json.loads(rcvstr)
             w = int(ij["w"])
             h = int(ij["h"])
@@ -713,6 +712,7 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
             itj.json_to_text(1,sc,sendji)
             sendspl = sendji.split(',')
             # Send first Part of message
+            log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Sending image to usrs", l_file)
             for o in usr:
                 sock.sendto(bytes('!img '+sendspl[0], 'utf-8'),(o,4243))
                 time.sleep(0.001)
@@ -722,11 +722,11 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
                 for i in range(0,int(a/10)):
                     sock.sendto(bytes((sendspl[i*10+1]+','+sendspl[i*10+2]+','+sendspl[i*10+3]+','+sendspl[i*10+4]+','+sendspl[i*10+5]+','+sendspl[i*10+6]+','+sendspl[i*10+7]+','+sendspl[i*10+8]+','+sendspl[i*10+9]+','+sendspl[i*10+10]).replace(' ', ''),'utf-8'),(o,4243))
                     time.sleep(0.5)
-                    if int(a/10)*10 < a-1:
-                        for i in range(0,a-int(a/10)*10):
-                            nsy = int(a/10)*10
-                            print(nsy+i)
-                            sock.sendto(bytes(sendspl[nsy+i].replace(' ', ''),'utf-8'),(o,4243))
+                if int(a/10)*10 < a-1:
+                    for i in range(0,a-int(a/10)*10):
+                        nsy = int(a/10)*10
+                        print(nsy+i)
+                        sock.sendto(bytes(sendspl[nsy+i].replace(' ', ''),'utf-8'),(o,4243))
         # Admin commands
         elif msg[0:1] == '!':
             cmdlist = ['help','chatlog_clear','chatlog_en','chatlog_dis','kick', 'stop', 'reasonkick', 'imp']
