@@ -127,7 +127,10 @@ class itj():
             i2 = 0
             pval = []
             while i2+shrink <= scaling[0]:
-                val = img["pix"][i][i2]
+                try:
+                    val = img["pix"][i][i2]
+                except:
+                    val = img["pix"][i2][i]
                 pval.append([val[0],val[1],val[2]])
                 i2 += shrink
             i += shrink
@@ -724,7 +727,7 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
                 if int(a/10)*10 < a-1:
                     for i in range(0,a-int(a/10)*10):
                         nsy = int(a/10)*10
-                        print(nsy+i)
+                        #print(nsy+i)
                         sock.sendto(bytes(sendspl[nsy+i].replace(' ', ''),'utf-8'),(o,4243))
         # Admin commands
         elif msg[0:1] == '!':
