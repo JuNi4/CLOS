@@ -17,6 +17,7 @@
 #  - Sending images riqueres splitting the json string at every ',' because the string would otherwise be to long for images over ~10x10
 from getpass import getpass
 import re
+from shutil import ExecError
 import threading
 import platform
 import datetime
@@ -248,7 +249,16 @@ def client():
                         #print(len(sendspl)-1,i*10+10,int((a)/10)+1)
                         if not sendspl[i*10+1] == ',':
                             try:
-                                sendMsg(bytes((sendspl[i*10+1]+','+sendspl[i*10+2]+','+sendspl[i*10+3]+','+sendspl[i*10+4]+','+sendspl[i*10+5]+','+sendspl[i*10+6]+','+sendspl[i*10+7]+','+sendspl[i*10+8]+','+sendspl[i*10+9]+','+sendspl[i*10+10]).replace(' ', ''),'utf-8'))
+                                x = (sendspl[i*10+1]+','+sendspl[i*10+2]+','+sendspl[i*10+3]+','+sendspl[i*10+4]+','+sendspl[i*10+5]+','+sendspl[i*10+6]+','+sendspl[i*10+7]+','+sendspl[i*10+8]+','+sendspl[i*10+9]+','+sendspl[i*10+10]).replace(' ', '')
+                                try:
+                                    x = x[:x.index('}')+1]
+                                except:
+                                    pass
+                                try:
+                                    x = x[:x.index(',,')]
+                                except:
+                                    pass
+                                sendMsg(bytes(x,'utf-8'))
                             except:
                                 pass
                         time.sleep(0.01)
@@ -384,7 +394,7 @@ def client_server(ip = "", cpid = '', toasts = True):
                 sendji = itj.manage_json(1,sc,rcvstr)
                 # display
                 itj.json_to_text(1,sc,sendji)
-            else: 
+            elif not data.decode() == '':
                 print(data.decode())
                 if not 'Windows' in platform.system():
                     if not isFocused():
@@ -748,22 +758,31 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
             sendspl = sendji.split(',')
             # Send first Part of message
             log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Sending image to usrs", l_file)
+            for i in range(0,10):
+                sendspl.append("")
             for o in usr:
                 sock.sendto(bytes('!img '+sendspl[0], 'utf-8'),(o,4243))
                 time.sleep(0.001)
                 # Send rest of message
                 a = len(sendspl)
                 #print(str(a),str(int(a/10)*10),str(int(a/10)*10 < a))
-                for i in range(0,10):
-                        sendspl.append("")
                 for i in range(0,int((a)/10)+1):
-                        #print(len(sendspl)-1,i*10+10,int((a)/10))
-                        if not sendspl[i*10+1] == ',':
-                            try:
-                                sock.sendto(bytes((sendspl[i*10+1]+','+sendspl[i*10+2]+','+sendspl[i*10+3]+','+sendspl[i*10+4]+','+sendspl[i*10+5]+','+sendspl[i*10+6]+','+sendspl[i*10+7]+','+sendspl[i*10+8]+','+sendspl[i*10+9]+','+sendspl[i*10+10]).replace(' ', ''),'utf-8'),(o,4243))
-                            except:
-                                pass
-                        time.sleep(0.01)
+                    #print(len(sendspl)-1,i*10+10,int((a)/10))
+                    try:
+                        x = (sendspl[i*10+1]+','+sendspl[i*10+2]+','+sendspl[i*10+3]+','+sendspl[i*10+4]+','+sendspl[i*10+5]+','+sendspl[i*10+6]+','+sendspl[i*10+7]+','+sendspl[i*10+8]+','+sendspl[i*10+9]+','+sendspl[i*10+10]).replace(' ', '')
+                        try:
+                            x = x[:x.index('}')+1]
+                        except:
+                            pass
+                        try:
+                            x = x[:x.index(',,')]
+                        except:
+                            pass
+                        sock.sendto(bytes(x,'utf-8'),(o,4243))
+                    except Exception as e:
+                        #print(e)
+                        pass
+                    time.sleep(0.01)
         # Admin commands
         elif msg[0:1] == '!':
             cmdlist = ['help','chatlog_clear','chatlog_en','chatlog_dis','kick', 'stop', 'reasonkick', 'imp']
@@ -877,7 +896,7 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
             time.sleep(0.1)
             log('['+datetime.datetime.now().strftime("%H:%M:%S")+'] List Server Ping',l_file)
             sock.sendto(bytes('list_update '+cserver_ip+' '+str(PORT)+' '+server_name+' '+str(epw)+' '+str(len(usr)),'utf-8'), (list_server_ip, int(list_server_port)))
-        elif addr[0] in usr:
+        elif addr[0] in usr and not msg == '':
             if addr[0] in auth or epw == False:
                 log('['+datetime.datetime.now().strftime("%H:%M:%S")+'] <'+usrn[usr.index(str(addr[0]))]+'> '+msg, l_file)
                 retmsg = '<'+usrn[usr.index(str(addr[0]))]+'> '+msg
