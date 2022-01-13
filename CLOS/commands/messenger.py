@@ -242,14 +242,12 @@ def client():
                     # Send rest of message
                     a = len(sendspl)
                     #print(str(a),str(int(a/10)*10),str(int(a/10)*10 < a))
-                    for i in range(0,int(a/10)):
+                    for i in range(0,10):
+                        sendspl.append("")
+                    for i in range(0,int((a)/10)):
+                        #print(len(sendspl)-1,i*10+10,int((a)/10))
                         sendMsg(bytes((sendspl[i*10+1]+','+sendspl[i*10+2]+','+sendspl[i*10+3]+','+sendspl[i*10+4]+','+sendspl[i*10+5]+','+sendspl[i*10+6]+','+sendspl[i*10+7]+','+sendspl[i*10+8]+','+sendspl[i*10+9]+','+sendspl[i*10+10]).replace(' ', ''),'utf-8'))
                         time.sleep(0.01)
-                    #time.sleep(0.5)
-                    if int(a/10)*10 < a-1:
-                        for i in range(0,(int(a/10)*10)+2):
-                            if a-1 >= ((int(a/10)*10)+i)-2:
-                                sendMsg(bytes((sendspl[((int(a/10)*10)+i)-2]).replace(' ', ''),'utf-8'))
                     print('System: Done!')
                 else:
                     print('System: Wrong File Format. Only png or jpg.')
@@ -362,6 +360,10 @@ def client_server(ip = "", cpid = '', toasts = True):
                 # Print Json Image data
                 #print(rcvstr.replace('\n','').replace(' ', ''))
                 # Load text to json
+                #f = open("json.json",'w')
+                #f.write(rcvstr)
+                #f.close()
+                rcvstr = rcvstr[:len(rcvstr)-2]+rcvstr[len(rcvstr)-2:].replace(',','')
                 ij = json.loads(rcvstr)
                 w = int(ij["w"])
                 h = int(ij["h"])
@@ -718,6 +720,10 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
             # Print Json Image data
             #print(rcvstr.replace('\n','').replace(' ', ''))
             # Load text to json
+            #f = open("json.json",'w')
+            #f.write(rcvstr)
+            #f.close()
+            rcvstr = rcvstr[:len(rcvstr)-2]+rcvstr[len(rcvstr)-2:].replace(',','')
             ij = json.loads(rcvstr)
             w = int(ij["w"])
             h = int(ij["h"])
@@ -743,13 +749,12 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
                 # Send rest of message
                 a = len(sendspl)
                 #print(str(a),str(int(a/10)*10),str(int(a/10)*10 < a))
-                for i in range(0,int(a/10)):
-                    sock.sendto(bytes((sendspl[i*10+1]+','+sendspl[i*10+2]+','+sendspl[i*10+3]+','+sendspl[i*10+4]+','+sendspl[i*10+5]+','+sendspl[i*10+6]+','+sendspl[i*10+7]+','+sendspl[i*10+8]+','+sendspl[i*10+9]+','+sendspl[i*10+10]).replace(' ', ''),'utf-8'),(o,4243))
-                    time.sleep(0.1)
-                if int(a/10)*10 < a-1:
-                    for i in range(0,(int(a/10)*10)-2):
-                        if a-1 >= ((int(a/10)*10)+i)-2:
-                            sock.sendto(bytes((sendspl[((int(a/10)*10)+i)-2]).replace(' ', ''),'utf-8'),(o,4243))
+                for i in range(0,10):
+                        sendspl.append("")
+                for i in range(0,int((a)/10)):
+                        #print(len(sendspl)-1,i*10+10,int((a)/10))
+                        sock.sendto(bytes((sendspl[i*10+1]+','+sendspl[i*10+2]+','+sendspl[i*10+3]+','+sendspl[i*10+4]+','+sendspl[i*10+5]+','+sendspl[i*10+6]+','+sendspl[i*10+7]+','+sendspl[i*10+8]+','+sendspl[i*10+9]+','+sendspl[i*10+10]).replace(' ', ''),'utf-8'),(o,4243))
+                        time.sleep(0.01)
         # Admin commands
         elif msg[0:1] == '!':
             cmdlist = ['help','chatlog_clear','chatlog_en','chatlog_dis','kick', 'stop', 'reasonkick', 'imp']
