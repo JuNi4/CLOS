@@ -754,7 +754,8 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
             sendji = itj.manage_json(1,sc,rcvstr)
             # display
             log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Image '"+ij["name"]+"':", l_file)
-            itj.json_to_text(1,sc,sendji)
+            if not '-disIMG' in sys.argv:
+                itj.json_to_text(1,sc,sendji)
             sendspl = sendji.split(',')
             # Send first Part of message
             log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Sending image to usrs", l_file)
@@ -1046,7 +1047,7 @@ if len(arg) > 1:
     if '-s' in arg or '-server' in arg[1] or arg[1] == ' server ':
         # help
         if '-h' in arg:
-            print('HELP: \n -h  Help\n -name  Server Name\n -p  Server Port\n -lsip  IP of List Server\n -lsp  Port of List Server\n -els  Enable the list server\n -pw  Password for Server')
+            print('HELP: \n -h  Help\n -name  Server Name\n -p  Server Port\n -lsip  IP of List Server\n -lsp  Port of List Server\n -els  Enable the list server\n -pw  Password for Server\n -apw  To set the Admin Password\n -disIMG  To Disable Images being displayed')
             exit()
         if '-els' in arg:
             els = True
