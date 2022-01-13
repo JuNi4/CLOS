@@ -235,7 +235,7 @@ def client():
                         w2 = int(w/sc)
                         h2 = int(h/sc)
                     # get calculated shrink values and shrink
-                    print('NEW W&H: '+str(w/sc)+' '+str(h/sc)+' AND SCALE: '+str(1/sc)+' times original wh')
+                    print('NEW W&H: '+str(w2)+' '+str(h2)+' AND SCALE: '+str(sc))
                     sendspl = itj.manage_json(1,sc,sendspl)
                     sendspl = sendspl.split(',')
                     sendMsg(bytes('/img '+sendspl[0], 'utf-8'))
@@ -244,9 +244,13 @@ def client():
                     #print(str(a),str(int(a/10)*10),str(int(a/10)*10 < a))
                     for i in range(0,10):
                         sendspl.append("")
-                    for i in range(0,int((a)/10)):
-                        #print(len(sendspl)-1,i*10+10,int((a)/10))
-                        sendMsg(bytes((sendspl[i*10+1]+','+sendspl[i*10+2]+','+sendspl[i*10+3]+','+sendspl[i*10+4]+','+sendspl[i*10+5]+','+sendspl[i*10+6]+','+sendspl[i*10+7]+','+sendspl[i*10+8]+','+sendspl[i*10+9]+','+sendspl[i*10+10]).replace(' ', ''),'utf-8'))
+                    for i in range(0,int((a+1)/10)+1):
+                        #print(len(sendspl)-1,i*10+10,int((a)/10)+1)
+                        if not sendspl[i*10+1] == ',':
+                            try:
+                                sendMsg(bytes((sendspl[i*10+1]+','+sendspl[i*10+2]+','+sendspl[i*10+3]+','+sendspl[i*10+4]+','+sendspl[i*10+5]+','+sendspl[i*10+6]+','+sendspl[i*10+7]+','+sendspl[i*10+8]+','+sendspl[i*10+9]+','+sendspl[i*10+10]).replace(' ', ''),'utf-8'))
+                            except:
+                                pass
                         time.sleep(0.01)
                     print('System: Done!')
                 else:
@@ -356,7 +360,8 @@ def client_server(ip = "", cpid = '', toasts = True):
                     if not '}' in list(data.decode()):
                         rcvstr += data.decode()+','
                     else:
-                        rcvstr += data.decode()
+                        dat = data.decode()[:data.decode().index('}')+1]
+                        rcvstr += dat
                 # Print Json Image data
                 #print(rcvstr.replace('\n','').replace(' ', ''))
                 # Load text to json
@@ -716,14 +721,14 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
                     if not '}' in list(data.decode()):
                         rcvstr += data.decode()+','
                     else:
-                        rcvstr += data.decode()
+                        dat = data.decode()[:data.decode().index('}')+1]
+                        rcvstr += dat
             # Print Json Image data
             #print(rcvstr.replace('\n','').replace(' ', ''))
             # Load text to json
             #f = open("json.json",'w')
             #f.write(rcvstr)
             #f.close()
-            rcvstr = rcvstr[:len(rcvstr)-2]+rcvstr[len(rcvstr)-2:].replace(',','')
             ij = json.loads(rcvstr)
             w = int(ij["w"])
             h = int(ij["h"])
@@ -751,9 +756,13 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
                 #print(str(a),str(int(a/10)*10),str(int(a/10)*10 < a))
                 for i in range(0,10):
                         sendspl.append("")
-                for i in range(0,int((a)/10)):
+                for i in range(0,int((a)/10)+1):
                         #print(len(sendspl)-1,i*10+10,int((a)/10))
-                        sock.sendto(bytes((sendspl[i*10+1]+','+sendspl[i*10+2]+','+sendspl[i*10+3]+','+sendspl[i*10+4]+','+sendspl[i*10+5]+','+sendspl[i*10+6]+','+sendspl[i*10+7]+','+sendspl[i*10+8]+','+sendspl[i*10+9]+','+sendspl[i*10+10]).replace(' ', ''),'utf-8'),(o,4243))
+                        if not sendspl[i*10+1] == ',':
+                            try:
+                                sock.sendto(bytes((sendspl[i*10+1]+','+sendspl[i*10+2]+','+sendspl[i*10+3]+','+sendspl[i*10+4]+','+sendspl[i*10+5]+','+sendspl[i*10+6]+','+sendspl[i*10+7]+','+sendspl[i*10+8]+','+sendspl[i*10+9]+','+sendspl[i*10+10]).replace(' ', ''),'utf-8'),(o,4243))
+                            except:
+                                pass
                         time.sleep(0.01)
         # Admin commands
         elif msg[0:1] == '!':
