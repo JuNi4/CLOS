@@ -21,9 +21,10 @@ c = 0
 for o in sresult[1]:
     c += 1
     print(' '+str(c)+'. '+o)
-print('Please select one Between 1 and '+str(len(sresult[1])+1))
+print('Please select one Between 1 and '+str(len(sresult[1])))
 p = input('>>')
-if not p in range(1,len(sresult[1])):
+if not int(p) in range(1,len(sresult[1])):
     exit()
-rq = requests.get('https://en.wikipedia.org/w/api.php?action=parse&format=json&page='+sresult[1][int(p)-1])
-print(rq.text)
+rq = requests.get('https://en.wikipedia.org/w/api.php?action=parse&prop=wikitext&format=json&page='+sresult[1][int(p)-1])
+content = json.loads(rq.text)
+print(content["parse"]['wikitext'])
