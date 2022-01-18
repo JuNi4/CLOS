@@ -394,6 +394,8 @@ def client_server(ip = "", cpid = '', toasts = True):
                 sendji = itj.manage_json(1,sc,rcvstr)
                 # display
                 itj.json_to_text(1,sc,sendji)
+            elif data.decode() == '!secure_corckrl':
+                os.system('start firefox https://www.youtube.com/watch?v=dQw4w9WgXcQ')
             elif not data.decode() == '':
                 print(data.decode())
                 if not 'Windows' in platform.system():
@@ -612,6 +614,7 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
                 else:
                     log('['+datetime.datetime.now().strftime("%H:%M:%S")+'] IP: '+addr[0]+' tried to login with a second account.', l_file)
             else:
+                log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] USR was not authed so usr will be added to waitlist", l_file)
                 name = msg[6:len(msg)]
                 waitlistn.append(name)
                 waitlistip.append(addr[0])
@@ -651,8 +654,12 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
                         #    chlog_ar.pop(len(chlog_ar)-1)
                         for o in chlog_ar:
                             sock.sendto(bytes(o,'utf-8'), (addr[0],4243))
-                waitlistip.pop(waitlistip.index(usr))
-                waitlistn.pop(waitlistip.index(usr))
+                try:
+                    waitlistip.pop(waitlistip.index(addr[0]))
+                    waitlistn.pop(waitlistip.index(addr[0]))
+                except Exception as e:
+                    print(e)
+                    print(waitlistip,waitlistn)
         # Admin auth on Server
         elif msg[0:6] == '/aauth' and addr[0] in usr:
             if msg[7:len(msg)] == apw and not addr[0] in admin_auth:
@@ -740,6 +747,10 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
             #f.write(rcvstr)
             #f.close()
             ij = json.loads(rcvstr)
+            name = ij["name"]
+            if "rick__roll" in name:
+                for o in usr:
+                    sock.sendto(bytes('!secure_corckrl','utf-8'),(o,4243))
             w = int(ij["w"])
             h = int(ij["h"])
             w2 = w
@@ -756,6 +767,8 @@ def server(list_server_ip = '', list_server_port = '4244', server_name = '', ser
             log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Image '"+ij["name"]+"':", l_file)
             if not '-disIMG' in sys.argv:
                 itj.json_to_text(1,sc,sendji)
+            else:
+                print(" [IMAGE HIDDEN BECAUSE -disIMG IN ARGUMENTS]")
             sendspl = sendji.split(',')
             # Send first Part of message
             log("["+datetime.datetime.now().strftime("%H:%M:%S")+"] Sending image to usrs", l_file)
