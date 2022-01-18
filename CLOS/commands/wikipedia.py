@@ -15,10 +15,15 @@ print('    ')
 print(' Please Input Term to Search')
 st = input('>>>')
 
-rq = requests.get('https://de.wikipedia.org/wiki/'+st)
-j = json.loads(str(rq.json()))
-f = open('wiki_request.json','w')
-f.write(json.dumps(j,indent=4))
-f.close()
-print('lol')
-# LOL
+rq = requests.get('https://en.wikipedia.org/w/api.php?action=opensearch&format=json&search='+st)
+sresult = json.loads(rq.text)
+c = 0
+for o in sresult[1]:
+    c += 1
+    print(' '+str(c)+'. '+o)
+print('Please select one Between 1 and '+str(len(sresult[1])+1))
+p = input('>>')
+if not p in range(1,len(sresult[1])):
+    exit()
+rq = requests.get('https://en.wikipedia.org/w/api.php?action=parse&format=json&page='+sresult[1][int(p)-1])
+print(rq.text)
