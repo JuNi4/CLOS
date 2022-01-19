@@ -1,4 +1,5 @@
 # Pillow to read every pixel from a image
+from email.mime import image
 import platform
 from PIL import Image
 # Json for img to json convertion and vice versa
@@ -66,7 +67,7 @@ class itj():
         img = json.loads(json2)
         scling = int(scling)
         shrink = int(shrink)
-        scaling = (img["w"],img["h"])
+        scaling = (img["w"]*scling,img["h"]*scling)
         i = 0
         while i+shrink <= scaling[1]:
             i2 = 0
@@ -90,8 +91,8 @@ class itj():
         scling = int(scling)
         shrink = int(shrink)
         jol["name"] = img["name"]
-        jol["w"] = int(img["w"]/shrink)
-        jol["h"] = int(img["h"]/shrink)
+        jol["w"] = int(img["w"]/shrink)*scling
+        jol["h"] = int(img["h"]/shrink)*scling
         scaling = (img["w"],img["h"])
         i = 0
         while i+shrink <= scaling[1]:
@@ -99,14 +100,34 @@ class itj():
             pval = []
             while i2+shrink <= scaling[0]:
                 val = img["pix"][i][i2]
-                pval.append([val[0],val[1],val[2]])
+                for i3 in range(0,scling):
+                    pval.append([val[0],val[1],val[2]])
                 i2 += shrink
             i += shrink
-            jol["pix"].append(pval)
+            for i3 in range(0,scling):
+                jol["pix"].append(pval)
         return json.dumps(jol, indent=4)
+    
+    def json_to_image(scling = 1, shrink = 1, json2 = '{"name": "lol", "w": 0, "h": 0, "pix":[[0,0,0],[]]}', output = 'img.png', rgb = color.rgb, r = color.r):
+        js = json.loads(json2)
+        img = Image.new(mode = 'RGB', size = (js["w"]*scling,js['h']*scling))
+        scaling = (js["w"],js["h"])
+        i = 0
+        while i+shrink <= scaling[1]:
+            for if3 in range(0,scling):
+                i2 = 0
+                while i2+shrink <= scaling[0]:
+                    val = js["pix"][i][i2]
+                    for if4 in range(0,scling):
+                        img.putpixel( (i2*scling+if4,i*scling+if3) , (val[0],val[1],val[2], 255) )
+                    i2 += shrink
+            i += shrink
+        img.save(output)
 
 ij = itj.img_to_json(1,50,'/home/justus/Dokumente/Hintergrnd/2018-11-12_18.21.37.png')
 
 mj = itj.manage_json(1,1,ij)
 
 itj.json_to_text(1,1,mj)
+
+itj.json_to_image(100, 1, itj.manage_json(1,1,mj))
