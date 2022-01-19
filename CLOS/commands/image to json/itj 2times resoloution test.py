@@ -14,22 +14,25 @@ class itj():
         r = '\033[1;0m'
         def rgb(r=0,g=255,b=50):
             return '\033[38;2;'+str(r)+';'+str(g)+';'+str(b)+'m'
+        def brgb(r=0,g=255,b=50):
+            return '\033[48;2;'+str(r)+';'+str(g)+';'+str(b)+'m'
 
-    def img_to_text(scling = 1, shrink = 1, img = 'img.png', rgb = color.rgb, r = color.r):
+    def img_to_text(scling = 1, shrink = 1, img = 'img.png', brgb = color.brgb, rgb = color.rgb, r = color.r):
         scling = int(scling)
         shrink = int(shrink)
         img = Image.open(img)
         img = img.convert('RGB')
         scaling = img.size
         i = 0
-        while i+shrink <= scaling[1]:
+        while i+shrink+1 <= scaling[1]:
             i2 = 0
             pval = ''
             while i2+shrink <= scaling[0]:
                 val = img.getpixel((i2,i))
-                pval = pval+rgb(val[0], val[1], val[2])+'██'*scling
+                val2 = img.getpixel((i2,i+1))
+                pval = pval+brgb(val2[0], val2[1], val2[2])+rgb(val[0], val[1], val[2])+'▀'*scling
                 i2 += shrink
-            i += shrink
+            i += 1+shrink
             print(pval+r)
 
     def img_to_json(scling = 1, shrink = 1, img = 'img.png', rgb = color.rgb, r = color.r):
@@ -63,7 +66,7 @@ class itj():
             jol["pix"].append(pval)
         return json.dumps(jol, indent=4)
     
-    def json_to_text(scling = 1, shrink = 1, json2 = '{"name": "lol", "w": 0, "h": 0, "pix":[[],[]]}', rgb = color.rgb, r = color.r):
+    def json_to_text(scling = 1, shrink = 1, json2 = '{"name": "lol", "w": 0, "h": 0, "pix":[[],[]]}', brgb = color.brgb, rgb = color.rgb, r = color.r):
         img = json.loads(json2)
         scling = int(scling)
         shrink = int(shrink)
@@ -74,9 +77,10 @@ class itj():
             pval = ''
             while i2+shrink <= scaling[0]:
                 val = img["pix"][i][i2]
-                pval = pval+rgb(val[0], val[1], val[2])+'██'*scling
+                val2 = img["pix"][i+1][i2]
+                pval = pval+brgb(val2[0], val2[1], val2[2])+rgb(val[0], val[1], val[2])+'▀'*scling
                 i2 += shrink
-            i += shrink
+            i += shrink+1
             print(pval+r)
 
     def manage_json(scling = 1, shrink = 1, json2 = '{"name": "lol", "w": 0, "h": 0, "pix":[[0,0,0],[]]}', rgb = color.rgb, r = color.r):
@@ -125,48 +129,34 @@ class itj():
         img.save(output)
 
 
-if __name__ == '__main__'and not True:
-    import pathlib
-    import sys
-    if not len(sys.argv) > 1:
-        exit
-    x = ''
-    #print(sys.argv, len(sys.argv))
-    
-    if len(sys.argv) > 2:
-        for c in range(1,len(sys.argv)):
-            x = x + sys.argv[c] + ' '
-        x = x[:len(x)-1]
-    x.replace('\\ ', ' ')
-    x.replace('', ' ')
-    print(x)
-    #if pathlib.Path(x).is_file():
-    ij2 = itj.img_to_json(1,50,str(x))
-    # Automatic Down Scaling
-    ij = json.loads(ij2)
-    w = int(ij["w"])
-    h = int(ij["h"])
-    w2 = w
-    h2 = h
-    sc = 1
-    while w2 > 38 or h2 > 38:
-        sc += 1
-        w2 = int(w/sc)
-        h2 = int(h/sc)
-    # Downscale
-    mj = itj.manage_json(1,sc,ij2)
-    # Display
-    itj.json_to_text(1,1,mj)
-    # Automatic Up Scaling
-    ij = json.loads(mj)
-    w = int(ij["w"])
-    h = int(ij["h"])
-    w2 = w
-    h2 = h
-    sc = 1
-    while w2 < 500 or h2 < 500:
-        sc += 1
-        w2 = int(w*sc)
-        h2 = int(h*sc)
-    # Save to file
-    itj.json_to_image(sc, 1, itj.manage_json(1,1,str(mj)))
+
+#if pathlib.Path(x).is_file():
+ij2 = itj.img_to_json(1,1,str('/home/justus/.local/share/multimc/instances/Vault Hunters - Official Modpack/minecraft/screenshots/2022-01-19_16.49.13.png'))
+# Automatic Down Scaling
+ij = json.loads(ij2)
+w = int(ij["w"])
+h = int(ij["h"])
+w2 = w
+h2 = h
+sc = 1
+while w2 > 38*2 or h2 > 38*2:
+    sc += 1
+    w2 = int(w/sc)
+    h2 = int(h/sc)
+# Downscale
+mj = itj.manage_json(1,sc,ij2)
+# Display
+itj.json_to_text(1,1,mj)
+# Automatic Up Scaling
+ij = json.loads(mj)
+w = int(ij["w"])
+h = int(ij["h"])
+w2 = w
+h2 = h
+sc = 1
+while w2 < 500 or h2 < 500:
+    sc += 1
+    w2 = int(w*sc)
+    h2 = int(h*sc)
+# Save to file
+itj.json_to_image(sc, 1, itj.manage_json(1,1,str(mj)))
