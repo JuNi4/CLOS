@@ -131,7 +131,7 @@ class itj():
 
 
 #if pathlib.Path(x).is_file():
-ij2 = itj.img_to_json(1,1,str('/home/justus/.local/share/multimc/instances/Vault Hunters - Official Modpack/minecraft/screenshots/2022-01-19_16.49.13.png'))
+ij2 = itj.img_to_json(1,1,str('c:\\Users\\Justus\\Documents\\CODE\\Python\\image to json\\images\\Merry Ficsmas 2021.PNG'))
 # Automatic Down Scaling
 ij = json.loads(ij2)
 w = int(ij["w"])

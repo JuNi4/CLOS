@@ -1,4 +1,7 @@
 {
+    "lanID": "de_de",
+    "lanNAME": "Deutsch (Deutschland)",
+    
     "setting_found": "Info: Einstellungsdatai gefunden",
     "setting_missing": "Error: Einstellungsdatai existier nicht!",
     "setting_creat": "Info: Erstelle Einstellungsdatai",

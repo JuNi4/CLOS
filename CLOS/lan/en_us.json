@@ -1,4 +1,7 @@
 {
+    "lanID": "en_us",
+    "lanNAME": "English (US)",
+
     "setting_found": "Info: Found Settings file",
     "setting_missing": "Error: Settings file not existant!",
     "setting_creat": "Info: Creating Settings file",

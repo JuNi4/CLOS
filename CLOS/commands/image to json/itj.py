@@ -125,7 +125,7 @@ class itj():
         img.save(output)
 
 
-if __name__ == '__main__'and not True:
+if __name__ == '__main__':
     import pathlib
     import sys
     if not len(sys.argv) > 1:
@@ -140,6 +140,7 @@ if __name__ == '__main__'and not True:
     x.replace('\\ ', ' ')
     x.replace('', ' ')
     print(x)
+    x = 'c:\\Users\\Justus\\Documents\\CODE\\Python\\image to json\\images\\Merry Ficsmas 2021.PNG'
     #if pathlib.Path(x).is_file():
     ij2 = itj.img_to_json(1,50,str(x))
     # Automatic Down Scaling
