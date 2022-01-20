@@ -1,4 +1,7 @@
 {
+    "lanID": "en_pk",
+    "lanNAME": "English (Polite Kingdom)",
+    
     "setting_found": "Info: The Settings file indeed exists",
     "setting_missing": "Error: The Settings file is no where to be found.",
     "setting_creat": "Info: I am creating the Settings file.",

@@ -16,7 +16,7 @@ from pathlib import Path
 # Boot timestamp
 boot_start = time.time()
 
-print('Info: Imp orting Important Libs... Done!')
+print('Info: Importing Important Libs... Done!')
 
 # Boot options file
 boot_file = Path(os.path.dirname(os.path.realpath(__file__))+'\\data\\boot_opt.json')
@@ -47,7 +47,9 @@ else:
     "install_libs": True,
     "time_wait_after_startup": 2,
     "ohp_vancy_prompt": False,
-    "ohp_vancy_prompt_opt_rel_path": "\\libs\\vancy_prompt_options.json"
+    "ohp_vancy_prompt_opt_rel_path": "\\libs\\vancy_prompt_options.json",
+    "enable_boottheme": True,
+    "theme": "dark"
     }
     if 'Windows' in platform.system():
         f = open(os.path.dirname(os.path.realpath(__file__))+'\\data\\boot_opt.json', 'w')
@@ -71,6 +73,20 @@ else:
     sys.path.append(os.path.dirname(os.path.realpath(__file__))+'/libs/')
 import clos_utils as cutil
 import vars
+# Load Theme
+# Load Theme
+#theme_temp = str(vars.theme_template)
+#theme = boot_opt["theme"]
+#thp = os.path.dirname(os.path.realpath(__file__)) + '/theme/' + theme + '.json'
+#if 'Windows' in platform.system():
+#    thp.replace('/','\\')
+#if Path(thp).is_file():
+#    theme = json.loads(thp)
+#else:
+#    theme_temp = theme_temp.replace("'", '"')
+#    print(theme_temp)
+#    theme = json.loads(theme_temp)
+# Set Color
 style = cutil.text_style
 info_style = style.color.Blue
 warning_style = style.color.Yellow
@@ -87,16 +103,10 @@ if 'Windows' in platform.system():
     dir_temp["COMMAND_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\\commands'
     dir_temp["COMMAND_DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\\command_data'
     dir_temp["DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\\data'
-    dir_temp["COMMAND_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\\commands'
-    dir_temp["COMMAND_DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\\command_data'
-    dir_temp["DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\\data'
     dir_temp["LAN_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\\lan'
 else:
     dir_temp["CLOS_DIR"] = str(os.path.dirname(os.path.realpath(__file__)))
     dir_temp["LIB_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/libs'
-    dir_temp["COMMAND_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/commands'
-    dir_temp["COMMAND_DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/command_data'
-    dir_temp["DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/data'
     dir_temp["COMMAND_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/commands'
     dir_temp["COMMAND_DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/command_data'
     dir_temp["DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/data'
@@ -225,7 +235,6 @@ def setup(fp):
     x = input()
     if x.lower() == lan["y"]:
         def lan_request(lan):
-            known_lans = ['de_de','en_us']
             print(lan["su_lan_rq"])
             lan_files = cutil.utils.getObjectinFolder(os.path.dirname(os.path.realpath(__file__)) + '/lan', blacklist = ["dirs.json"])
             no_end = []
@@ -233,24 +242,15 @@ def setup(fp):
                 index = lan_files.index(object)
                 object = object.split('.')[0]
                 no_end.append(object)
-                if object in known_lans:
-                    if object == settings["lan"]:
-                        print(str(index+1)+'. -> '+lan["lan_"+object])
-                    else:
-                        print(str(index+1)+'. - '+lan["lan_"+object])
+                f = open(os.path.dirname(os.path.realpath(__file__)) + '/lan/' + object + '.json')
+                lanc = json.loads(f.read())
+                f.close()
+                if object == settings["lan"]:
+                    print(str(index+1)+'. -> '+lanc["lanNAME"])
                 else:
-                    if object == settings["lan"]:
-                        print(str(index+1)+'. -> '+object)
-                    else:
-                        print(str(index+1)+'. - '+object)
+                    print(str(index+1)+'. - '+lanc["lanNAME"])
             inp_lan = input().lower()
-            if inp_lan == lan["lan_de_de"]:
-                temp = 'de_de'
-            elif inp_lan == lan["lan_en_us"]:
-                temp = 'en_us'
-            elif inp_lan == lan["lan_en_uk"]:
-                temp = 'en_uk'
-            elif inp_lan in no_end:
+            if inp_lan in no_end:
                 temp = inp_lan
             elif 0 <= int(inp_lan) - 1 <= len(lan_files)-1:
                 temp = no_end[int(inp_lan)-1]
