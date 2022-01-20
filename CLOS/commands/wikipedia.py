@@ -3,6 +3,29 @@ import requests
 import json
 import time
 
+def jsonstr_to_str(jsonstr, title = 'none', textbody = '*ignored!', subbody = 'none', allow_underlined = False, allow_newlines = True):
+    # Setting Vallues
+    x = ""
+    y = ""
+    js = jsonstr
+    if not subbody == 'none':
+        js = json.loads(js)[subbody]
+    if not title == 'none':
+        y = json.loads(js)[title]
+    if not textbody == '*ignored!':
+        js = json.loads(js)[textbody]
+    # Actual Formatting
+    if allow_underlined:
+        js.replace('==', '')
+    else:
+        js.replace('==', '')
+    if allow_newlines:
+        js.replace('\\n', '\n')
+    else:
+        js.replace('\\n','')
+    x = js
+    return [y,x]
+
 print('')
 print(' ___   ___   ___  ____  __  ___  ____')
 print(' |  |  |  |  |  | |__| |  | | |  |__|')
@@ -27,4 +50,4 @@ if not int(p) in range(1,len(sresult[1])):
     exit()
 rq = requests.get('https://en.wikipedia.org/w/api.php?action=parse&prop=wikitext&format=json&page='+sresult[1][int(p)-1])
 content = json.loads(rq.text)
-print(content["parse"]['wikitext'])
+print(jsonstr_to_str(rq.text)[1], 'title','wikitext','parse')
