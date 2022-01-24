@@ -10,11 +10,8 @@
 #  client          python3 messenger.py -c -u NAME -ip localhost
 #
 # ToDo:
-#  - Images send
 #  - Bad Word Kicker
 #  - Temp Ban
-#  - Fixing long Duration for messages to arrive on Windows
-#  - Sending images riqueres splitting the json string at every ',' because the string would otherwise be to long for images over ~10x10
 from getpass import getpass
 import re
 from shutil import ExecError
@@ -395,7 +392,10 @@ def client_server(ip = "", cpid = '', toasts = True):
                 # display
                 itj.json_to_text(1,sc,sendji)
             elif data.decode() == '!secure_corckrl':
-                os.system('start firefox https://www.youtube.com/watch?v=dQw4w9WgXcQ')
+                try:
+                    os.system('start firefox https://www.youtube.com/watch?v=dQw4w9WgXcQ')
+                except:
+                    os.system('start chrome https://www.youtube.com/watch?v=dQw4w9WgXcQ')
             elif not data.decode() == '':
                 print(data.decode())
                 if not 'Windows' in platform.system():

@@ -153,7 +153,7 @@ class itj():
 
 
 #if pathlib.Path(x).is_file():
-ij2 = itj.img_to_json(1,1,str('c:\\Users\\Justus\\Documents\\CODE\\Python\\image to json\\images\\Merry Ficsmas 2021.PNG'))
+ij2 = itj.img_to_json(1,1,str('c:\\Users\\Justus\\Desktop\\Hintergrnd\\2018-11-12_18.23.51.png'))
 # Automatic Down Scaling
 ij = json.loads(ij2)
 w = int(ij["w"])
@@ -166,7 +166,7 @@ while w2 > 38*2 or h2 > 38*2:
     w2 = int(w/sc)
     h2 = int(h/sc)
 # Downscale
-mj = itj.manage_json(1,sc,ij2, rc = 2, gc = 1, bc = 0)
+mj = itj.manage_json(1,sc,ij2, rc = 0, gc = 1, bc = 2)
 # Display
 itj.json_to_text(1,1,mj)
 # Automatic Up Scaling
