@@ -97,7 +97,7 @@ class itj():
             i += shrink+1
             print(pval+r)
 
-    def manage_json(scling = 1, shrink = 1, json2 = '{"name": "lol", "w": 0, "h": 0, "pix":[[0,0,0],[]]}', bw = False, rc = 0, gc = 1, bc = 2, ac = 3, rgb = color.rgb, r = color.r):
+    def manage_json(scling = 1, shrink = 1, json2 = '{"name": "lol", "w": 0, "h": 0, "pix":[[0,0,0],[]]}', quarter = False, bw = False, rc = 0, gc = 1, bc = 2, ac = 3, rgb = color.rgb, r = color.r):
         jo = {
             "name": "lol",
             "w": 0,
@@ -166,7 +166,7 @@ while w2 > 38*2 or h2 > 38*2:
     w2 = int(w/sc)
     h2 = int(h/sc)
 # Downscale
-mj = itj.manage_json(1,sc,ij2, rc = 2, gc = 1, bc = 0)
+mj = itj.manage_json(1,sc,ij2, bw = False, rc = 0, gc = 1, bc = 2)
 # Display
 itj.json_to_text(1,1,mj)
 # Automatic Up Scaling
@@ -181,4 +181,4 @@ while w2 < 500 or h2 < 500:
     w2 = int(w*sc)
     h2 = int(h*sc)
 # Save to file
-itj.json_to_image(sc, 1, itj.manage_json(1,1,str(mj)))
+itj.json_to_image(sc, 1, itj.manage_json(1,1,str(mj)), output = 'img.jpg')
