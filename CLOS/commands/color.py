@@ -1,3 +1,4 @@
+# echo %time:~0,2% Houres and %time:~3,2% minutes and %time:~6,2% seconds
 # Color command from Windows CMD:
 import sys
 arg = sys.argv
@@ -52,8 +53,18 @@ else:
     if arg[1] == 'reset':
         print(color.Default+bcolor.Default, end = "")
         exit()
-    if len(arg[1]) == 2:
+    if len(arg[1]) == 2 and arg[1][1:2].upper() in colors and arg[1][:1].upper() in colors:
         print(corospondst[colors.index(arg[1][1:2].upper())], end = "")
         print(corospondsb[colors.index(arg[1][:1].upper())], end = "")
-    else:
+    elif arg[1][:1].upper() in colors:
         print(corospondst[colors.index(arg[1][:1].upper())], end = "")
+    else:
+        x = ''
+        x2 = ''
+        if not arg[1][1:2].upper() in colors:
+            x = arg[1][1:2].upper()
+        if not arg[1][:1].upper() in colors:
+            x2 = arg[1][:1].upper()
+        if not x2 == '':
+            x = x + ', ' + x2
+        print('Invalid [attr]: '+x)
