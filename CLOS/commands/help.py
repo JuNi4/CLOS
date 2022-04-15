@@ -38,10 +38,20 @@ for i in range(len(internal_commands)):
 # Print commands with their description
 print(text_style.format.Underlined+translations.lang('help.available_commands')+text_style.format.ResetUnderlined)
 for command in commands:
+    #print(dirs["COMMAND_DATA_DIR"] + '/' + command+' '+translations.lang_name)
     # check if cammnd.json is file
-    if os.path.isfile(dirs["COMMAND_DATA_DIR"] + '/' + command + '.json'):
-        with open(os.path.join(dirs["COMMAND_DATA_DIR"], 3 + '.json')) as f:
-            data = json.load(f)
-            print(command + ': ' + data['description'])
+    if os.path.isdir(dirs["COMMAND_DATA_DIR"] + '/' + command) and os.path.isfile(dirs["COMMAND_DATA_DIR"] + '/' + command + '/language_en_us.json'):
+        # Check if command + lang + json is a file
+        if os.path.isfile(dirs["COMMAND_DATA_DIR"] + '/' + command + '/language_' + translations.lang_name + '.json'):
+            print('LoL')
+            with open(dirs["COMMAND_DATA_DIR"] + '/' + command + '/language_' + '.json') as f:
+                data = json.load(f)
+                try: print(command + ': ' +text_style.color.DarkGray+ data['description']+text_style.res)
+                except: print(command +text_style.color.DarkGray+': No description available'+text_style.res)
+        else:
+            with open(dirs["COMMAND_DATA_DIR"] + '/' + command + '/language_en_us.json') as f:
+                data = json.load(f)
+                try: print(command + ': ' +text_style.color.DarkGray+ data['description']+text_style.res)
+                except: print(command +text_style.color.DarkGray+': No description available'+text_style.res)
     else:
         print(command +text_style.color.DarkGray+': No description available'+text_style.res)

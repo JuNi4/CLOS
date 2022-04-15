@@ -23,16 +23,10 @@ class commands():
         else:
             commandf = command
             x = ''
-        if 'Windows' in platform.system():
-            # Check in command dir
-            fc = dirs + '\\commands\\' + commandf + '.py'
-            # Check in current dir
-            fp = os.getcwd() + '\\' + commandf
-        else:
-            # Check in command dir
-            fc = dirs + '/commands/' + commandf + '.py'
-            # Check in current dir
-            fp = os.getcwd() + '/' + commandf
+        # Check in command dir
+        fc = dirs + '/commands/' + commandf + '.py'
+        # Check in current dir
+        fp = os.getcwd() + '/' + commandf
         #print(fc)
         #print(fp)
         command_file = Path(fc)
@@ -44,7 +38,7 @@ class commands():
                 if 'Windows' in platform.system():
                     os.system('python '+commandf + x)
                 else:
-                    os.system('python3 '+commandf+x)
+                    os.system('python3 '+commandf + x)
             else:
                 print('No File or Command found caled ' + commandf+ '. Use the \'help\' command for a list of all available commands.')
 
