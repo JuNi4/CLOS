@@ -97,31 +97,17 @@ res = cutil.text_style.res
 # Load the Dirs.json template
 dir_temp = json.loads(json.dumps(vars.dir_template))
 # Set All paths corrrectly
-if 'Windows' in platform.system():
-    dir_temp["CLOS_DIR"] = str(os.path.dirname(os.path.realpath(__file__)))
-    dir_temp["LIB_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\\libs'
-    dir_temp["COMMAND_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\\commands'
-    dir_temp["COMMAND_DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\\command_data'
-    dir_temp["DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\\data'
-    dir_temp["LAN_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '\\lan'
-else:
-    dir_temp["CLOS_DIR"] = str(os.path.dirname(os.path.realpath(__file__)))
-    dir_temp["LIB_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/libs'
-    dir_temp["COMMAND_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/commands'
-    dir_temp["COMMAND_DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/command_data'
-    dir_temp["DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/data'
-    dir_temp["LAN_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/lan'
+dir_temp["CLOS_DIR"] = str(os.path.dirname(os.path.realpath(__file__)))
+dir_temp["LIB_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/libs'
+dir_temp["COMMAND_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/commands'
+dir_temp["COMMAND_DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/command_data'
+dir_temp["DATA_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/data'
+dir_temp["LANG_DIR"] = str(os.path.dirname(os.path.realpath(__file__))) + '/lan'
 # Write Files
-if 'Windows' in platform.system():
-    dirf = open(str(os.path.dirname(os.path.realpath(__file__)))+'\libs\dirs.json', 'w')
-else:
-    dirf = open(str(os.path.dirname(os.path.realpath(__file__))) + '/libs/dirs.json', 'w')
+dirf = open(str(os.path.dirname(os.path.realpath(__file__))) + '/libs/dirs.json', 'w')
 dirf.write(json.dumps(dir_temp, indent=4))
 dirf.close()
-if 'Windows' in platform.system():
-    dirf = open(str(os.path.dirname(os.path.realpath(__file__)))+'\commands\dirs.json', 'w')
-else:
-    dirf = open(str(os.path.dirname(os.path.realpath(__file__))) + '/commands/dirs.json', 'w')
+dirf = open(str(os.path.dirname(os.path.realpath(__file__))) + '/commands/dirs.json', 'w')
 dirf.write(json.dumps(dir_temp, indent=4))
 dirf.close()
 
@@ -133,14 +119,18 @@ iswin = cutil.utils.if_win()
 # Install Stuff
 if boot_opt["install_libs"]:
     print(cutil.utils.ifcolor('Info: Downloading Libs...',info_style,res),end='\r')
-    if 'Windows' in platform.system():
+    if cutil.utils.if_win():
         os.system('pip install requests>nil')
         os.system('pip install pythonping>nil')
         os.system('pip install urllib3>nil')
+        # All librarys needed in CMS
+        os.system('pip install playsound==1.2.2>nil')
     else:
         os.system('pip3 install requests>nil')
         os.system('pip3 install pythonping>nil')
         os.system('pip3 install urllib3>nil')
+        # Needed in CMS
+        os.system('pip3 install playsound==1.2.2>nil')
     print(cutil.utils.ifcolor('Info: Downloading Libs... Done!',info_style,res))
     boot_opt["install_libs"] = False
     if 'Windows' in platform.system():
@@ -391,6 +381,7 @@ while True:
         inp = str(input(str(os.system('oh-my-posh --config '+os.path.dirname(os.path.realpath(__file__))+boot_opt["ohp_vancy_prompt_opt_rel_path"]))[:os.system('oh-my-posh --config '+os.path.dirname(os.path.realpath(__file__))+boot_opt["ohp_vancy_prompt_opt_rel_path"]+'>nil')-1])).lower()
     else:
         inp = str(input(os.getcwd()+'>')).lower()
+    # Internal Commands
     if inp == 'redo_setup':
         setup(fp)
     if inp == 'setup':
@@ -404,7 +395,7 @@ while True:
     elif inp == 'sys':
         print('CLOS (Command Line Operating Sysrem)')
     elif inp == '':
-        print('nput needed')
+        print('Input needed')
     elif inp[:6] == 'python':
         if 'python ' in inp:
             os.system('python -c "'+inp[7:]+'"')
@@ -421,7 +412,7 @@ while True:
             print('Currently Your Connected To The Internet With A Ping Of '+ms+'ms.')
         else:
             print('Currently There Is No Connection With The Internet.')
-    # cd command, originally I tried to put it into another file as command but sadly that didn't work
+    # cd command, cant be externally
     elif 'cd' in inp:
         arg = inp.split(' ')
         if len(arg) > 1:

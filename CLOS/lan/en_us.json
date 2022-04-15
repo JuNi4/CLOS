@@ -26,5 +26,17 @@
 
     "lan_de_de": "German",
     "lan_en_us": "Amerikan English",
-    "lan_en_uk": "Brittish English"
+    "lan_en_uk": "Brittish English",
+
+    "help.available_commands": "Available commands:",
+    "help.internal_commands": "Internal commands:",
+    "help.internal_commands.discription": {
+        "redo_setup": "Launches the setup.",
+        "setup": "Launches the setup.",
+        "exit": "Exits the program.",
+        "shutdown": "Shutdown CLOS, same as \"exit\".",
+        "reboot": "Currently the same as \"exit\".",
+        "sys": "Get System information.",
+        "python": "Launches a python shell."
+    }
 }

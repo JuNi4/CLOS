@@ -29,7 +29,10 @@ class itj():
             pval = ''
             while i2+shrink <= scaling[0]:
                 val = img.getpixel((i2,i))
-                val2 = img.getpixel((i2,i+1))
+                try:
+                    val2 = img["pix"][i+1][i2]
+                except:
+                    val2 = (0,0,0,0)
                 if bw:
                     rgb = int((val[0]+val[1]+val[2])/3)
                     rgb2 = int((val2[0]+val2[1]+val2[2])/3)
@@ -39,6 +42,7 @@ class itj():
                 i2 += shrink
             i += 1+shrink
             print(pval+r)
+        img.close()
 
     def img_to_json(scling = 1, shrink = 1, img = 'img.png', bw = False, rc = 0, gc = 1, bc = 2, ac = 3, rgb = color.rgb, r = color.r):
         jo = {
@@ -73,6 +77,7 @@ class itj():
                 i2 += shrink
             i += shrink
             jol["pix"].append(pval)
+        img.close()
         return json.dumps(jol, indent=4)
     
     def json_to_text(scling = 1, shrink = 1, json2 = '{"name": "lol", "w": 0, "h": 0, "pix":[[],[]]}', bw = False, rc = 0, gc = 1, bc = 2, ac = 3, brgb = color.brgb, rgb = color.rgb, r = color.r):
@@ -86,7 +91,10 @@ class itj():
             pval = ''
             while i2+shrink <= scaling[0]:
                 val = img["pix"][i][i2]
-                val2 = img["pix"][i+1][i2]
+                try:
+                    val2 = img["pix"][i+1][i2]
+                except:
+                    val2 = (0,0,0,0)
                 if bw:
                     rgb1 = int((val[0]+val[1]+val[2])/3)
                     rgb2 = int((val2[0]+val2[1]+val2[2])/3)
@@ -153,7 +161,7 @@ class itj():
 
 
 #if pathlib.Path(x).is_file():
-ij2 = itj.img_to_json(1,1,str('c:\\Users\\Justus\\Documents\\CODE\\Python\\image to json\\images\\Merry Ficsmas 2021.PNG'))
+ij2 = itj.img_to_json(1,1,str('c:\\Users\\Justus\\Documents\\CODE\\Python\\image to json\\images\\TW.PNG'))
 # Automatic Down Scaling
 ij = json.loads(ij2)
 w = int(ij["w"])

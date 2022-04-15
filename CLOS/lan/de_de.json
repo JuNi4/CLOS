@@ -26,5 +26,17 @@
 
     "lan_de_de": "Deutsch",
     "lan_en_us": "Amerikanisches Englisch",
-    "lan_en_uk": "Brittisches Englisch"
+    "lan_en_uk": "Brittisches Englisch",
+
+    "help.available_commands": "Verfuegbare Befehle:",
+    "help.internal_commands": "Interne Befehle:",
+    "help.internal_commands.discription": {
+        "redo_setup": "Startet die Einrichtung.",
+        "setup": "Startet die Einrichtung.",
+        "exit": "Beendet das Programm.",
+        "shutdown": "Beendet CLOS, tut das selbe wie \"exit\".",
+        "reboot": "Momentan das selbe wie \"exit\".",
+        "sys": "Gibt Informationen zum System aus.",
+        "python": "Started eine Python Konsole."
+    }
 }

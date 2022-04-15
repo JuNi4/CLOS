@@ -25,3 +25,9 @@ CLOS/json
 CLOS/keyboard
 CLOS/commands/server_log.txt
 CLOS/commands/__pycache__/messenger.cpython-38.pyc
+.idea/inspectionProfiles/profiles_settings.xml
+.idea/CLOS.iml
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
+CLOS Installer/__pycache__/clos_console_menu.cpython-38.pyc
