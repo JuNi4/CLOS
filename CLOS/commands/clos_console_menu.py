@@ -64,10 +64,7 @@ def styl_menu_vert(name='ExampleMenu',prompt='Please select one of the following
         if sel > len(entrys)-1:
             sel = len(entrys)-1
         if sel < 0:
-            sel = 0
-        print(backcolor+' '*50+'\033[49m')
-        print(backcolor+' '*2+menucolor+'┌'+'─'*44+'┐'+backcolor+' '*2+'\033[49m')
-        print(backcolor+' '*2+menucolor+'│'+tblack+name+'\033[39m'+' '*namelengh+'│'+backcolor+' '*2+'\033[49m')
+            sel = print(file_path)+menucolor+'│'+tblack+name+'\033[39m'+' '*namelengh+'│'+backcolor+' '*2+'\033[49m')
         print(backcolor+' '*2+menucolor+'├'+'─'*44+'┤'+backcolor+' '*2+'\033[49m')
         print(backcolor+' '*2+menucolor+'│'+tblack+' '+prompt+'\033[39m'+' '*promptl+'│'+backcolor+' '*2+'\033[49m')
         c = 0
@@ -84,7 +81,7 @@ def styl_menu_vert(name='ExampleMenu',prompt='Please select one of the following
         len_desc2 = 42-len(description[sel][40:80])
         len_desc3 = 42-len(description[sel][80:120])
         print(backcolor+' '*2+menucolor+'│'+'  '+tblack+description[sel][0:40]+tres+' '*len_desc1+'│'+backcolor+' '*2+'\033[49m')
-        print(backcolor+' '*2+menucolor+'│'+'  '+tblack+description[sel][40:80]+tres+' '*len_desc2+'│'+backcolor+' '*2+'\033[49m')
+        print(backcolor+' '*2+menucoloprint(file_path)r+'│'+'  '+tblack+description[sel][40:80]+tres+' '*len_desc2+'│'+backcolor+' '*2+'\033[49m')
         print(backcolor+' '*2+menucolor+'│'+'  '+tblack+description[sel][80:120]+tres+' '*len_desc3+'│'+backcolor+' '*2+'\033[49m')
         print(backcolor+' '*2+menucolor+'└'+'─'*44+'┘'+backcolor+' '*2+'\033[49m')
         print(backcolor+'\033[34m'+'.'*50+'\033[49m'+'\033[39m')
