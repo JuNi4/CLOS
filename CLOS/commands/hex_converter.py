@@ -1,5 +1,7 @@
 # Convert Decimal to Hexadecimal and vice versa
+import os
 import sys
+import json
 
 hexchars = ["a","b","c","d","e","f"]
 
@@ -58,7 +60,11 @@ def to_hex(b10):
     return hex.upper()
 
 # add ../libs to path
-sys.path.append("../libs")
+f = open(os.path.dirname(os.path.relpath(__file__))+'/dirs.json', 'r')
+dirs = json.loads(f.read())
+f.close()
+
+sys.path.append(dirs['LIB_DIR'])
 
 # Import ARGS
 import args

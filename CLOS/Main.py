@@ -428,7 +428,7 @@ while True:
             os.system('echo %cd%')
     # Hex conversion
     elif inp.startswith('0x'):
-        cutil.commands.command('hex_converter -d '+inp[2:])
+        cutil.commands.command('hex_converter -h '+inp[2:])
     # Only thing missing would be a ls or list command...
     else:
         cutil.commands.command(command = inp) # It's funny that at least for now if a command is not internal, in line 404 (aka means x not found like Error: 404 Page not found) its send to my command handler
