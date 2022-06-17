@@ -1,6 +1,8 @@
 import os
 import sys
 import json
+import time
+import random
 import platform
 from pathlib import Path
 
@@ -166,6 +168,28 @@ class text_style():
         LightMagenta = '\033[105m'
         LightCyan    = '\033[106m'
         White        = '\033[107m'
-
+    
+    def typinganimation(text, delay = 0.1, variation = 0.1, envariation = True):
+        # Make Text into a list
+        text = list(text)
+        # Word Var
+        word = ''
+        # variation
+        var = variation*10000
+        # Display
+        for o in text:
+            print(word+o,end='\r')
+            word = word+o
+            if envariation:
+                variation = random.randrange(0-var,var)
+            else:
+                variation = 0
+            time.sleep(delay+(variation/10000))
+            # Fixing a bug that might accur
+            if len(word) >= os.get_terminal_size()[0]:
+                print(word)
+                word = ''
+        print(word)
+        
 if __name__ == '__main__':
     print('ugh.. this is a libary for CLOS and nothing to see here...')

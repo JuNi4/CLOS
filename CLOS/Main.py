@@ -398,9 +398,9 @@ while True:
         print('Input needed')
     elif inp[:6] == 'python':
         if 'python ' in inp:
-            os.system('python -c "'+inp[7:]+'"')
+            os.system('python3 -c "'+inp[7:]+'"')
         else:
-            os.system('python')
+            os.system('python3')
     # Internet Command for getting if internet connection is available
     elif 'internet' in inp:
         if internet() == True:
