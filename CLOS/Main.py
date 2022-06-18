@@ -425,7 +425,11 @@ while True:
                 else:
                     print('Error 404: Path Not Found!')
         else:
-            os.system('echo %cd%')
+            print(os.getcwd())
     # Only thing missing would be a ls or list command...
     else:
-        cutil.commands.command(command = inp) # It's funny that at least for now if a command is not internal, in line 404 (aka means x not found like Error: 404 Page not found) its send to my command handler
+        command_return = cutil.commands.command(command = inp) # It's funny that at least for now if a command is not internal, in line 404 (aka means x not found like Error: 404 Page not found) its send to my command handler
+        if command_return[:7] == 'Error: ':
+            print(command_return)
+        else:
+            os.system(command_return)

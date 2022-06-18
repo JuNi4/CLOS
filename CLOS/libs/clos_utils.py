@@ -31,16 +31,20 @@ class commands():
         #print(fp)
         command_file = Path(fc)
         if command_file.is_file():
-            os.system(str(fc) + x)
+            if 'Windows' in platform.system():
+                return 'python '+str(fc) + x
+            else:
+                return 'python3 '+str(fc) + x
         else:
             current_file = Path(fp)
             if current_file.is_file():
                 if 'Windows' in platform.system():
-                    os.system('python '+commandf + x)
+                    return 'python '+commandf + x
                 else:
-                    os.system('python3 '+commandf + x)
+                    return 'python3 '+commandf + x
             else:
-                print('No File or Command found caled ' + commandf+ '. Use the \'help\' command for a list of all available commands.')
+                return 'Error: No File or Command found caled ' + commandf+ '. Use the \'help\' command for a list of all available commands.'
+        return 'Error: Something went wrong'
 
 class utils():
     def __init__(self, prog_arrow_tip = '>', prog_arrow_body = '-'):
