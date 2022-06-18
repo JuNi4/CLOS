@@ -398,9 +398,9 @@ while True:
         print('Input needed')
     elif inp[:6] == 'python':
         if 'python ' in inp:
-            os.system('python -c "'+inp[7:]+'"')
+            os.system('python3 -c "'+inp[7:]+'"')
         else:
-            os.system('python')
+            os.system('python3')
     # Internet Command for getting if internet connection is available
     elif 'internet' in inp:
         if internet() == True:
@@ -425,11 +425,10 @@ while True:
                 else:
                     print('Error 404: Path Not Found!')
         else:
-            print(os.getcwd())
+            os.system('echo %cd%')
+    # Hex conversion
+    elif inp.startswith('0x'):
+        cutil.commands.command('hex_converter -h '+inp[2:])
     # Only thing missing would be a ls or list command...
     else:
-        command_return = cutil.commands.command(command = inp) # It's funny that at least for now if a command is not internal, in line 404 (aka means x not found like Error: 404 Page not found) its send to my command handler
-        if command_return[:7] == 'Error: ':
-            print(command_return)
-        else:
-            os.system(command_return)
+        cutil.commands.command(command = inp) # It's funny that at least for now if a command is not internal, in line 404 (aka means x not found like Error: 404 Page not found) its send to my command handler

@@ -1,6 +1,8 @@
 import os
 import sys
 import json
+import time
+import random
 import platform
 from pathlib import Path
 
@@ -32,19 +34,18 @@ class commands():
         command_file = Path(fc)
         if command_file.is_file():
             if 'Windows' in platform.system():
-                return 'python '+str(fc) + x
+                os.system('python '+str(fc) + x)
             else:
-                return 'python3 '+str(fc) + x
+                os.system('python3 '+str(fc) + x)
         else:
             current_file = Path(fp)
             if current_file.is_file():
                 if 'Windows' in platform.system():
-                    return 'python '+commandf + x
+                    os.system('python '+commandf + x)
                 else:
-                    return 'python3 '+commandf + x
+                    os.system('python3 '+commandf + x)
             else:
-                return 'Error: No File or Command found caled ' + commandf+ '. Use the \'help\' command for a list of all available commands.'
-        return 'Error: Something went wrong'
+                print('No File or Command found caled \'' + commandf+ '\'. Use the \'help\' command for a list of all available commands.')
 
 class utils():
     def __init__(self, prog_arrow_tip = '>', prog_arrow_body = '-'):
@@ -167,6 +168,28 @@ class text_style():
         LightMagenta = '\033[105m'
         LightCyan    = '\033[106m'
         White        = '\033[107m'
-
+    
+    def typinganimation(text, delay = 0.1, variation = 0.1, envariation = True):
+        # Make Text into a list
+        text = list(text)
+        # Word Var
+        word = ''
+        # variation
+        var = variation*10000
+        # Display
+        for o in text:
+            print(word+o,end='\r')
+            word = word+o
+            if envariation:
+                variation = random.randrange(0-var,var)
+            else:
+                variation = 0
+            time.sleep(delay+(variation/10000))
+            # Fixing a bug that might accur
+            if len(word) >= os.get_terminal_size()[0]:
+                print(word)
+                word = ''
+        print(word)
+        
 if __name__ == '__main__':
     print('ugh.. this is a libary for CLOS and nothing to see here...')
