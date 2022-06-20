@@ -50,18 +50,29 @@ content = getObjectinFolder(os.getcwd(), onlyfiles=False)
 content_folders = []
 content_files =   []
 
+# Get File lengths#
+max_length = 13
+for o in content:
+    try:
+        o = o.split('.')[1].upper().replace('PY', 'Python').replace('TXT', 'Text')+' File '
+    except:
+        o = 'FILE'
+
+    if len(o) > max_length:
+        max_length = len(o)
+
 for o in content:
     if os.path.isfile(o):
         try:
-            x = 13-len(o.split('.')[1].upper().replace('PY', 'Python').replace('TXT', 'Text')+' File ')
+            x = max_length-len(o.split('.')[1].upper().replace('PY', 'Python').replace('TXT', 'Text')+' File ')
             content_files.append(o.split('.')[1].upper().replace('PY', color.Yellow+'Python').replace('TXT', 'Text').replace('JSON', color.Cyan+'Json')+' File '+res+' '*x+'| '+o)
         except:
-            content_files.append('File         | '+o)
+            content_files.append('File'+' '*(max_length-4)+'| '+o)
     else:
-        content_folders.append(color.LightBlue+'Folder       '+res+'| '+o)
+        content_folders.append(color.LightBlue+'Folder'+' '*(max_length-6)+res+'| '+o)
 
 # Display Contents:
-print(underline.UNDERLINED+' Type:        | Name:                '+res)
+print(underline.UNDERLINED+' Type:'+' '*(max_length-5)+'| Name:                '+res)
 for o in content_folders:
     print(' '+o)
 for o in content_files:
