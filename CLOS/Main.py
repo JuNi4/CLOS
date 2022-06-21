@@ -378,9 +378,11 @@ print('')
 while True:
     if boot_opt["ohp_vancy_prompt"]:
         # Displays A Fancy prompt using oh-my-posh. Needs to be installed. (Under windows just type this into the command prompt: 'winget install JanDeDobbeleer.OhMyPosh') Offical Website: https://ohmyposh.dev   not Mine! Use at own risk!
-        inp = str(input(str(os.system('oh-my-posh --config '+os.path.dirname(os.path.realpath(__file__))+boot_opt["ohp_vancy_prompt_opt_rel_path"]))[:os.system('oh-my-posh --config '+os.path.dirname(os.path.realpath(__file__))+boot_opt["ohp_vancy_prompt_opt_rel_path"]+'>nil')-1])).lower()
+        inp2 = str(input(str(os.system('oh-my-posh --config '+os.path.dirname(os.path.realpath(__file__))+boot_opt["ohp_vancy_prompt_opt_rel_path"]))[:os.system('oh-my-posh --config '+os.path.dirname(os.path.realpath(__file__))+boot_opt["ohp_vancy_prompt_opt_rel_path"]+'>nil')-1]))
+        inp = inp2.lower()
     else:
-        inp = str(input(os.getcwd()+'>')).lower()
+        inp2 = str(input(os.getcwd()+'>'))
+        inp = inp2.lower()
     # Internal Commands
     if inp == 'redo_setup':
         setup(fp)
@@ -413,17 +415,15 @@ while True:
         else:
             print('Currently There Is No Connection With The Internet.')
     # cd command, cant be externally
-    elif 'cd' in inp:
-        arg = inp.split(' ')
+    elif 'cd' in inp2:
+        arg = inp2.split(' ')
         if len(arg) > 1:
-            if arg[1] == '..':
-                os.chdir('..')
-            else:
-                dirs = Path(arg[1])
-                if dirs.is_dir():
-                    os.chdir(arg[1])
-                else:
-                    print('Error 404: Path Not Found!')
+            dirs = Path(arg[1])
+            try:
+                os.chdir(arg[1])
+            except Exception as e:
+                
+                print(cutil.utils.ifcolor(f'Error: {e}',error_style))
         else:
             os.system('echo %cd%')
     # Hex conversion

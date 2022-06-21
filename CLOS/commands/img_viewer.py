@@ -13,7 +13,7 @@ f.close()
 # import stuff
 sys.path.append(dirs["LIB_DIR"])
 
-from itj import itj
+from itj2 import itj
 
 
 root = tk.Tk()

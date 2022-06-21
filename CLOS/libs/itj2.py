@@ -1,5 +1,5 @@
 # Pillow to read every pixel from a image
-from email.mime import image
+#from email.mime import image
 import platform
 from PIL import Image
 # Json for img to json convertion and vice versa

@@ -61,7 +61,7 @@ class utils():
 
         return bar
 
-    def ifcolor(text = 'Example Text', color = '\033[32m', defaultcolor = '\033[39m'+'\033[49m'):
+    def ifcolor(text = 'Example Text', color = '\033[32m', defaultcolor = '\033[21m'+'\033[22m'+'\033[24m'+'\033[25m'+'\033[27m'+'\033[28m'+'\033[39m'+'\033[49m'):
         if 'Windows' in platform.system():
             pjf = open(os.path.dirname(os.path.realpath(__file__))+'\dirs.json', 'r')
         else:
