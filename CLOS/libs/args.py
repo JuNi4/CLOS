@@ -117,7 +117,9 @@ def get_arg(arg_name, argv):
     if arg_name in args_name:
         index = args_name.index(arg_name)
     else:
-        raise 'Argument does not exist'
+        # Spit out error
+        print('Argument does not exist')
+        exit()
     # Check if Config
     if args_has_config[index] and not config_path == '':
         # Load Config
