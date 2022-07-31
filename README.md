@@ -3,22 +3,6 @@
 ### By <ins>[JuNi4](https:/JuNi4)</ins>
 #### Actually this is a shell not a Operating system but completely in python
 
-> ### <ins>To Do</ins>:
->- ✔ Fix Command Search
->- Create Commands
->- ✔ Put Vars In vars.py
->- Make Help Command
->- ✔ Make 'cd' command
->- Make Installer:
->   - Steps:
->     - Select Language
->     - Choose Name
->     - Choose Password
->     - Repeat Password
->     - Select cpackages / commands to be pre installed
->     - Select install Path
->- Make multiple user support
-
 > ### <ins>How To Use:</ins>
 >- Start it
 >- (On first start) follow setup
