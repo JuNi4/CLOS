@@ -1,7 +1,7 @@
 # Image Viewer like in the Messenger
+from argparse import FileType
 import tkinter as tk
 from tkinter import filedialog
-import keyboard
 import json
 import sys
 import os
@@ -14,7 +14,7 @@ f.close()
 sys.path.append(dirs["LIB_DIR"])
 
 from itj2 import itj
-
+from itj2 import tests
 
 root = tk.Tk()
 root.withdraw()
@@ -30,14 +30,19 @@ def open_folder():
 # Main Loop
 while True:
     # Wait for any key to be released
-    x = keyboard.normalize_name(keyboard.read_key())
+    x = input(">")
 
     # If the key is 'q'
-    if x == 'q':
+    if x == 'q' or x == 'quit' or x == 'exit':
         exit()
     # If the key is 'o'
-    elif x == 'o':
-        fp = open_file()
+    elif x == 'o' or x == 'open':
+        fp = filedialog.askopenfile(filetypes=[('image files','.png .jpg')])
+        try:
+            if not fp.name: continue
+            fp = str(fp.name)
+        except:
+            continue
         # check if the file is an image
         if fp.endswith('.jpg') or fp.endswith('.png') or fp.endswith('.gif'):
             # Open Image
@@ -61,8 +66,13 @@ while True:
             # Display Image
             itj.json_to_text(json2 = sendspl)
     # If the key is 's'
-    elif x == 's':
+    elif x == 's' or x == 'save':
         if sendspl:
-            fp = open_folder()
+            #fp = open_folder()
+            fp = filedialog.asksaveasfilename(filetypes=[('image files','.png .jpg')])
+            if not fp: continue
             # Save Image
-            itj.json_to_image(json2 = sendspl, output = fp+'/img.png')
+            itj.json_to_image(json2 = sendspl, output = fp)
+    elif x == 'genTestImg':
+        sendspl = tests.generateRandomImage()
+        itj.json_to_text(json2 = sendspl)
