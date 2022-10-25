@@ -1,5 +1,6 @@
 # Image Viewer like in the Messenger
 from argparse import FileType
+from multiprocessing import managers
 import tkinter as tk
 from tkinter import filedialog
 import json
@@ -15,6 +16,36 @@ sys.path.append(dirs["LIB_DIR"])
 
 from itj2 import itj
 from itj2 import tests
+
+# Load files from args
+#try:
+if len(sys.argv) > 1:
+    if os.path.isfile(sys.argv[1]):
+        if sys.argv[1].endswith('.json'):
+            f = open(sys.argv[1], 'r')
+            sendspl = f.read()
+            f.close()
+        elif sys.argv[1].endswith('.png') or sys.argv[1].endswith('.jpg'):
+            sendspl = itj.img_to_json(1, 1, sys.argv[1])
+
+        ij = json.loads(sendspl)
+        w = int(ij["w"])
+        h = int(ij["h"])
+        w2 = w
+        h2 = h
+        sc = 1
+        print('OLD W&H: '+str(w)+' '+str(h))
+        # shrink image down if needed
+        while w2 > 76 or h2 > 76:
+            sc += 1
+            w2 = int(w/sc)
+            h2 = int(h/sc)
+        # get calculated shrink values and shrink
+        print('NEW W&H: '+str(w2)+' '+str(h2)+' AND SCALE: '+str(sc))
+        sendspl = itj.manage_json(1, sc, json2= sendspl)
+        itj.json_to_text(1, 1,json2 = sendspl)
+#except Exception as e:
+#    print(e)
 
 root = tk.Tk()
 root.withdraw()
@@ -76,3 +107,19 @@ while True:
     elif x == 'genTestImg':
         sendspl = tests.generateRandomImage()
         itj.json_to_text(json2 = sendspl)
+    elif x == 'export':
+        fp = filedialog.asksaveasfilename(filetypes=[('json files','.json')])
+        if not fp: continue
+        # Export Json
+        f = open(fp, 'w')
+        f.write(sendspl)
+        f.close()
+    elif x == 'import':
+        # Open A file to import
+        fp = filedialog.askopenfile(filetypes=[('json files', '.json')])
+        f = open(fp.name, 'r')
+        # Read content
+        sendspl = f.read()
+        f.close()
+        # Dispaly the image
+        itj.json_to_text(json2=sendspl)
