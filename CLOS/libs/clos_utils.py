@@ -1,5 +1,8 @@
 import os
+import sys
 import json
+import time
+import random
 import platform
 from pathlib import Path
 
@@ -9,7 +12,7 @@ class commands():
 
     def command(command = 'none'):
         if 'Windows' in platform.system():
-            pjf = open(os.path.dirname(os.path.realpath(__file__))+'\dirs.json', 'r')
+            pjf = open(os.path.dirname(os.path.realpath(__file__))+'\\dirs.json', 'r')
         else:
             pjf = open(os.path.dirname(os.path.realpath(__file__)) + '/dirs.json', 'r')
         pj = json.loads(pjf.read())
@@ -22,30 +25,27 @@ class commands():
         else:
             commandf = command
             x = ''
-        if 'Windows' in platform.system():
-            # Check in command dir
-            fc = dirs + '\commands\\' + commandf + '.py'
-            # Check in current dir
-            fp = os.getcwd() + '\\' + commandf
-        else:
-            # Check in command dir
-            fc = dirs + '/commands/' + commandf + '.py'
-            # Check in current dir
-            fp = os.getcwd() + '/' + commandf
+        # Check in command dir
+        fc = dirs + '/commands/' + commandf + '.py'
+        # Check in current dir
+        fp = os.getcwd() + '/' + commandf
         #print(fc)
         #print(fp)
         command_file = Path(fc)
         if command_file.is_file():
-            os.system(str(fc) + x)
+            if 'Windows' in platform.system():
+                os.system('python '+str(fc) + x)
+            else:
+                os.system('python3 '+str(fc) + x)
         else:
             current_file = Path(fp)
             if current_file.is_file():
                 if 'Windows' in platform.system():
-                    os.system(commandf + x)
+                    os.system('python '+commandf + x)
                 else:
-                    os.system('python3 '+commandf+x)
+                    os.system('python3 '+commandf + x)
             else:
-                print('No File or Command found caled ' + commandf+ '. Use the \'help\' command for a list of all available commands.')
+                print('No File or Command found caled \'' + commandf+ '\'. Use the \'help\' command for a list of all available commands.')
 
 class utils():
     def __init__(self, prog_arrow_tip = '>', prog_arrow_body = '-'):
@@ -61,7 +61,7 @@ class utils():
 
         return bar
 
-    def ifcolor(text = 'Example Text', color = '\033[32m', defaultcolor = '\033[39m'+'\033[49m'):
+    def ifcolor(text = 'Example Text', color = '\033[32m', defaultcolor = '\033[21m'+'\033[22m'+'\033[24m'+'\033[25m'+'\033[27m'+'\033[28m'+'\033[39m'+'\033[49m'):
         if 'Windows' in platform.system():
             pjf = open(os.path.dirname(os.path.realpath(__file__))+'\dirs.json', 'r')
         else:
@@ -83,8 +83,38 @@ class utils():
         else:
             return text
 
+    def getObjectinFolder(dir = os.path.dirname(os.path.realpath(__file__)), blacklist = [""], onlyfiles = True):
+        x = []
+        objects = os.listdir(dir)
+        file_objects = [f for f in objects if os.path.isfile(os.path.join(dir, f))]
+        if onlyfiles:
+            objlist = file_objects
+        else:
+            objlist = objects
+        for object in objlist:
+            if not object in blacklist:
+                x.append(object)
+        return x
+
+    def if_win():
+        if 'Windows' in platform.system():
+            return True
+        else:
+            return False
+
+    def getarg(arg, alt):
+        if not arg == '':
+            if arg in sys.argv:
+                return sys.argv[sys.argv.index(arg) + 1]
+            else:
+                return alt
 
 class text_style():
+    res = '\033[21m'+'\033[22m'+'\033[24m'+'\033[25m'+'\033[27m'+'\033[28m'+'\033[39m'+'\033[49m'
+    def text_rgb(r=0, g=255, b=50):
+        return '\033[38;2;' + str(r) + ';' + str(g) + ';' + str(b) + 'm'
+    def back_rgb(r=0, g=255, b=50):
+        return '\033[48;2;' + str(r) + ';' + str(g) + ';' + str(b) + 'm'
     class format:
         ResetBold       = '\033[21m'
         ResetDim        = '\033[22m'
@@ -138,6 +168,28 @@ class text_style():
         LightMagenta = '\033[105m'
         LightCyan    = '\033[106m'
         White        = '\033[107m'
-
+    
+    def typinganimation(text, delay = 0.1, variation = 0.1, envariation = True):
+        # Make Text into a list
+        text = list(text)
+        # Word Var
+        word = ''
+        # variation
+        var = variation*10000
+        # Display
+        for o in text:
+            print(word+o,end='\r')
+            word = word+o
+            if envariation:
+                variation = random.randrange(0-var,var)
+            else:
+                variation = 0
+            time.sleep(delay+(variation/10000))
+            # Fixing a bug that might accur
+            if len(word) >= os.get_terminal_size()[0]:
+                print(word)
+                word = ''
+        print(word)
+        
 if __name__ == '__main__':
     print('ugh.. this is a libary for CLOS and nothing to see here...')

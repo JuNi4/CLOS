@@ -1,0 +1,30 @@
+{
+    "lanID": "en_pk",
+    "lanNAME": "English (Polite Kingdom)",
+    
+    "setting_found": "Info: The Settings file indeed exists",
+    "setting_missing": "Error: The Settings file is no where to be found.",
+    "setting_creat": "Info: I am creating the Settings file.",
+
+    "y": "Yes.",
+    "n": "No",
+
+    "su_laun": "Launching the setup...",
+    "su_lan_rq": "It would be nice of you to select a language:",
+    "su_name_rq": "It would be nice of you to tell me your name:",
+    "su_lan_change_rq": "Would you like to change your current language? Yes/No",
+    "su_cur_lan": "Currently ",
+    "su_fav_food_rq": "It would verry nice if you to input your favorite food:",
+    "su_fav_color": "It would be kinf if you to input your favorite color:",
+    "su_fav_color_av": "Available are 'Red', 'Green', 'Blue', 'Yellow', 'Magenta', 'Cyan'",
+
+    "su_pw_rq": "You now may choose a Password:",
+
+    "wm_welcome": "Welcome dear ",
+    "wm_p1": " to the Command Line Operating System or for short (CLOS).",
+    "wm_p2": "You could turn of this Message using the 'settings' command.",
+
+    "lan_de_de": "German",
+    "lan_en_us": "Not so polite English",
+    "lan_en_uk": "Usuall English"
+}

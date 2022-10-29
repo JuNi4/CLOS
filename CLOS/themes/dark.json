@@ -1,0 +1,10 @@
+{
+    "themeID": "clos_dark",
+    "themeNAME": "CLOS Dark",
+    "mode": "manuel",
+    "text_color": "",
+    "text_backgorund": "",
+    "msg_info": "\\033[34m",
+    "msg_warning": "\\033[33m",
+    "msg_error": "\\033[31m"
+}

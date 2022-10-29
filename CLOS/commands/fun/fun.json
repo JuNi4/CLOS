@@ -1,0 +1,6 @@
+{
+	"objects": [
+		"messenger.py",
+		"weather.py"
+	]
+}

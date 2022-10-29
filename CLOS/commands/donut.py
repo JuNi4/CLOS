@@ -1,5 +1,5 @@
 import os
-import keyboard
+#import keyboard
 from math import sin, cos
 
 def main():
@@ -17,7 +17,7 @@ def main():
         clear = "clear"
 
     os.system(clear)
-    while not keyboard.is_pressed('q'):
+    while True: # Wait for 'q' to be pressed here
         z = [0 for _ in range(4*height*width)]
         screen = [' ' for _ in range(height*width)]
 

@@ -1,4 +1,7 @@
 {
+    "lanID": "de_de",
+    "lanNAME": "Deutsch (Deutschland)",
+    
     "setting_found": "Info: Einstellungsdatai gefunden",
     "setting_missing": "Error: Einstellungsdatai existier nicht!",
     "setting_creat": "Info: Erstelle Einstellungsdatai",
@@ -19,5 +22,21 @@
 
     "wm_welcome": "Wilkommen ",
     "wm_p1": ", zum Command Line Operating System (CLOS).",
-    "wm_p2": "Du kannst diese Nachricht mit dem 'settings'-Befehl aus stellen."
+    "wm_p2": "Du kannst diese Nachricht mit dem 'settings'-Befehl aus stellen.",
+
+    "lan_de_de": "Deutsch",
+    "lan_en_us": "Amerikanisches Englisch",
+    "lan_en_uk": "Brittisches Englisch",
+
+    "help.available_commands": "Verfuegbare Befehle:",
+    "help.internal_commands": "Interne Befehle:",
+    "help.internal_commands.discription": {
+        "redo_setup": "Startet die Einrichtung.",
+        "setup": "Startet die Einrichtung.",
+        "exit": "Beendet das Programm.",
+        "shutdown": "Beendet CLOS, tut das selbe wie \"exit\".",
+        "reboot": "Momentan das selbe wie \"exit\".",
+        "sys": "Gibt Informationen zum System aus.",
+        "python": "Started eine Python Konsole."
+    }
 }
