@@ -192,4 +192,4 @@ class text_style():
         print(word)
         
 if __name__ == '__main__':
-    print('ugh.. this is a libary for CLOS and nothing to see here...')
+    print('Error: this is a library. Not to be run on its own - it doesn\'t do anything on its own.')
