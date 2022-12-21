@@ -49,7 +49,7 @@ boot_options_template = {
     "install_libs": False,
     "time_wait_after_startup": 2,
     "ohp_vancy_prompt": False,
-    "ohp_vancy_prompt_opt_rel_path": "\\libs\\vancy_prompt_options.json",
+    "ohp_vancy_prompt_opt_rel_path": "/libs/vancy_prompt_options.json",
     "enable_boottheme": True,
     "theme": "dark"
 }
