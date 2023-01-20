@@ -43,8 +43,7 @@ for command in commands:
     if os.path.isdir(dirs["COMMAND_DATA_DIR"] + '/' + command) and os.path.isfile(dirs["COMMAND_DATA_DIR"] + '/' + command + '/language_en_us.json'):
         # Check if command + lang + json is a file
         if os.path.isfile(dirs["COMMAND_DATA_DIR"] + '/' + command + '/language_' + translations.lang_name + '.json'):
-            print('LoL')
-            with open(dirs["COMMAND_DATA_DIR"] + '/' + command + '/language_' + '.json') as f:
+            with open(dirs["COMMAND_DATA_DIR"] + '/' + command + '/language_' + translations.lang_name + '.json') as f:
                 data = json.load(f)
                 try: print(command + ': ' +text_style.color.DarkGray+ data['description']+text_style.res)
                 except: print(command +text_style.color.DarkGray+': No description available'+text_style.res)
