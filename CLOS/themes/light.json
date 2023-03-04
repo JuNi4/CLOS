@@ -1,0 +1,12 @@
+{
+    "themeID": "clos_dark",
+    "themeName": "CLOS Dark",
+    "text_color": "white",
+    "text_backgorund": "dark",
+    "msg_info_txt": "blue",
+    "msg_info_bgr": "white",
+    "msg_warning_txt": "yellow",
+    "msg_warning_bgr": "white",
+    "msg_error_txt": "red",
+    "msg_error_bgr": "white"
+}
